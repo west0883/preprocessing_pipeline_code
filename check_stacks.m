@@ -92,7 +92,7 @@ function [] = check_stacks(parameters)
                         stack_number=list(stacki, :); 
                         
                         % Get the filename.
-                        stackname=CreateFileStrings(input_data_name, [], [], stack_number); 
+                        stackname=CreateFileStrings(input_data_name, [], [], stack_number,  false); 
                         filename=[dir_preprocessed stackname];
                 end 
                 
@@ -106,11 +106,20 @@ function [] = check_stacks(parameters)
 
                    % Tell user there was a corrupt stack. 
                    disp('Found a corrupt stack.');
-                   disp(['Preprocesing ' mouse ', ' day ' stack' stack_number ]); 
+                   disp(['Preprocesing ' mouse ', ' day ' stack ' stack_number ]); 
                
-                   % Run the re-do preprocessing here (I don't feel like writing
-                   % out the logic of stack names again.) 
-                   Preprocessing_specificStacks(mouse, day, stack_number, parameters);
+                   % Run the re-do preprocessing here. 
+                   
+                   % Make a new parameters structure with only the needed
+                   % stacks in it. 
+                   
+                   mice_all_redo(1).name=mouse;
+                   mice_all_redo(1).days(1).name=day;
+                   mice_all_redo(1).days(1).stacks=str2num(stack_number);
+                   
+                   parameters_redo=parameters;
+                   parameters_redo.mice_all=mice_all_redo;
+                   Preprocessing(parameters_redo);
                end
             end
         end 

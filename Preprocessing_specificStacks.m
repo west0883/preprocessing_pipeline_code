@@ -47,12 +47,6 @@ function []=Preprocessing_specificStacks(mouse, day, stack_number, parameters)
     % Load reference days
     load([dir_in_ref 'reference_days.mat']);
     
-    % Make skip always odd.
-    if mod(skip,2)==0 
-        %if the remainder of the length of the skip 
-        %(specified as an input argument) after division by 2 is 0
-        skip=skip-1; %subtract 1 from the skip value 
-    end
     
     % Load the mask indices for this mouse
     load([dir_in_masks 'masks_m' mouse '.mat'], 'indices_of_mask'); 
@@ -143,8 +137,11 @@ function []=Preprocessing_specificStacks(mouse, day, stack_number, parameters)
        % If only one channel
 
        % Get list of frames after the skip
-       frames_list=skip:nim; 
+       frames_list=skip+1:nim; 
 
+       % Get the number of frames after the skip
+       frames=length(frames_list); 
+       
         % Figure out if this frames number is long enough for
         % further processing. If not, quit this stack. 
         if frames<minimum_frames
@@ -153,6 +150,11 @@ function []=Preprocessing_specificStacks(mouse, day, stack_number, parameters)
            % Go to next iteration of stacki for loop.
            return
         end
+        % Put data into data matrix
+        bData=TiffreadStructureToMatrix(im_list, frames_list);
+
+        % Set aside images for spotcheck 
+        spotcheck_data.initial.blue=bData(:,:, frames_for_spotchecking);
     end
 
     % ***3. Register within-stack/across stacks within a day.***
@@ -252,6 +254,15 @@ function []=Preprocessing_specificStacks(mouse, day, stack_number, parameters)
 
             % Load blood vessel masks. 
             load(filename_vessel_mask, 'vessel_masks'); 
+            
+            % Convert vessel masks into 2D matrix
+            vessel_masks =reshape(vessel_masks, yDim*xDim, size(vessel_masks, 3));
+
+            % If user said to use a brain mask,
+            if mask_flag
+                % Mask each blood vessel mask with the brain mask.
+                vessel_masks=vessel_masks(indices_of_mask, :);
+            end 
 
             % Run regression against extractions from blood
             % vessel masks. 
