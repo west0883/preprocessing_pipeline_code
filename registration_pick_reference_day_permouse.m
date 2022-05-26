@@ -17,15 +17,15 @@ function []=registration_pick_reference_day_permouse(days_all, dir_exper)
        
         % if it does, load it
         load([dir_out 'reference_days.mat']); 
-        
+    else  
         % if not, create a new variable for holding the reference days 
         reference_days.mouse=NaN(size(days_all,2),1);
-        reference_days.dayname=NaN(size(days_all,2),6);
+        reference_days.day=NaN(size(days_all,2),6);
         
     end     
     % for each mouse 
     for mousei=1:size(days_all,2)
-        mouse=days_all(1,mousei);
+        mouse=days_all(mousei).mouse;
         
         % Use a flag for determining if the "pick_reference_day"
         % function should be run.
@@ -44,21 +44,39 @@ function []=registration_pick_reference_day_permouse(days_all, dir_exper)
             elseif user_answer=='y'
                 pick_flag=1;  % run function          
             end
+            
         % if it hasn't been found before    
         else
             pick_flag=1; % run function 
         end
-        % find the directories and images for the pick_reference_day function
         
-        
-        % run the pick_reference_day function
-        
-        % hold onto the user output (of which day should be used as
-        % reference)
-       
-        
-    end 
-    
-    % save the user outputs/reference days as a variable
+        if pick_flag==1 
+            % find the directories and images for the pick_reference_day function
+            % holding variable for the images to show
+            file_paths=cell(size(days_all(mousei).days,1),1); 
 
+            % put the file paths of each background image into the list, to 
+            for dayi=1:size(days_all(mousei).days,1)
+                day=days_all(mousei).days(dayi,:);
+                file_paths{dayi}=[dir_exper 'hemodynamics_corrected/' mouse '/' day 'bback.mat'];
+
+            end 
+        
+            % Run the pick_reference_day function
+            [dayi_output]=pick_reference_day(mouse, filepaths);
+
+            % Convert the dayi user input to the day name and put in the
+            % variable
+            reference_days.mouse(mousei)=mouse; 
+            reference_days.day(mousei,:)=days_all(mousei).days(dayi_output,:);
+       
+        end 
+        
+        % Save the user outputs/reference days as a variable. Save each
+        % time you look at a mouse, because we don't want something to go
+        % wrong in the middle and have to start over.
+        save([dir_out 'reference_days.mat'], 'reference_days'); 
+
+    end     
+   
 end 
