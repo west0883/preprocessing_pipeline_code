@@ -18,7 +18,7 @@ disp('Loading');
 %line
 
  
-    im_list=tiffreadAltered_SCA(fileName,1, 'ReadUnknownTags',1); %if the
+    im_list=tiffreadAltered_SCA(fileName,[], 'ReadUnknownTags',1); %if the
     %file specified by HemoName doesn't exist use the function
     %tiffreadAltered_SCA to load the original tiff file into a structure
     %called im_list which loads each frame as a line within the structure

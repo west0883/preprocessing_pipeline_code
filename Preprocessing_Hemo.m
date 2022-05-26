@@ -50,10 +50,7 @@ function []=Preprocessing_Hemo(dir_dataset, dir_exper, days_all, skip, usfac)
                 stack_number=list(stacki).name(2:3);   
                 
                % find if there is a selected reference image for this day
-               % (dftregistration does well with horizontal shifts across stacks within a day, but it doesn't 
-               % rescalethe image, making it a poor choice for across-day
-               % differences--which might have different zoom levels)
-           
+       
                   if isfile([dir_out '\bback.mat'])==1 % If it exists,
                     % then enter bback_flag as 0; don't need to create a new
                     % one
