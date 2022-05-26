@@ -362,14 +362,7 @@ function []=Preprocessing(parameters)
                         % Load blood vessel masks. 
                         load(filename_vessel_mask, 'vessel_masks'); 
                         
-                        % Convert vessel masks into 2D matrix
-                        vessel_masks =reshape(vessel_masks, yDim*xDim, size(vessel_masks, 3));
-                        
-                        % If user said to use a brain mask,
-                        if mask_flag
-                            % Mask each blood vessel mask with the brain mask.
-                            vessel_masks(indices_of_mask)= [];
-                        end 
+                        % Convert into 2
                         
                         % Run regression against extractions from blood
                         % vessel masks. 
