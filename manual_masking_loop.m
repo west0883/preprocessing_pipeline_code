@@ -56,10 +56,14 @@ function []=manual_masking_loop(days_all, dir_exper)
         existing_masks=masks;
         
         % ***Run the function that runs the masking itself***
-        masks=ManualMasking(bback, existing_masks);     
+        [masks, indices_of_mask]=ManualMasking(bback, existing_masks);     
+        
+        % Make a version of "masks" that puts all the masks on the same
+        % plane.
+        
         
         % Save whatever additions you've made to the mask file 
-        save([dir_out 'mask_m' mouse '.mat'], 'masks');
+        save([dir_out 'mask_m' mouse '.mat'], 'masks', 'indices_of_mask');
        
         % clear things for next mouse 
         close all; 
