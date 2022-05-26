@@ -193,7 +193,8 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
             a = size(stackList.filenames,1);
             b = numel(frames_to_plot); 
              
-            figure; 
+            fig = figure;
+            fig.WindowState = 'maximized';
             
             % Plot each frame
             % For each stack
