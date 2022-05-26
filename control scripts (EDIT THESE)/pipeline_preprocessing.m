@@ -39,9 +39,11 @@ parameters.mice_all = mice_all;
 % Ex cont: stackList=ListStacks(numberVector,digitNumber); 
 % Ex cont: mice_all(1).stacks(1)=stackList;
 
-parameters.mice_all = parameters.mice_all([1 3]);
-parameters.mice_all(1).days = parameters.mice_all(1).days(12); 
-parameters.mice_all(2).days = parameters.mice_all(2).days(10);
+parameters.mice_all = parameters.mice_all([1:3]); 
+parameters.mice_all(1).days =parameters.mice_all(1).days(1:6);
+parameters.mice_all(2).days =parameters.mice_all(2).days(1:6);
+parameters.mice_all(3).days =parameters.mice_all(3).days(1:6);
+
 % Include stacks from a "spontaneous" field of mice_all?
 parameters.use_spontaneous_also = true;
 
@@ -93,7 +95,7 @@ parameters.blue_brighter = true;
 % calculates everything as DF/F.
 % 'vessel regression'-- regresses (blue) pixels against masks drawn from
 % blood vessels in the same (blue) channel. 
-parameters.correction_method='scaling';
+parameters.correction_method='regression';
 
 % Number of initial frames to skip, allows for brightness/image
 % stabilization of camera
@@ -185,11 +187,14 @@ registration_SaveRepresentativeImages(parameters);
 % reference images at once. If you have lots of images, you'll want more
 % subplots. If you have only a few, you want only a few subplots so each
 % image is plotted as large as possible. 
-parameters.plot_sizes=[2,3]; 
+parameters.plot_sizes=[4,5]; 
 
 %(DON'T EDIT). Run code.
 registration_pick_reference_day_permouse(parameters);
 
+% mouse 1087: 112621 (day 3)
+% mouse 1088: 112421 (day 2)
+% mouse 1096:
 %% Registration across days. (Automatic)
 % Calculates the transformation ("tform") that will be applied to images.
 % Also saves the before-and-after registration images overlaid together
@@ -244,7 +249,7 @@ manual_bloodvesselmasking_loop(parameters);
 % 8. Saves preprocessed stacks. 
 
 % Set up output folder.
-parameters.dir_out_base = [parameters.dir_exper 'fully preprocessed stacks_DFF\'];
+parameters.dir_out_base = [parameters.dir_exper 'fully preprocessed stacks\'];
 
 %(DON'T EDIT). Run code.
 Preprocessing(parameters);
@@ -253,7 +258,7 @@ Preprocessing(parameters);
 % Determines if a stack is corrupt and re-preprocesses it if so.
 
 % Set up input/output folder
-parameters.dir_in_base = [parameters.dir_exper 'fully preprocessed stacks_DFF\'];
+parameters.dir_in_base = [parameters.dir_exper 'fully preprocessed stacks\'];
 
 %(DON'T EDIT). Run code.
 check_stacks(parameters); 
@@ -262,7 +267,7 @@ check_stacks(parameters);
 frames_to_plot = [1, 3, 5]; 
 
 % Set up input/output folder
-parameters.dir_in_base = [parameters.dir_exper 'fully preprocessed stacks_DFF\'];
+parameters.dir_in_base = [parameters.dir_exper 'fully preprocessed stacks\'];
 
 plot_spotcheck(parameters, frames_to_plot); 
 
