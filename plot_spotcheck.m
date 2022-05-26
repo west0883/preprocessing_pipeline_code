@@ -116,7 +116,7 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
                         
                         % Fill masks 
                         eval(['data_matrix = spotcheck_data.masked.' channel ';']);
-                        [data_matrix_filled]=FillMasks(data_matrix, indices_of_mask, size(spotcheck_data.initial.blue, 1),size(spotcheck_data.initial.blue, 2) );
+                        [data_matrix_filled]=FillMasks(data_matrix, indices_of_mask, parameters.pixels(1), parameters.pixels(2));
                         
                         for i = 1:numel(frames_to_plot)
                             
@@ -135,7 +135,7 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
                         
                         eval(['data = spotcheck_data.filtered.' channel ';']);    
                         if parameters.mask_flag   
-                            [data_matrix_filled] = FillMasks(data, indices_of_mask, size(spotcheck_data.initial.blue, 1),size(spotcheck_data.initial.blue, 2) );
+                            [data_matrix_filled] = FillMasks(data, indices_of_mask, parameters.pixels(1), parameters.pixels(2));
                         else 
                             data_matrix_filled = data;
                         end        
@@ -161,7 +161,7 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
                     
                 % Fill masks for hemo 
                 if parameters.mask_flag   
-                   [data_matrix_filled]=FillMasks(spotcheck_data.hemodynamicscorrected, indices_of_mask, size(spotcheck_data.initial.blue, 1),size(spotcheck_data.initial.blue, 2) );
+                   [data_matrix_filled]=FillMasks(spotcheck_data.hemodynamicscorrected, indices_of_mask, parameters.pixels(1), parameters.pixels(2));
                 else 
                     data_matrix_filled = spotcheck_data.hemodynamicscorrected;
                 end        
