@@ -5,14 +5,10 @@
 % Loads individual images for differentiating between ligh channels, then
 % saves a representaive image for the day. 
 
-function []=registration_SaveRepresentativeImages(dir_dataset, dir_exper, days_all, skip, pixel_rows, pixel_cols, rep_stacki, rep_framei)
+function []=registration_SaveRepresentativeImages(dir_dataset, dir_exper, days_all, skip, pixel_rows, pixel_cols, rep_stacki, rep_framei, digit_number)
 
     dir_out_base=[dir_exper 'representative images\'];
     disp(['Data saved in ' dir_out_base]); 
-    
-    dbase_str='stacks\' ; %name the optical data subfolder and call it dbase_str
-    %usually this is called stacks but other people might call it something
-    %else. It's where the tiff files are stored and must be entered manually
     
     % for each mouse
     for mousei=1:size(days_all,2)
@@ -20,7 +16,7 @@ function []=registration_SaveRepresentativeImages(dir_dataset, dir_exper, days_a
         mouse=days_all(mousei).mouse;
         
         % Get the mouse's dataset days
-        days_list=days_all(mousei).days; 
+        days_list=vertcat(days_all(mousei).days(:).name); 
         
         % Make skip always odd.
         if mod(skip,2)==0 
@@ -34,7 +30,7 @@ function []=registration_SaveRepresentativeImages(dir_dataset, dir_exper, days_a
             day=days_list(dayi,:);
             
             %create the input directory by day
-            dir_in=[dir_dataset day '\' day 'm' mouse '\' dbase_str]; 
+            dir_in=CreateFileStrings(dir_dataset_name, mouse, day, []);
             
             % get the day name
             day=days_list(dayi,:); 
@@ -45,13 +41,52 @@ function []=registration_SaveRepresentativeImages(dir_dataset, dir_exper, days_a
             
             % find the list of stacks in that day (so you can find the
             % first one)
-            list=dir([dir_in '0*.tif']);
+            % Find the correct stack list entry of days_all. 
+            stackList=days_all(mousei).days(dayi).stacks; 
             
-            % Find the stack to use for the representative image.
-            stack_number=list(rep_stacki).name(2:3);   
+            % If stackList is a character string (to see if 'all')
+            if ischar(stackList)
+        
+               % If it is a character string, check to see if it's the string
+               % 'all'. 
+               if strcmp(stackList, 'all')
+                   
+                    % If it is the character string 'all', list stacks from
+                    % the day directory. 
+                    list=dir([dir_in '0*.tif']);
+
+                    % Find the index of the stack number within the input data name.  
+                    stackindex=find(contains(input_data_name,'stack number'));
+
+                    % Find the letters in the filename before the stack
+                    % number. 
+                    pre_stackindex=horzcat(input_data_name{1:(stackindex-1)}); 
+
+                    % Find the number of letters in the filename before
+                    % the stack number. 
+                    length_pre=length(pre_stackindex); 
+
+                    % Now take range of the file list that corresponds
+                    % to the stack number, according to number of
+                    % letters that came before the stack number and the
+                    % number of digits assigned to the stack number. 
+                    stack_number=list(rep_stacki).name(length_pre+1:length_pre+digitNumber); 
+                          
+               end
+               
+               % If stackList is not a character string, assume it's a
+               % vector of integer stacknumbers.  
+            else
+                list=ListStacks(stackList, digitNumber); 
+                
+                % Use this list to get the stack number
+                stack_number=list(rep_stacki,:); 
+                
+            end 
             
-            % Assign the input file name 
-            input_fileName=[dir_in list(rep_stacki).name]; 
+            % Use the stacknumber to make an input filename
+            stackname=CreateFileStrings(input_data_name, [], [], stack_number); 
+            input_filename=[dir_in stackname];
             
             % find if there is a selected reference image for this day
             if isfile([dir_out '\bRep.mat'])==1 
