@@ -75,7 +75,7 @@ function []=Preprocessing(parameters)
             load([dir_in_base_tforms mouse '\' day '\tform.mat']); 
             
             % Get the stack list
-            [stackList]=GetStackList(mousei, dayi, parameters);
+            [stackList]=GetStackList(mousei, dayi, dir_in, parameters);
             
             for stacki=1:size(stackList.filenames,1)
                 
