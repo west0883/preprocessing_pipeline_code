@@ -49,18 +49,18 @@ function []=Preprocessing(parameters)
     load([dir_in_ref 'reference_days.mat']);
     
     % For each mouse 
-    for mousei=1:size(mice_all,2)
-        mouse=mice_all(mousei).name;
+    for mousei=1:size(parameters.mice_all,2)
+        mouse=parameters.mice_all(mousei).name;
         
         % Load the mask indices for that mouse
         load([dir_in_masks 'masks_m' mouse '.mat'], 'indices_of_mask'); 
         
 
         % For each day
-        for dayi=1:size(mice_all(mousei).days, 2)
+        for dayi=1:size(parameters.mice_all(mousei).days, 2)
             
             % Get the day name.
-            day=mice_all(mousei).days(dayi).name; 
+            day=parameters.mice_all(mousei).days(dayi).name; 
             
             % Create cleaner output directory. 
             dir_out=[dir_out_base mouse '\' day '\']; 
@@ -77,7 +77,7 @@ function []=Preprocessing(parameters)
             
             % For this, if there are also spontaneous stacks, combine them
             % into the same stack list.
-            if isfield(mice_all(mousei).days(dayi), 'spontaneous')
+            if isfield(parameters.mice_all(mousei).days(dayi), 'spontaneous')
                parameters.mice_all(mousei).days(dayi).stacks = [parameters.mice_all(mousei).days(dayi).stacks  parameters.mice_all(mousei).days(dayi).spontaneous];
             end
             mice_all = parameters.mice_all; 

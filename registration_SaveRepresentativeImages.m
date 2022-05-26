@@ -10,8 +10,7 @@ function [] = registration_SaveRepresentativeImages(parameters)
     % Assign parameters their original names
     dir_dataset_name = parameters.dir_dataset_name; 
     input_data_name = parameters.input_data_name;
-    dir_exper = parameters.dir_exper; 
-    mice_all = parameters.mice_all; 
+    dir_exper = parameters.dir_exper;  
     skip = parameters.skip;
     pixel_rows = parameters.pixel_rows;
     pixel_cols = parameters.pixel_cols; 
@@ -24,12 +23,12 @@ function [] = registration_SaveRepresentativeImages(parameters)
     disp(['Data saved in ' dir_out_base]); 
     
     % for each mouse
-    for mousei=1:size(mice_all,2)
+    for mousei=1:size(parameters.mice_all,2)
         % Get the mouse name
-        mouse=mice_all(mousei).name;
+        mouse=parameters.mice_all(mousei).name;
         
         % Get the mouse's dataset days
-        days_list=vertcat(mice_all(mousei).days(:).name); 
+        days_list=vertcat(parameters.mice_all(mousei).days(:).name); 
         
         % For each day of the mouse 
         for dayi=1:size(days_list,1)
@@ -44,6 +43,12 @@ function [] = registration_SaveRepresentativeImages(parameters)
             
             parameters.dir_in = dir_dataset_name;
             
+            % For this, if there are also spontaneous stacks, combine them
+            % into the same stack list.
+            if isfield(parameters.mice_all(mousei).days(dayi), 'spontaneous')
+               parameters.mice_all(mousei).days(dayi).stacks = [parameters.mice_all(mousei).days(dayi).stacks  parameters.mice_all(mousei).days(dayi).spontaneous];
+            end
+           
             % Get the stack list
             [stackList]=GetStackList(mousei, dayi, parameters);
             
