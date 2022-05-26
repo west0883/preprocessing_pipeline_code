@@ -43,7 +43,7 @@ function []=registration_SaveRepresentativeImages(parameters)
             day=days_list(dayi,:);
             
             %create the input directory by day
-            dir_in=CreateFileStrings(dir_dataset_name, mouse, day, [], false);
+            dir_in=CreateFileStrings(dir_dataset_name, mouse, day, [], [], false);
             
             % get the day name
             day=days_list(dayi,:); 
@@ -74,7 +74,7 @@ function []=registration_SaveRepresentativeImages(parameters)
                    % If it is the character string 'all',
                     
                     % Create a file name string for searching. 
-                    searching_name=CreateFileStrings(input_data_name, [], [], [], true); 
+                    searching_name=CreateFileStrings(input_data_name, [], [], [], [], true); 
                     
                     % List stacks from the day directory. 
                     list=dir([dir_in searching_name]);
@@ -109,7 +109,7 @@ function []=registration_SaveRepresentativeImages(parameters)
             end 
             
             % Use the stacknumber to make an input filename
-            stackname=CreateFileStrings(input_data_name, [], [], stack_number, false); 
+            stackname=CreateFileStrings(input_data_name, [], [], stack_number, [], false); 
             input_filename=[dir_in stackname];
             
             % find if there is a selected reference image for this day

@@ -92,7 +92,7 @@ function [] = check_stacks(parameters)
                         stack_number=list(stacki, :); 
                         
                         % Get the filename.
-                        stackname=CreateFileStrings(input_data_name, [], [], stack_number,  false); 
+                        stackname=CreateFileStrings(input_data_name, [], [], stack_number, [],  false); 
                         filename=[dir_preprocessed stackname];
                 end 
                 

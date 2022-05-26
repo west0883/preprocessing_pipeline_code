@@ -64,7 +64,7 @@ function []=Preprocessing(parameters)
             day=mice_all(mousei).days(dayi).name; 
             
             % Create data input directory and cleaner output directory. 
-            dir_in=CreateFileStrings(dir_dataset_name, mouse, day, [], false);
+            dir_in=CreateFileStrings(dir_dataset_name, mouse, day, [], [], false);
             dir_out=[dir_out_base mouse '\' day '\']; 
             mkdir(dir_out); 
             
