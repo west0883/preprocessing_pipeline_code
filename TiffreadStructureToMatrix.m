@@ -31,7 +31,7 @@ function [data_matrix]=TiffreadStructureToMatrix(data_structure,frames_list)
         frame_structure=frames_list(framei); 
       
         % Now, convert the frames to double precision (from uint16) and move them. 
-        data_matrix(:,:,framei)=double(data_structure(frame_structure).data); 
+        data_matrix(:,:,framei)=data_structure(frame_structure).data; 
     end 
 
 end 
