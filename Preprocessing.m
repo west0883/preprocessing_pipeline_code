@@ -14,7 +14,7 @@
 % 7. Apples filtering. 
 % 8. Saves preprocessed stacks. 
 
-function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking, filter_flag)
+function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking, filter_flag)
     
     % Establish base input directories
     dir_in_base_tforms=[dir_exper 'tforms across days\']; 
@@ -48,10 +48,8 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
         for dayi=1:size(days_list,1)
             day=days_list(dayi,:); 
             
-            % Create cleaner data input and output directories; Is just a
-            % preference, but might make it easier to edit directories
-            % later if needed.
-            dir_in=[dir_dataset day '\' day 'm' mouse '\' dataset_str]; 
+            % Create data input directory and cleaner output directory. 
+            dir_in=CreateFileStrings(dir_dataset_name, mouse, day, []);
             dir_out=[dir_out_base mouse '\' day '\']; 
             mkdir(dir_out); 
             
@@ -111,7 +109,8 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
                         stack_number=list(stacki, :); 
                         
                         % Get the filename.
-                        filename=[dir_in '
+                        stackname=CreateFileString(input_data_name, [], [], stack_number); 
+                        filename=[dir_in stackname];
                 end 
                 
                 % Display what mouse, day, and stack you're on
