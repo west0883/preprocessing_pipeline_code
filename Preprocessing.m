@@ -74,95 +74,21 @@ function []=Preprocessing(parameters)
             % Load the across-day tform for that day. 
             load([dir_in_base_tforms mouse '\' day '\tform.mat']); 
             
-            % Find if there's a stack list entry for that day. If not, set
-            % to 'all' as a default. 
-            if isfield(mice_all(mousei).days(dayi), 'stacks')==0
-               mice_all(mousei).days(dayi).stacks='all'; 
-            elseif isempty(mice_all(mousei).days(dayi).stacks)==1
-               mice_all(mousei).days(dayi).stacks='all'; 
-            end
+            % Get the stack list
+            [stackList]=GetStackList(mousei, dayi, parameters);
             
-            % Find the correct stack list entry of mice_all. 
-            stackList=mice_all(mousei).days(dayi).stacks; 
-            
-            % If stackList is a character string (to see if 'all')
-            if ischar(stackList)
-        
-               % If it is a character string, check to see if it's the string
-               % 'all'. 
-               if strcmp(stackList, 'all')
-                   
-                   % Create a file name string for searching. 
-                   searching_name=CreateFileStrings(input_data_name, [], [], [], true); 
-                    
-                   % If it is the character string 'all', list stacks from
-                   % the day directory. 
-                   list=dir([dir_in searching_name]);
-                   
-                   % Assign a flag for marking if this happened. 
-                   all_flag=1; 
-               end
-               
-               % If stackList is not a character string, assume it's a
-               % vector of integer stacknumbers.  
-            else
-                list=ListStacks(stackList, digitNumber); 
+            for stacki=1:size(stackList.filenames,1)
                 
-                % Assign a flag for marking if the list was already made
-                all_flag=0;
-            end 
-            
-            % For each stack 
-            for stacki=1:size(list,1)
-                
-                % Depending on the value of the all_flag (the format of the
-                % stack list), figure out the name of the stacks
-                switch all_flag
-                    
-                    % If the user said use 'all' stacks,
-                    case 1
-                        
-                        % Get the stack number for naming output files
-                        % using the input_data_name (allows for flexible
-                        % outside-package file names). 
-                        
-                        % Find the index of the stack number within the input data name.  
-                        stackindex=find(contains(input_data_name,'stack number'));
-                        
-                        % Find the letters in the filename before the stack
-                        % number. 
-                        pre_stackindex=horzcat(input_data_name{1:(stackindex-1)}); 
-                        
-                        % Find the number of letters in the filename before
-                        % the stack number. 
-                        length_pre=length(pre_stackindex); 
-                        
-                        % Now take range of the file list that corresponds
-                        % to the stack number, according to number of
-                        % letters that came before the stack number and the
-                        % number of digits assigned to the stack number. 
-                        stack_number=list(stacki).name(length_pre+1:length_pre+digitNumber); 
-                          
-                        % Get the filename of the stack. 
-                        filename=[dir_in list(stacki).name];
-                    
-                    % If the user said use a specifc list of stacks, use
-                    % the list generated from the ListStacks function. 
-                    case 0
-                        % Get the stack number.
-                        stack_number=list(stacki, :); 
-                        
-                        % Get the filename.
-                        stackname=CreateFileStrings(input_data_name, [], [], stack_number, false); 
-                        filename=[dir_in stackname];
-                end 
+                % Get the stack number and filename for the stack.
+                stack_number = stackList.numberList(stacki, :);
+                filename = stackList.filenames(stacki, :);
                 
                 % Display what mouse, day, and stack you're on
                 disp(['mouse ' mouse ', day ' day ', stack ' stack_number]);
                 
                 % *** 1. Read in tiffs.***
                 disp('Reading tiffs'); 
-                im_list=tiffreadAltered_SCA(filename,[], 'ReadUnknownTags',1);              
+                im_list=tiffreadAltered_SCA([dir_in filename],[], 'ReadUnknownTags',1);              
                 
                 % Find the sizes of the data
                 yDim=size(im_list(1).data,1);
