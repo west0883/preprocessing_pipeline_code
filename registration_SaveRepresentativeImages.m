@@ -5,7 +5,7 @@
 % Loads individual images for differentiating between light channels, then
 % saves a representaive image for the day. 
            
-function []=registration_SaveRepresentativeImages(parameters)
+function [] = registration_SaveRepresentativeImages(parameters)
      
     % Assign parameters their original names
     dir_dataset_name = parameters.dir_dataset_name; 
@@ -30,13 +30,6 @@ function []=registration_SaveRepresentativeImages(parameters)
         
         % Get the mouse's dataset days
         days_list=vertcat(mice_all(mousei).days(:).name); 
-        
-%         % Make skip always odd.
-%         if mod(skip,2)==0 
-%             %if the remainder of the length of the skip 
-%             %(specified as an input argument) after division by 2 is 0
-%             skip=skip-1; %subtract 1 from the skip value 
-%         end
         
         % For each day of the mouse 
         for dayi=1:size(days_list,1)
