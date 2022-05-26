@@ -23,69 +23,85 @@ function []=manual_masking_loop(days_all, dir_exper, MaskComponent)
         
         % Define input folder based on reference day
         dir_in=[dir_in_base mouse '\' reference_day '\'];
-    
-        % Determine if a mask file for this mouse already exists; 
-        masking_flag=isfile([dir_out 'mask_m' mouse '.mat']); 
+        
+        % Load that mouse's Reference bback
+        load([day_in '\bback.mat']);
+        
+        % Determine if a mask file for this mouse already exists.
+        existing_mask_flag=isfile([dir_out 'masks_m' mouse '.mat']); 
+%         rep_image_drawn=bback; 
         
         % If it does exist already, load the mask file
-        if masking_flag==1 
-           load([dir_out 'mask_m' mouse '.mat']);
-       
-        % If it doesn't exist, will go through the masking loop
-        elseif masking_flag==0 
-
-            % Load that mouse's Reference bback
-            load([day_in mouse '\' day '\bback.mat']);
+        if existing_mask_flag==1 
+           load([dir_out 'masks_m' mouse '.mat']); 
             
-            % Get the average fluorescence value of the background image and
-            % hold the value in back0.
-            back0=(bback-min(min(bback)))/(max(max(bback))-min(min(bback)));
-           
-            MRMask=[]; %initalize MRMask as a blank variable (for manual 
-            %reference mask)
-
-    %%%%%%%%%%%%%%%%%% Manual Masking Loop%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                for k=1:MaskComponent %for each mask component which we'll 
-                    %index with variable k
-
-                    f=figure;hold on %create a figure called f and turn hold on
-                    %to keep everything in view
-                    title(sprintf('Masking Mouse %d MaskComponent %d of %d',mouse,k,MaskComponent))
-                    %put title on figure with the mouseID number and which
-                    %component you're drawing (i.e 1 of 2 or 2 of 2)
-                    f.WindowState='maximized'; %set figure window to maximized
-                    cMask=roipoly(back0); %draw an ROI for one side of the mask on the 
-                    %background image and store the boundary coordinates in variable cMask
-                    delete(f) %when done delete the figure
-
-                    if isempty(MRMask) %if variable MRMask is empty
-                        MRMask=cMask; %make MRMask equal the cMask variable
-                        %so now MRMask holds the boundaries of one side of the mask
-                    else
-                        if ~isempty(cMask) %if variable cMask is not empty
-                            MRMask=MRMask+cMask; %add new cMask (other half of 
-                            %brain mask to the one already drawn; this if for
-                            %when the second image comes up and the loop has
-                            %repeated)
-                        end
-                    end
-                end
-
-    %%%%%%%%%%%%%%%%%%%%%%%%% saves the mask and the background %%%%%%%%%%%%%%%%%%%%          
-                if ~isempty(MRMask) %if MRMask is not empty
-
-                    MRMask(MRMask>0)=1; %set all areas of the mask in MRMask
-                    %that are greater than 0 equal to 1 (i.e. areas covering
-                    %the brain)
-                    RMask=MRMask; %set variable RMask equal to MRMask so that
-                  
-                end
-                
-                
-  
+        % If it doesn't exist, 
+        elseif existing_mask_flag==0 
+            % Make a starting masks variable that's empty
+            masks=[];
+        end 
         
+         %% Could make this section below into a function
+           % if a function, just have to pass in bback and previously
+           % existing masks
+        
+        rep_image_drawn=bback;
+        
+        % Apply any existing masks to rep_image_drawn
+        if isempty(masks)
+           % If no previous masks, don't need to add anything to rep_image_drawn 
+        else
+            % If there are pre-existing masks, apply them to
+            % rep_image_drawn
+            for i=1:size(masks,3)
+                mask_flat=masks(:,:,i);
+                indices=[indices; find(mask_flat)]; 
+            end
+            rep_image_drawn(indices)=NaN;
+        end 
+        
+        % Display rep_image_drawn. Displays masks as black
+        figure; imagesc(rep_image_drawn); colormap(mymap);
+        
+        % Ask user if they want to add a mask
+        user_answer1= inputdlg('Do you want to draw additional masks? 1=Y, 0=N'); 
+        
+        %Convert the user's answer into a value
+        answer1=str2num(user_answer1{1});
+
+        % If the user said yes,
+        while answer1==1      
+            
+            % Run function "PolyDraw" on the image with previous masks; will 
+            % output the coordinates of the ROI drawn
+            ROI1=PolyDraw; 
+            mask1=flipud(poly2mask(ROI1(1,:),ROI1(2,:),256, 256)); % make a mask of the ROI drawn 
+            
+            % Close the figure that was being drawn on
+            close all;   
+            
+            % Add the new mask to the matrix of masks that have been drawn so far
+            masks=cat(3, masks, mask1); 
+            
+            % Find the indices of the new mask
+            indices=find(mask1);
+            
+            % Set the new mask to NaN for display
+            rep_image_drawn(indices)=NaN; 
+            
+            % Draw the representative image with the new masks on it
+            figure; imagesc(rep_image_drawn); colormap(mymap); 
+            
+            % Repeat
+            user_answer1= inputdlg('Do you want to draw additional masks? 1=Y, 0=N'); 
+            answer1=str2num(user_answer1{1});
         end
+        
+        % leaves while loop if user answers anything other than "1"
+        
+        
         % Save whatever additions you've made to the mask file 
-        save([dir_out 'mask_m' mouse '.mat'], 'mask');
+        save([dir_out 'mask_m' mouse '.mat'], 'masks');
+            
     end
 end 
