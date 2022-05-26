@@ -11,7 +11,9 @@
 % reference image. (All within-stack and within-day/across-stacks
 % registration was already done in Preprocessing_Hemo.m)
  
-function []=apply_registration_and_masks(days_all, dir_exper)
+% Should also apply lowpass filtering here? 
+
+function []=apply_registration_and_masks(days_all, dir_exper, sampling_freq, fc, order)
     
     % Establish base input directories
     dir_in_base_data=[dir_exper 'hemodynamics corrected\']; 
@@ -27,6 +29,9 @@ function []=apply_registration_and_masks(days_all, dir_exper)
     % For each mouse 
     for mousei=1:size(days_all,2)
         mouse=days_all(mousei).mouse;
+        
+        % Load the mask indices for that mouse
+        load([dir_in masks 'mask_m' mouse '.mat'], 'indices_of_mask'); 
         
         % Get the list of all days for that mouse
         days_list=days_all(mousei).days; 
@@ -53,9 +58,15 @@ function []=apply_registration_and_masks(days_all, dir_exper)
                 % Get the stack number for naming output files. 
                 stack_number=list(stacki).name(6:7); 
                 
-                % Load stack data. 
-                load([dir_in list(stacki).name]); 
-
+                % Load stack data. Ask only for hData so you don't also get
+                % the example registered images.
+                load([dir_in list(stacki).name], 'hData'); 
+                
+                % Find the sizes of the data
+                xDim=size(hData,1);
+                yDim=size(hData,2);
+                zDim=size(hData,3);
+                
                 % ** Apply registration**
 
                 % If the tform's empty, then you don't need to register
@@ -67,12 +78,34 @@ function []=apply_registration_and_masks(days_all, dir_exper)
                     % the current image to align with the reference image using the tranform
                     % stored in the tform variable. Should be able to apply to all
                     % images in the 3rd dimension at the same time 
-                     data=imwarp(hData,tform,'OutputView',imref2d(size(hData,1), size(hData,2)));
+                     data=imwarp(hData,tform,'OutputView',imref2d(xDim, yDim));
                 end
+                
+                % Reshape data into a 2D matrix (total pixels x frames) for
+                % applying the mask and the lowpass filter. Don't rename
+                % the variable, because that will take up extra
+                % memory/time.
+                data=reshape(data, xDim*yDim, zDim);
+                
                 % ** Apply mask** 
-
+                % Keep only the indices that belong to the mask; Don't rename
+                % the variable, because that will take up extra memory/time.
+                data=data(indices_of_mask,:); 
+                
+                % ** Lowpass filter** 
+                disp('Filtering');
+                
+                % Find Niquist freq for filter; sampling divided by 2
+                fn=sampling_freq/2; 
+                
+                % Find parameters of Butterworth filter. 
+                [b,a]=butter(order,[fc/fn],'low');
+                
+                % Filter data.
+                data=filtfilt(b,a, data); 
+                
                 % Save resulting stacks. 
-
+                save([dir_out 'data' stack_number '.mat'], 'data');
             end
         end 
     end 
