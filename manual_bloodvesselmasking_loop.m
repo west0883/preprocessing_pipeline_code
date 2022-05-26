@@ -97,9 +97,13 @@ function []=manual_bloodvesselmasking_loop(parameters)
             % Load that mouse's Reference bRep
             load([dir_in '\bRep.mat']);
             
+            % Get dimensions
+            yDim=size(bRep,1);
+            xDim=size(bRep,2); 
+            
             % Add the brain mask to the bRep image to make it clear not to
-            % draw masks outside of that? Then apply the brain mask to the
-            % vessel masks to get the correct number of indices?
+            % draw masks outside of that. Then apply the brain mask to the
+            % vessel masks to get the correct number of indices.
             
             % Load brain mask 
             load([dir_exper 'masks\masks_m' mouse '.mat'], 'indices_of_mask'); 
@@ -107,12 +111,12 @@ function []=manual_bloodvesselmasking_loop(parameters)
             % Rename brain mask indices to avoid confusion/overwriting. 
             brain_mask_indices=indices_of_mask; 
 
-            % Apply brain masks to the bRep image 
-            bRep(brain_mask_indices)=NaN; 
+            % Get the inverse of the brain mask.
+            inverse_brain_mask_indices=true(yDim, xDim); 
+            inverse_brain_mask_indices(brain_mask_indices)=false;
             
-            % Get dimensions
-            yDim=size(bRep,1);
-            xDim=size(bRep,2); 
+            % Apply brain masks to the bRep image 
+            bRep(inverse_brain_mask_indices)=NaN;             
             
             % Determine if a mask file for this mouse already exists.
             existing_mask_flag=isfile([dir_out 'bloodvessel_masks_m' mouse '.mat']); 
