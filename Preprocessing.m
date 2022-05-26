@@ -22,7 +22,10 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
     dir_in_ref=[dir_exper 'representative images\']; 
     
     % Establish base output directory
-    dir_out_base=[dir_exper 'fully preprocessed stacks/'];
+    dir_out_base=[dir_exper 'fully preprocessed stacks\'];
+    
+    % Tell user where data is being saved
+    disp(['Data saved in ' dir_out_base]); 
     
     % Load reference days
     load([dir_in_ref 'reference_days.mat']);
