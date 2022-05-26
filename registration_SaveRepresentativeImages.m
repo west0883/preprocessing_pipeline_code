@@ -49,73 +49,18 @@ function []=registration_SaveRepresentativeImages(parameters)
             dir_out=[dir_out_base '\' mouse '\' day '\']; 
             mkdir(dir_out);
             
-            % Find if there's a stack list entry for that day. If not, set
-            % to 'all' as a default. 
-            if isfield(mice_all(mousei).days(dayi), 'stacks')==0
-               mice_all(mousei).days(dayi).stacks='all'; 
-            elseif isempty(mice_all(mousei).days(dayi).stacks)==1
-               mice_all(mousei).days(dayi).stacks='all'; 
-            end
+            % Get the stack list
+            [stackList]=GetStackList(parameters, mousei, dayi);
             
-            % find the list of stacks in that day (so you can find the
-            % first one)
-            % Find the correct stack list entry of mice_all. 
-            stackList=mice_all(mousei).days(dayi).stacks; 
-            
-            combined_input_name = [dir_dataset_name input_data_name];
-            % If stackList is a character string (to see if 'all')
-            if ischar(stackList)
-        
-               % If it is a character string, check to see if it's the string
-               % 'all'. 
-               if strcmp(stackList, 'all')
-                   % If it is the character string 'all',
-                    
-                    % Create a directory +file name string for searching. 
-                    searching_name=CreateFileStrings(combined_input_name, mouse, day, [], [], true); 
-                    
-                    % Create the input directory
-                    %dir_in=CreateFileStrings(dir_dataset_name, mouse, day, [], [], true);
-                    
-                    % List stacks from the day directory. 
-                    list=dir(searching_name);
-
-                    % Find the index of the stack number within the input data name.  
-                    stackindex=find(contains(combined_input_name,'stack number'));
-
-                    % Find the letters in the filename before & after the
-                    % stack index number.
-                    pre_stack_name = CreateFileStrings(combined_input_name(1:stackindex-1), mouse, day, [], [], false); 
-                    %pre_stackindex=horzcat(combined_input_name{1:(stackindex-1)}); 
-
-                    % Find the number of letters in the filename before
-                    % the stack number. 
-                    length_pre=length(pre_stack_name); 
-
-                    % Now take range of the file list that corresponds
-                    % to the stack number, according to number of
-                    % letters that came before the stack number and the
-                    % number of digits assigned to the stack number. 
-                    combined_name = [list(rep_stacki).folder '\' list(rep_stacki).name];
-                    stack_number=combined_name(length_pre+1 : length_pre+digitNumber); 
-                          
-               end
-               
-               % If stackList is not a character string, assume it's a
-               % vector of integer stacknumbers.  
-            else
-                list=ListStacks(stackList, digitNumber); 
-                
-                % Use this list to get the stack number
-                stack_number=list(rep_stacki,:); 
-                
-            end 
+            % Get the stack number to use for the rep image based on the
+            % given stack index. 
+            stack_number = stackList.numberList(rep_stacki, :);
             
             %Create the input directory
             dir_in=CreateFileStrings(dir_dataset_name, mouse, day, stack_number, [], false);
             
-            % Use the stacknumber to make an input filename
-            stackname=CreateFileStrings(input_data_name, mouse, day, stack_number, [], false); 
+            % Use the stack number to make an input filename
+            stackname=stackList.filenames(rep_stacki, :);
             input_filename=[dir_in stackname];
             
             % find if there is a selected reference image for this day
