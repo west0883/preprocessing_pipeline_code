@@ -40,7 +40,7 @@ function []=Preprocessing(parameters)
     dir_in_ref=[dir_exper 'representative images\']; 
     
     % Establish base output directory
-    dir_out_base=[dir_exper 'fully preprocessed stacks\'];
+    dir_out_base=[dir_exper 'fully preprocessed stacks_DFF\'];
     
     % Tell user where data is being saved
     disp(['Data saved in ' dir_out_base]); 
