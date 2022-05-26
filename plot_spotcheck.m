@@ -177,7 +177,7 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
                 end
                 
                 % Add global title.
-                suptitle(['mouse ' mouse ', day ' day ', stack' stack_number]);
+                sgtitle(['mouse ' mouse ', day ' day ', stack' stack_number]);
             
                 % Save figure
                 savefig([parameters.dir_in 'check_bystack_' stack_number '.fig']);
@@ -206,7 +206,7 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
                     
                 end
             end
-            suptitle(['mouse ' mouse ', day ' day]);
+            sgtitle(['mouse ' mouse ', day ' day]);
             savefig([parameters.dir_in 'all_hemo.fig']);
             % Close all figures at end of a day
             close all; 
