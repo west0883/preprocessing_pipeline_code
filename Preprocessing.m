@@ -168,6 +168,9 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
                 data=filtfilt(b,a, data); 
                 
                 % *** 8. Save preprocessed stacks***
+                % Convert data to single precision to take up less space
+                data=single(data); 
+                
                 % Save resulting stacks. 
                 disp('Saving');
                 save([dir_out 'data' stack_number '.mat'], 'data', '-v7.3');
