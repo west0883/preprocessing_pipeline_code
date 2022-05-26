@@ -62,6 +62,7 @@ function []=registration_SaveRepresentativeImages(parameters)
             % Find the correct stack list entry of mice_all. 
             stackList=mice_all(mousei).days(dayi).stacks; 
             
+            combined_input_name = [dir_dataset_name input_data_name];
             % If stackList is a character string (to see if 'all')
             if ischar(stackList)
         
@@ -70,31 +71,33 @@ function []=registration_SaveRepresentativeImages(parameters)
                if strcmp(stackList, 'all')
                    % If it is the character string 'all',
                     
-                    % Create a file name string for searching. 
-                    searching_name=CreateFileStrings(input_data_name, mouse, day, [], [], true); 
+                    % Create a directory +file name string for searching. 
+                    searching_name=CreateFileStrings(combined_input_name, mouse, day, [], [], true); 
                     
                     % Create the input directory
-                    dir_in=CreateFileStrings(dir_dataset_name, mouse, day, [], [], true);
+                    %dir_in=CreateFileStrings(dir_dataset_name, mouse, day, [], [], true);
                     
                     % List stacks from the day directory. 
-                    list=dir([dir_in searching_name]);
+                    list=dir(searching_name);
 
                     % Find the index of the stack number within the input data name.  
-                    stackindex=find(contains(input_data_name,'stack number'));
+                    stackindex=find(contains(combined_input_name,'stack number'));
 
                     % Find the letters in the filename before & after the
-                    % stack index number. 
-                    pre_stackindex=horzcat(input_data_name{1:(stackindex-1)}); 
+                    % stack index number.
+                    pre_stack_name = CreateFileStrings(combined_input_name(1:stackindex-1), mouse, day, [], [], false); 
+                    %pre_stackindex=horzcat(combined_input_name{1:(stackindex-1)}); 
 
                     % Find the number of letters in the filename before
                     % the stack number. 
-                    length_pre=length(pre_stackindex); 
+                    length_pre=length(pre_stack_name); 
 
                     % Now take range of the file list that corresponds
                     % to the stack number, according to number of
                     % letters that came before the stack number and the
                     % number of digits assigned to the stack number. 
-                    stack_number=list(rep_stacki).name(length_pre+1:length_pre+digitNumber); 
+                    combined_name = [list(rep_stacki).folder '\' list(rep_stacki).name];
+                    stack_number=combined_name(length_pre+1 : length_pre+digitNumber); 
                           
                end
                
