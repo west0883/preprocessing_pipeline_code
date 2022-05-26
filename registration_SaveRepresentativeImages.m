@@ -59,11 +59,7 @@ function [] = registration_SaveRepresentativeImages(parameters)
             stackname=stackList.filenames(rep_stacki, :);
             input_filename=[dir_in stackname];
             
-            % find if there is a selected reference image for this day
-            if isfile([dir_out '\bRep.mat'])==1 
-                % If it exists, do nothing; don't need to create a new
-                % one
-            else 
+          
                 % If it doesn't exist, then need to create a new one
                 
                 % If there are 2 channels, 
@@ -104,7 +100,7 @@ function [] = registration_SaveRepresentativeImages(parameters)
                 
                 % Save the representative image
                 save([dir_out 'bRep.mat'], 'bRep');
-            end 
+        
         end 
     end
 end 
