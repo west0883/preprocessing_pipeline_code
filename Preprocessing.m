@@ -99,7 +99,7 @@ function []=Preprocessing(parameters)
 
                 % Check if file exists. If it doesn't, report and keep track. 
                 if ~isfile([dir_in filename])
-                    disp(['file for ' mouse ', ' day ', ' stack ' does not exist.']);
+                    disp('File does not exist.');
                     bad_trials = [bad_trials; {[dir_in filename], 'couldn"t find'}];
                     continue 
                 end   
@@ -108,7 +108,7 @@ function []=Preprocessing(parameters)
                 try
                     im_list=tiffreadAltered_SCA([dir_in filename],[], 'ReadUnknownTags',1);       
                 catch 
-                    disp(['couldn"t load ' mouse ', ' day ', ' stack '.']);
+                    disp('Could not load file.');
                     bad_trials = [bad_trials; {[dir_in filename], 'couldn"t load'}];
                     continue 
                 end
