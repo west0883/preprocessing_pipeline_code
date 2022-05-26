@@ -25,6 +25,9 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
     % Establish base output directory
     dir_out_base=[dir_exper 'fully preprocessed stacks with pixel regression\'];
     
+    % Tell user where data will be saved.
+    disp(['Output will be saved in ' dir_out_base ]);  
+    
     % Load reference days
     load([dir_in_ref 'reference_days.mat']);
     
