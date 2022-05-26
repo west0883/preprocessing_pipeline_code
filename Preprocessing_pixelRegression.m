@@ -7,10 +7,11 @@
 
 % 1. Reads the data tiffs in as matrics.
 % 2. Separates data into blue and violet channels. 
-% 3. Applies the pre-calculated across-day tforms.
-% 4. Registers within-stack/across stacks within a day. 
-% 5. Corrects hemodynamics.
-% 6. Applies the pre-calculated mask per mouse.
+% 3. Registers within-stack/across stacks within a day. 
+% 4. Applies the pre-calculated across-day tforms.
+% 5. Applies the pre-calculated mask per mouse.
+% 6. Corrects hemodynamics via regressing blue pixels against violet pixels
+% and keeping only residuals. 
 % 7. Apples filtering. 
 % 8. Saves preprocessed stacks. 
 
@@ -242,7 +243,19 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                 bData=reshape(bData, yDim*xDim, frames);
                 vData=reshape(vData, yDim*xDim, frames);
                 
-                % *** 5. Correct hemodynamics. ***
+                
+                % *** 5. Apply mask *** 
+                % Keep only the indices that belong to the mask; Don't rename
+                % the variable, because that will take up extra memory/time.
+                disp('Applying mask')
+                bData=bData(indices_of_mask,:); 
+                vData=vData(indices_of_mask,:); 
+                
+                % Set aside images for spotcheck 
+                spotcheck_data.masked.blue=bData(:, frames_for_spotchecking);
+                spotcheck_data.masked.violet=vData(:, frames_for_spotchecking);
+                
+                % *** 6. Correct hemodynamics. ***
                 % Run HemoRegression function; 
                 disp('Correcting hemodynamics');
                  
@@ -251,15 +264,6 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                 
                  % Set aside images for spotcheck 
                 spotcheck_data.hemodynamicscorrected=data(:, frames_for_spotchecking);
-                
-                % *** 6. Apply mask *** 
-                % Keep only the indices that belong to the mask; Don't rename
-                % the variable, because that will take up extra memory/time.
-                disp('Applying mask')
-                data=data(indices_of_mask,:); 
-                
-                % Set aside images for spotcheck 
-                spotcheck_data.masked=data(:, frames_for_spotchecking);
                 
                 
                 % ** *7. Filter***
