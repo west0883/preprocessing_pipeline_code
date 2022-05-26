@@ -1,4 +1,4 @@
-% Preprocessing.m
+% preprocessing.m
 % Sarah Wests
 % 8/24/21
 
@@ -13,7 +13,7 @@
 % 6. Applies the pre-caluclated mask per mouse.
 % 7. Apples lowpass filtering. 
 
-function []=Preprocessing(days_all, dir_exper, dir_dataset, dataset_str, sampling_freq, fc, order, usfac, skip, pixel_rows, pixel_cols)
+function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, sampling_freq, fc, order, usfac, skip, pixel_rows, pixel_cols)
     
     % Establish base input directories
     dir_in_base_tforms=[dir_exper 'tforms across days\']; 
