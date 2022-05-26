@@ -111,7 +111,17 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
 
                 % ***3. Register within-stack/across stacks within a day.*** 
                 disp('Registering within days'); 
-           
+                
+                %initialize bData and vData as a matrix of zeros with size frame number and pixels
+                bData = zeros(length(sel470),im_pixels); 
+                vData = zeros(length(sel405),im_pixels);
+                
+
+                 parfor t=1:len 
+                     % make a function for this
+                      % Perform fourier transform of the background/reference image 
+                       fbback=fft2(bback); 
+                 end
                 
                 % *** 4. Correct hemodynamics. ***
                 disp('Correcting hemodynamics');
