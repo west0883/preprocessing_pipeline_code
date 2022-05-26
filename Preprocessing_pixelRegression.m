@@ -242,14 +242,8 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                 vData=reshape(vData, yDim*xDim, frames);
                 
                 % *** 5. Correct hemodynamics. ***
-                % Try spatially averaging the violet to see if that reduces
-                % transformation artifacts.
-                
                 % Run HemoRegression function; 
                 disp('Correcting hemodynamics');
-                
-                % Spatially average the violet data. 
-                vData=imboxfilt(vData, 1); 
                  
                 % Run regressions. 
                 [data]=HemoRegression(bData, vData); 
