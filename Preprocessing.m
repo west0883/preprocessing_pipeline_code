@@ -25,7 +25,7 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
     dir_out_base=[dir_exper 'fully preprocessed stacks/'];
     
     % Load reference days
-    load([dir_in_base_tforms 'reference_days.mat']);
+    load([dir_in_ref 'reference_days.mat']);
     
     % Make skip always odd.
     if mod(skip,2)==0 
@@ -39,7 +39,7 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
         mouse=days_all(mousei).mouse;
         
         % Load the mask indices for that mouse
-        load([dir_in masks 'mask_m' mouse '.mat'], 'indices_of_mask'); 
+        load([dir_in_masks 'masks_m' mouse '.mat'], 'indices_of_mask'); 
         
         % Get the list of all days for that mouse
         days_list=days_all(mousei).days; 
@@ -55,7 +55,7 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
             dir_out=[dir_out_base mouse '\' day '\']; 
             
             % Load the reference image for that day
-            load([dir_in_ref day '\bRep.mat']); 
+            load([dir_in_ref mouse '\' day '\bRep.mat']); 
             
             % Load the across-day tform for that day. 
             load([dir_in_base_tforms mouse '\' day '\tform.mat']); 
