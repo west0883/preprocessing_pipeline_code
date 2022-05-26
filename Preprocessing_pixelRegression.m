@@ -200,8 +200,23 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                 spotcheck_data.initial.blue=bData(:,:, frames_for_spotchecking);
                 spotcheck_data.initial.violet=vData(:,:, frames_for_spotchecking);
                 
+                 % ***3. Register within-stack/across stacks within a day.*** 
+                disp('Registering within days'); 
 
-                 % *** 3. Apply registration across days ***
+                % Run the within-day registration function; overwrite bData
+                % so you don't take up as much memory. 
+                [bData, tforms_forviolet]=RegisterStackWithDFT(bRep, bData, usfac);
+
+                % Apply the calculated tforms to the violet stack. Overwrite vData
+                % so you don't take up as much memory.  
+                [vData]=RegisterStack_WithPreviousDFTShifts(tforms_forviolet, vData, usfac); 
+                 
+                % Set aside images for spotcheck 
+                spotcheck_data.withindayregistered.blue=bData(:,:, frames_for_spotchecking);
+                spotcheck_data.withindayregistered.violet=vData(:,:, frames_for_spotchecking);
+
+                
+                 % *** 4. Apply registration across days ***
 
                 % If the tform's empty, then you don't need to register
                 if isempty(tform)==1 
@@ -220,20 +235,6 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                 spotcheck_data.registrationacrossdays.blue=bData(:,:, frames_for_spotchecking);
                 spotcheck_data.registrationacrossdays.violet=vData(:,:, frames_for_spotchecking);
                 
-                % ***4. Register within-stack/across stacks within a day.*** 
-                disp('Registering within days'); 
-
-                % Run the within-day registration function; overwrite bData
-                % so you don't take up as much memory. 
-                [bData, tforms_forviolet]=RegisterStackWithDFT(bRep, bData, usfac);
-
-                % Apply the calculated tforms to the violet stack. Overwrite vData
-                % so you don't take up as much memory.  
-                [vData]=RegisterStack_WithPreviousDFTShifts(tforms_forviolet, vData, usfac); 
-                 
-                % Set aside images for spotcheck 
-                spotcheck_data.withindayregistered.blue=bData(:,:, frames_for_spotchecking);
-                spotcheck_data.withindayregistered.violet=vData(:,:, frames_for_spotchecking);
                 
                  % Reshape data into a 2D matrix (total pixels x frames) for
                 % applying the mask, regressions, and the lowpass filter. Overwrite the variable
