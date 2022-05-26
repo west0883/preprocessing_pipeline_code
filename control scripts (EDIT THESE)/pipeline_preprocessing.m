@@ -18,7 +18,7 @@ clear all;
 % Output Directories
 
 % Create the experiment name. This is used to name the output folder. 
-parameters.experiment_name='Motorized Treadmill Demonstration';
+parameters.experiment_name='Motorized Treadmill';
 
 % Output directory name bases
 parameters.dir_base='Y:\Sarah\Analysis\Experiments\';
@@ -135,8 +135,8 @@ parameters.filter_flag = true;
     parameters.order=5; 
 
     % Low cut off frequency. Lowest detectable frequency is frame rate/data
-    % points. 
-    parameters.fc1=0.005; 
+    % points (is equal to the finest possible frequency resolution).
+    parameters.fc1 = 0.02;  
     
     % High cutoff frequency. Highest detectable frequency is frame rate/2
     parameters.fc2=7; 
