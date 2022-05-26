@@ -24,7 +24,7 @@ function [] = check_stacks(parameters)
     corrupt_files={};
     
     % Cycle through mice. 
-    for mousei=1:size(mice_all,1)
+    for mousei=1:size(mice_all,2)
         
         % Get the mouse name.
         mouse=mice_all(mousei).name; 
