@@ -2,7 +2,7 @@
 % Sarah West
 % 8/23/21
 
-% Loads the "bback.mat" file for each day of each mouse (which is the
+% Loads the "bRep.mat" file for each day of each mouse (which is the
 % reference image for the within- and across-stack registrations) and plots them
 % so you can pick what day to use. Called by "registration_pick_reference_day_permouse.m"
 
@@ -24,7 +24,7 @@ function [dayi_output]=PickReferenceDay(mouse, file_paths, plot_sizes)
         load(file_paths{dayi,:}); 
         
         % plot the background image in the proper subplot
-        subplot(plot_rows, plot_columns, dayi); imagesc(bback);
+        subplot(plot_rows, plot_columns, dayi); imagesc(bRep);
         
         % give the image a title corresponding to the dayi
         title(num2str(dayi));

@@ -36,9 +36,9 @@ function []=registration_across_days(days_all, dir_exper, transformation, config
         % Find the day you're supposed to register to with this mouse 
         reference_day=reference_days.day{mousei};
         
-        % Load the reference bRef image, rename it
-        load([dir_in_base '\' mouse '\' reference_day '\bRef.mat']);
-        Reference_bRef=bRef;
+        % Load the reference bRep image, rename it
+        load([dir_in_base '\' mouse '\' reference_day '\bRep.mat']);
+        Reference_bRep=bRep;
         
         % for each day
         for dayi=1:size(days_list,1)
@@ -69,20 +69,20 @@ function []=registration_across_days(days_all, dir_exper, transformation, config
                     % If this is NOT the reference day, perform the
                     % registration
                     
-                    % Load day's bRef
-                    load([dir_in 'bRef.mat']);
+                    % Load day's bRep
+                    load([dir_in 'bRep.mat']);
                     
                     % Perform registration.                 
-                     tform = imregtform(bRef, Reference_bRef, transformation, optimizer, metric);
+                     tform = imregtform(bRep, Reference_bRep, transformation, optimizer, metric);
                     
                     % Perform a check and save it in the folder
-                        % Apply the transform to the bRef
-                        result=imwarp(bRef,tform,'OutputView',imref2d(size(Reference_bRef))); 
+                        % Apply the transform to the bRep
+                        result=imwarp(bRep,tform,'OutputView',imref2d(size(Reference_bRep))); 
                         
                         % Plot both images together before and after registration 
                         figure; 
-                        subplot(1,2,1); imshowpair(bRef, Reference_bRef); title('before')
-                        subplot(1,2,2); imshowpair(result,Reference_bRef); title('after')
+                        subplot(1,2,1); imshowpair(bRep, Reference_bRep); title('before')
+                        subplot(1,2,2); imshowpair(result,Reference_bRep); title('after')
                         suptitle([mouse ', ' day])
                         % Save the check figure 
                         savefig([dir_out 'before_and_after.fig']);  

@@ -34,16 +34,16 @@ function []=Registration_Manual_Redo(redo, dir_exper)
         mousei=find(contains(reference_days.mouse, mouse));
         reference_day=reference_days.day{mousei};
         
-        % Load+rename Reference_bRef
-        load([dir_in_base mouse '\' reference_day '\bRef.mat']); 
-        Reference_bRef=bRef;
+        % Load+rename Reference_bRep
+        load([dir_in_base mouse '\' reference_day '\bRep.mat']); 
+        Reference_bRep=bRep;
         
-        % Load bRef for current day 
-        load([dir_in_base mouse '\' day '\bRef.mat']); 
+        % Load bRep for current day 
+        load([dir_in_base mouse '\' day '\bRep.mat']); 
         
         % Plot each image
-        fig1=figure; imagesc(Reference_bRef); 
-        fig2=figure; imagesc(bRef)
+        fig1=figure; imagesc(Reference_bRep); 
+        fig2=figure; imagesc(bRep)
         
         % Use the function "getpts" to slelect 3 or more points from the first image 
         % (I like to use blood vessel branch points), then the same 3 points 
@@ -58,13 +58,13 @@ function []=Registration_Manual_Redo(redo, dir_exper)
         save([dir_out 'tform.mat'], 'tform'); 
 
         % Perform a check and save it in the folder
-        % Apply the transform to the bRef
-        result=imwarp(bRef,tform,'OutputView',imref2d(size(Reference_bRef))); 
+        % Apply the transform to the bRep
+        result=imwarp(bRep,tform,'OutputView',imref2d(size(Reference_bRep))); 
 
         % Plot both images together before and after registration 
         figure; 
-        subplot(1,2,1); imshowpair(bRef, Reference_bRef); title('before')
-        subplot(1,2,2); imshowpair(result,Reference_bRef); title('after')
+        subplot(1,2,1); imshowpair(bRep, Reference_bRep); title('before')
+        subplot(1,2,2); imshowpair(result,Reference_bRep); title('after')
         suptitle([mouse ', ' day])
         
         % Save the check figure 
