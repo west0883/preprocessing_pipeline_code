@@ -56,9 +56,10 @@ function []=registration_pick_reference_day_permouse(days_all, dir_exper, plot_s
             % holding variable for the images to show
             file_paths=cell(size(days_all(mousei).days,1),1); 
 
-            % put the file paths of each background image into the list, to 
-            for dayi=1:size(days_all(mousei).days,1)
-                day=days_all(mousei).days(dayi,:);
+            % put the file paths of each background image into the list
+            days_list=vertcat(days_all(mousei).days(:).name);
+            for dayi=1:size(days_list,1)
+                day=days_all(mousei).days(dayi).name;
                 file_paths{dayi}=[dir_exper 'representative images/' mouse '/' day '/bRep.mat'];
 
             end 

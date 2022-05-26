@@ -33,7 +33,6 @@ function [file_string]=CreateFileStrings(file_format_cell, mouse, day, stack_num
              error('no mouse number was given'); 
          end 
      end 
-    
      
     % See if there is an entry for day
      if any(contains(file_format_cell,'day'))==1

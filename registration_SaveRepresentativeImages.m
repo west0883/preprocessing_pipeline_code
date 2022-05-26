@@ -5,7 +5,7 @@
 % Loads individual images for differentiating between ligh channels, then
 % saves a representaive image for the day. 
 
-function []=registration_SaveRepresentativeImages(dir_dataset, dir_exper, days_all, skip, pixel_rows, pixel_cols, rep_stacki, rep_framei, digit_number)
+function []=registration_SaveRepresentativeImages(dir_dataset_name, input_data_name, dir_exper, days_all, skip, pixel_rows, pixel_cols, rep_stacki, rep_framei, digitNumber)
 
     dir_out_base=[dir_exper 'representative images\'];
     disp(['Data saved in ' dir_out_base]); 
@@ -102,7 +102,7 @@ function []=registration_SaveRepresentativeImages(dir_dataset, dir_exper, days_a
                 image_indices=[skip + rep_framei, skip + rep_framei + 1]; 
                 
                 % Read those two images
-                im_list=tiffreadAltered_SCA(input_fileName, image_indices, 'ReadUnknownTags',1);
+                im_list=tiffreadAltered_SCA(input_filename, image_indices, 'ReadUnknownTags',1);
                 
                 im1=im_list(1).data;
                 im2=im_list(2).data; 
