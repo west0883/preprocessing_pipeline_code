@@ -34,7 +34,7 @@ function[masks, indices_of_mask]=ManualMasking(image_to_mask, existing_masks)
     figure; imagesc(image_to_mask); colormap(mymap);
 
     % Ask user if they want to add a mask
-    user_answer1= inputdlg('Do you want to draw additional masks? 1=Y, 0=N'); 
+    user_answer1= inputdlg('Do you want to draw additional masks on this mouse? 1=Y, 0=N'); 
 
     %Convert the user's answer into a value
     answer1=str2num(user_answer1{1});

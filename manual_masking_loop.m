@@ -63,7 +63,7 @@ function []=manual_masking_loop(days_all, dir_exper)
         
         
         % Save whatever additions you've made to the mask file 
-        save([dir_out 'mask_m' mouse '.mat'], 'masks', 'indices_of_mask');
+        save([dir_out 'masks_m' mouse '.mat'], 'masks', 'indices_of_mask');
        
         % clear things for next mouse 
         close all; 
