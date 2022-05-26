@@ -14,7 +14,7 @@
 % 7. Apples filtering. 
 % 8. Saves preprocessed stacks. 
 
-function []=Preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking, filter_flag, digitNumber, minimum_frames, correction_method, channelNumber)
+function []=Preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking, filter_flag, digitNumber, minimum_frames, correction_method, channelNumber, mask_flag)
     
     % Establish base input directories
     dir_in_base_tforms=[dir_exper 'tforms across days\']; 
