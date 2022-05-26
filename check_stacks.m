@@ -12,7 +12,7 @@ function [] = check_stacks(parameters)
     digitNumber = parameters.digitNumber; 
    
     % Set input (and re-preprocessing output) directory base.
-    dir_preprocessed_base=[dir_exper 'fully preprocessed stacks\']; 
+    dir_preprocessed_base = parameters.dir_in_base; 
     
     % Create output file name
     output_filename='corrupt_stacks.mat';

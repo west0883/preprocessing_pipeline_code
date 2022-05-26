@@ -7,6 +7,8 @@
 
 function [] = plot_spotcheck(parameters, frames_to_plot)
     
+    dir_in_base = parameters.dir_in_base;
+
     % For each mouse
     for mousei = 1:size(parameters.mice_all,2) 
         
@@ -25,7 +27,7 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
             day = parameters.mice_all(mousei).days(dayi).name;
             
             % Get input directory for that day
-            parameters.dir_in = [parameters.dir_exper 'fully preprocessed stacks\' mouse '\' day '\'];
+            parameters.dir_in = [parameters.dir_in_base  mouse '\' day '\'];
             
             % Change what the input name you want is
             parameters.input_data_name = {'spotcheck_data', 'stack number', '.mat'};
