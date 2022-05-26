@@ -13,7 +13,8 @@ function [dayi_output]=PickReferenceDay(mouse, file_paths, plot_sizes)
     plot_columns=plot_sizes(2);
     
     % Initialize the figure to plot in
-    figure; 
+    figure; sgtitle(['mouse ' mouse]);
+    
     % Enlarge figure to full screen.
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
     
