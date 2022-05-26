@@ -53,7 +53,8 @@ function [registered_stack, all_tforms]=RegisterStackWithDFT(reference_image, st
         % From dftregistration code: output=[error,diffphase,row_shift,col_shift];
         
         all_tforms(:, t)=output(2:4); 
-        registered_stack(:,:,t)=Greg; 
+        % Perform inferse Fourier as well.
+        registered_stack(:,:,t)=abs(ifft2(Greg));
     end 
 
 end 
