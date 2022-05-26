@@ -88,6 +88,13 @@ function []=registration_pick_reference_day_permouse(parameters)
             reference_days.mouse{mousei_original}=mouse; 
             reference_days.day{mousei_original}=parameters.mice_all(mousei).days(dayi_output).name;
        
+            % Load that bRep so you can save it.
+            load(file_paths{dayi_output});
+
+            reference_image = bRep; 
+
+            % Save that image matrix
+            save([dir_out mouse '/reference_image.mat'], 'reference_image')
         end 
         
         % Save the user outputs/reference days as a variable. Save each
