@@ -114,7 +114,7 @@ function []=Preprocessing(parameters)
                     im2=im_list(skip+2).data;
 
                     % Figure out which is what channel
-                    [first_image_channel] = DetermineChannel(im1, im2, pixel_rows, pixel_cols);
+                    [first_image_channel] = DetermineChannel(parameters.blue_brighter, im1, im2, pixel_rows, pixel_cols);
 
                     % Make two lists of which images are what channel.
                     switch first_image_channel

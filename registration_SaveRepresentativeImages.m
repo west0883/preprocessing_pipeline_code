@@ -77,7 +77,7 @@ function [] = registration_SaveRepresentativeImages(parameters)
                     im2=im_list(2).data; 
 
                     % Compare the brightness of the two images; 
-                    first_image_channel = DetermineChannel(im1, im2, pixel_rows, pixel_cols);
+                    first_image_channel = DetermineChannel(parameters.blue_brighter, im1, im2, pixel_rows, pixel_cols);
 
                     if first_image_channel=='b'
                        bRep=im1; 
