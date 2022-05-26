@@ -242,10 +242,16 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                 vData=reshape(vData, yDim*xDim, frames);
                 
                 % *** 5. Correct hemodynamics. ***
+                % Try spatially averaging the violet to see if that reduces
+                % transformation artifacts.
+                
                 % Run HemoRegression function; 
                 disp('Correcting hemodynamics');
-
+                
+                % Spatially average the violet data. 
+                vData=imboxfilt(vData, 1); 
                  
+                % Run regressions. 
                 [data]=HemoRegression(bData, vData); 
                 
                  % Set aside images for spotcheck 
@@ -283,11 +289,12 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                 % Convert data to single precision to take up less space
                 data=single(data); 
                 
+                % Save spotchecking data
+                save([dir_out 'spotcheck_data' stack_number '.mat'], 'spotcheck_data', '-v7.3');  
+                
                 % Save resulting stacks. 
                 save([dir_out 'data' stack_number '.mat'], 'data', '-v7.3');
                 
-                % Save spotchecking data
-                save([dir_out 'spotcheck_data' stack_number '.mat'], 'spotcheck_data', '-v7.3');  
             end
         end 
     end 
