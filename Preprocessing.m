@@ -44,12 +44,12 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
         % Load the mask indices for that mouse
         load([dir_in_masks 'masks_m' mouse '.mat'], 'indices_of_mask'); 
         
-        % Get the list of all days for that mouse
-        days_list=vertcat(days_all(mousei).days(:).name);
 
         % For each day
-        for dayi=1:size(days_list,1)
-            day=days_list(dayi,:); 
+        for dayi=1:size(days_all(mousei).days, 2)
+            
+            % Get the day name.
+            day=days_all(mousei).days(dayi).name; 
             
             % Create data input directory and cleaner output directory. 
             dir_in=CreateFileStrings(dir_dataset_name, mouse, day, []);
