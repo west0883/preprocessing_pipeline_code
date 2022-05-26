@@ -75,13 +75,6 @@ function []=Preprocessing(parameters)
             
             parameters.dir_in = dir_dataset_name;
             
-            % If user wants to use spontaneous stacks & there are also spontaneous stacks, combine them
-            % into the same stack list.
-            if parameters.use_spontaneous && isfield(parameters.mice_all(mousei).days(dayi), 'spontaneous')
-               parameters.mice_all(mousei).days(dayi).stacks = [parameters.mice_all(mousei).days(dayi).stacks  parameters.mice_all(mousei).days(dayi).spontaneous];
-            end
-         
-            
             % Get the stack list
             [stackList]=GetStackList(mousei, dayi, parameters);
             

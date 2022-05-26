@@ -30,12 +30,6 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
             % Change what the input name you want is
             parameters.input_data_name = {'spotcheck_data', 'stack number', '.mat'};
             
-            % If user wants to use spontaneous stacks & there are also spontaneous stacks, combine them
-            % into the same stack list.
-            if parameters.use_spontaneous && isfield(parameters.mice_all(mousei).days(dayi), 'spontaneous')
-               parameters.mice_all(mousei).days(dayi).stacks = [parameters.mice_all(mousei).days(dayi).stacks  parameters.mice_all(mousei).days(dayi).spontaneous];
-            end
-            
             % Get the stack list
             [stackList]=GetStackList(mousei, dayi, parameters);
             
