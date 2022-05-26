@@ -33,7 +33,7 @@ function []=registration_across_days(days_all, dir_exper, transformation, config
         
         % Load the reference bback image, rename it
         load([dir_in_base '\' mouse '\' reference_day '\bback.mat']);
-        ref_bback=bback;
+        Reference_bback=bback;
         
         % for each day
         for dayi=1:size(days_list,1)
@@ -41,13 +41,14 @@ function []=registration_across_days(days_all, dir_exper, transformation, config
             
             % make a dir_in and dir_out folder name for each day
             dir_in = [dir_in_base mouse '\' day '\']; 
-            dir_out= [dir_in_base mouse '\' day '\']; 
+            dir_out= [dir_out_base mouse '\' day '\']; 
             
             % See if a tform file already exists; skip if so 
-            if exist([dir_out 'tform.mat'])
+            registration_flag=exist([dir_out 'tform.mat']);
+            if registration_flag==2
                 % If the tform has already been calculated for this day,
                 % skip it.
-            else
+            elseif registration_flag==0
                 % If it doesn't exist yet, continue. 
                 
                 % Create the output folder 
@@ -62,6 +63,11 @@ function []=registration_across_days(days_all, dir_exper, transformation, config
                 else
                     % If this is NOT the reference day, perform the
                     % registration
+                    
+                    % Load day's bback
+                    load([dir_in 'bback.mat']);
+                    
+                    % Perform registration.                 
                      tform = imregtform(bback, Reference_bback, transformation, optimizer, metric);
                     
                     % Perform a check and save it in the folder
@@ -74,12 +80,11 @@ function []=registration_across_days(days_all, dir_exper, transformation, config
                         subplot(1,2,2); imshowpair(result,Reference_bback); title('after')
                         % Save the check figure 
                         savefig([dir_out 'before_and_after.fig']);  
-                end 
-           
-            % Save the tform for each day (including empy tform variables, 
-            % which makes the logic easier in later steps) 
-            save([dir_out 'tform.mat'], 'tform');
-        end    
-    end 
+                end
+                % Save the tform for each day (including empy tform variables, 
+                % which makes the logic easier in later steps) 
+                save([dir_out 'tform.mat'], 'tform');         
+            end           
+        end 
     end
 end
