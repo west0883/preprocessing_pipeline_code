@@ -49,8 +49,8 @@ function []=registration_across_days(days_all, dir_exper, transformation, config
             dir_out= [dir_out_base mouse '\' day '\']; 
             
             % See if a tform file already exists; skip if so 
-%             registration_flag=exist([dir_out 'tform.mat']);
-%             if registration_flag==2
+%             registration_flag=isfile([dir_out 'tform.mat']);
+%             if registration_flag==1
 %                 % If the tform has already been calculated for this day,
 %                 % skip it.
 %             elseif registration_flag==0
