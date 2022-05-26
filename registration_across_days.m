@@ -42,7 +42,12 @@ function []=registration_across_days(parameters)
         days_list=vertcat(mice_all(mousei).days(:).name); 
         
         % Find the day you're supposed to register to with this mouse 
-        reference_day=reference_days.day{mousei};
+        ind = NaN(1,size(reference_days.mouse,1)); 
+        for i=1:size(reference_days.mouse,1)
+           ind(i)=strcmp(mouse, reference_days.mouse{i}); 
+        end
+        refdayi=find(ind); 
+        reference_day=reference_days.day{refdayi};
         
         % Load the reference bRep image, rename it
         load([dir_in_base '\' mouse '\' reference_day '\bRep.mat']);
