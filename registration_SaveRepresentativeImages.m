@@ -2,9 +2,9 @@
 % Sarah West
 % 8/25/21
 
-% Loads individual images for differentiating between ligh channels, then
+% Loads individual images for differentiating between light channels, then
 % saves a representaive image for the day. 
-
+           
 function []=registration_SaveRepresentativeImages(dir_dataset_name, input_data_name, dir_exper, days_all, skip, pixel_rows, pixel_cols, rep_stacki, rep_framei, digitNumber)
 
     dir_out_base=[dir_exper 'representative images\'];
