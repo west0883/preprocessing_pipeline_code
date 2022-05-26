@@ -20,7 +20,6 @@ function []=Preprocessing(parameters)
     dir_dataset_name = parameters.dir_dataset_name; 
     input_data_name = parameters.input_data_name;
     dir_exper = parameters.dir_exper; 
-    mice_all = parameters.mice_all; 
     digitNumber = parameters.digitNumber; 
     channelNumber = parameters.channelNumber;
     skip = parameters.skip;
@@ -75,6 +74,13 @@ function []=Preprocessing(parameters)
             
             
             parameters.dir_in = dir_dataset_name;
+            
+            % For this, if there are also spontaneous stacks, combine them
+            % into the same stack list.
+            if isfield(mice_all(mousei).days(dayi), 'spontaneous')
+               parameters.mice_all(mousei).days(dayi).stacks = [parameters.mice_all(mousei).days(dayi).stacks  parameters.mice_all(mousei).days(dayi).spontaneous];
+            end
+            mice_all = parameters.mice_all; 
             
             % Get the stack list
             [stackList]=GetStackList(mousei, dayi, parameters);
