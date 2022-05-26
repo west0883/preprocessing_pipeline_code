@@ -49,13 +49,6 @@ function []=Preprocessing(parameters)
     % Load reference days
     load([dir_in_ref 'reference_days.mat']);
     
-    % Make skip always odd.
-    if mod(skip,2)==0 
-        %if the remainder of the length of the skip 
-        %(specified as an input argument) after division by 2 is 0
-        skip=skip-1; %subtract 1 from the skip value 
-    end
-    
     % For each mouse 
     for mousei=1:size(mice_all,2)
         mouse=mice_all(mousei).name;
@@ -186,8 +179,8 @@ function []=Preprocessing(parameters)
                     disp('Separating channels'); 
 
                     % Pick 2 images after the skip to compare 
-                    im1=im_list(skip).data; 
-                    im2=im_list(skip+1).data;
+                    im1=im_list(skip+1).data; 
+                    im2=im_list(skip+2).data;
 
                     % Figure out which is what channel
                     [first_image_channel] = DetermineChannel(im1, im2, pixel_rows, pixel_cols);
@@ -199,15 +192,15 @@ function []=Preprocessing(parameters)
                         case 'b'
                             % Then assign every other frame starting with "skip"
                             % to the blue list, the others to the violet list.
-                            sel470=skip:2:nim;
-                            sel405=skip+1:2:nim;
+                            sel470=skip+1:2:nim;
+                            sel405=skip+2:2:nim;
 
                         % If the first image is violet. 
                         case'v' 
                             % Then assign every other frame starting with
                             % "skip"+1 to the blue list, the others to the violet list.
-                            sel470=skip+1:2:nim; 
-                            sel405=skip:2:nim;
+                            sel470=skip+2:2:nim; 
+                            sel405=skip+1:2:nim;
                     end
 
                     % Find the minimum stack length of the two channels; make this the "frames" number 
@@ -240,8 +233,9 @@ function []=Preprocessing(parameters)
                    % If only one channel
                    
                    % Get list of frames after the skip
-                   frames_list=skip:nim; 
-                  
+                   frames_list=skip+1:nim; 
+                   
+                   % Get the number of frames after the skip
                    frames=length(frames_list); 
                    
                     % Figure out if this frames number is long enough for
@@ -368,12 +362,12 @@ function []=Preprocessing(parameters)
                         % If user said to use a brain mask,
                         if mask_flag
                             % Mask each blood vessel mask with the brain mask.
-                            vessel_masks(indices_of_mask)= [];
+                            vessel_masks=vessel_masks(indices_of_mask, :);
                         end 
                         
                         % Run regression against extractions from blood
                         % vessel masks. 
-                        data=VesselRegression(bData, vessel_masks, yDim, xDim); 
+                        data=VesselRegression(bData, vessel_masks); 
                 end
                 % Set aside images for spotcheck 
                 spotcheck_data.hemodynamicscorrected=data(:, frames_for_spotchecking);
