@@ -50,7 +50,7 @@ function []=registration_SaveRepresentativeImages(parameters)
             mkdir(dir_out);
             
             % Get the stack list
-            [stackList]=GetStackList(parameters, mousei, dayi);
+            [stackList]=GetStackList(mousei, dayi, parameters);
             
             % Get the stack number to use for the rep image based on the
             % given stack index. 
