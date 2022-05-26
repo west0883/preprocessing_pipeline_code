@@ -11,25 +11,29 @@ function [remaining_masks] = DeleteMasks(masks, bRep)
 % bRep -- a representative image (pixels, pixels) that you used to draw 
 
      % Get a colormap for qualitative data.
-     mymap=[cbrewer('qual', 'Paired', size(masks,3)); jet(1000)];
-     
-     % Make a blank image for holding masks 
-     %%%%%% *DOESN'T SHOW BLANK BACKGROUNDS RIGHT NOW*
+     mymap=[1 1 1 ; cbrewer('qual', 'Paired', size(masks,3))];
+
+     % Make blank images for holding masks 
      holder=zeros(size(masks,1), size(masks,2));
+     all_masks=zeros(size(masks,1), size(masks,2));
      
-     
-     % Add each mask in its own color to  holder. 
+     % Add each mask in its own color to  holder, and also put all masks into single image.
      for i=1:size(masks,3)
         holder(find(masks(:,:,i)))=i; 
+        all_masks(find(masks(:,:,i)))=1;
      end
-
-     % Plot the image with a colorbar. 
+     
+     % Put all masks onto bRep
+     bRep(find(all_masks))=NaN; 
+     
+     % Create figure.
      figure; 
      
-     % Plot bRep with its own color scheme
-     ax1 = axes;
-     imagesc(bRep); colormap(gray); 
+     % Plot bRep in first subplot
+     subplot(1,2,1); imagesc(bRep); colormap(gca,[0 0 0; parula(1000)]); 
+     title('brain with masks');
      
-     % Plot the mask overlays with their own colorscheme 
-     ax2 = axes;
+     % Plot the mask overlays with their own colorscheme in second subplot.
+     subplot(1,2,2); imagesc(holder); colormap(gca, mymap); colorbar; 
+     title('mask numbers for removal');
 end
