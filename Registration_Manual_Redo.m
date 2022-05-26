@@ -7,7 +7,10 @@
 % "lines_register_multiple_forbackwards.m"
 
 
-function []=Registration_Manual_Redo(redo, dir_exper)
+function []=Registration_Manual_Redo(redo, parameters)
+    
+    % Assign parameters their original names
+    dir_exper = parameters.dir_exper;
     
     % Set up bases of input and output directories
     dir_in_base=[dir_exper 'representative images\'];

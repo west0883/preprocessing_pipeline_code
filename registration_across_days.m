@@ -4,7 +4,15 @@
 % Modified from SCA_manual_masking.m, just the registration across days
 % parts
 
-function []=registration_across_days(days_all, dir_exper, transformation, configuration, max_step_length, max_iterations)
+function []=registration_across_days(parameters)
+    
+    % Assign parameters their original names
+    dir_exper = parameters.dir_exper; 
+    days_all = parameters.days_all; 
+    transformation = parameters.transformation; 
+    configuration = parameters.configuration; 
+    max_step_length = parameters.max_step_length;
+    max_iterations = parameters.max_iterations; 
     
     % Establish input and output directories
     dir_in_base=[dir_exper 'representative images\'];

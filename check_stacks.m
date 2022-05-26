@@ -3,8 +3,14 @@
 % 8/27/21
 % Checks if a preprocessed stack is corrupt
 
-function [] = check_stacks(days_all, dir_exper, dir_dataset_name, input_data_name, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking, filter_flag, digitNumber, minimum_frames, correction_method, channelNumber) 
-
+function [] = check_stacks(parameters) 
+    
+    % Assign parameters their original names
+    input_data_name = parameters.input_data_name;
+    dir_exper = parameters.dir_exper; 
+    days_all = parameters.days_all; 
+    digitNumber = parameters.digitNumber; 
+   
     % Set input (and re-preprocessing output) directory base.
     dir_preprocessed_base=[dir_exper 'fully preprocessed stacks\']; 
     
@@ -104,7 +110,7 @@ function [] = check_stacks(days_all, dir_exper, dir_dataset_name, input_data_nam
                
                    % Run the re-do preprocessing here (I don't feel like writing
                    % out the logic of stack names again.) 
-                   Preprocessing_specificStacks(mouse, day, stack_number, dir_exper, dir_dataset_name, input_data_name, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking, filter_flag, digitNumber, minimum_frames, correction_method, channelNumber);
+                   Preprocessing_specificStacks(mouse, day, stack_number, parameters);
                end
             end
         end 

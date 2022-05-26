@@ -5,8 +5,20 @@
 % Loads individual images for differentiating between light channels, then
 % saves a representaive image for the day. 
            
-function []=registration_SaveRepresentativeImages(dir_dataset_name, input_data_name, dir_exper, days_all, skip, pixel_rows, pixel_cols, rep_stacki, rep_framei, digitNumber)
-
+function []=registration_SaveRepresentativeImages(parameters)
+     
+    % Assign parameters their original names
+    dir_dataset_name = parameters.dir_dataset_name; 
+    input_data_name = parameters.input_data_name;
+    dir_exper = parameters.dir_exper; 
+    days_all = parameters.days_all; 
+    skip = parameters.skip;
+    pixel_rows = parameters.pixel_rows;
+    pixel_cols = parameters.pixel_cols; 
+    rep_stacki = parameters.rep_stacki; 
+    rep_framei = parameters.rep_framei; 
+    digitNumber = parameters.digitNumber; 
+    
     dir_out_base=[dir_exper 'representative images\'];
     disp(['Data saved in ' dir_out_base]); 
     

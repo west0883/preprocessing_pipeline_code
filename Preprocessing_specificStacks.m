@@ -17,7 +17,24 @@
 % 7. Applies any filtering. 
 % 8. Saves preprocessed stacks. 
 
-function []=Preprocessing_specificStacks(mouse, day, stack_number, dir_exper, dir_dataset_name, input_data_name, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking, filter_flag, digitNumber, minimum_frames, correction_method, channelNumber)
+function []=Preprocessing_specificStacks(mouse, day, stack_number, parameters)
+    
+    % Assign parameters their original names
+    dir_dataset_name = parameters.dir_dataset_name; 
+    input_data_name = parameters.input_data_name;
+    dir_exper = parameters.dir_exper; 
+    channelNumber = parameters.channelNumber;
+    skip = parameters.skip;
+    pixel_rows = parameters.pixel_rows;
+    pixel_cols = parameters.pixel_cols; 
+    filter_flag = parameters.filter_flag;
+    b = parameters.b;
+    a = parameters.a;
+    usfac = parameters.usfac; 
+    frames_for_spotchecking = parameters.frames_for_spotchecking;
+    minimum_frames = parameters.minimum_frames;
+    mask_flag = parameters.mask_flag;
+    correction_method = parameters.correction_method;
     
     % Establish base input directories
     dir_in_base_tforms=[dir_exper 'tforms across days\']; 
@@ -182,7 +199,7 @@ function []=Preprocessing_specificStacks(mouse, day, stack_number, dir_exper, di
         end 
     end
 
-
+    
     % Reshape data into a 2D matrix (total pixels x frames) for
     % applying the mask, regressions, and the lowpass filter. Overwrite the variable
     % so you don't take up excess memory. 
@@ -197,17 +214,21 @@ function []=Preprocessing_specificStacks(mouse, day, stack_number, dir_exper, di
     % *** 5. Apply mask *** 
     % Keep only the indices that belong to the mask; Don't rename
     % the variable, because that will take up extra memory/time.
-    disp('Applying mask')
-    bData=bData(indices_of_mask,:);  
+   
+    % Only if user said to use mask (if mask_flag= true)
+    if mask_flag
+        disp('Applying mask')
+        bData=bData(indices_of_mask,:);  
 
-    % Set aside images for spotcheck 
-    spotcheck_data.masked.blue=bData(:, frames_for_spotchecking);
+        % Set aside images for spotcheck 
+        spotcheck_data.masked.blue=bData(:, frames_for_spotchecking);
 
-    % If more than 1 channel, do for violet channel as well
-    if channelNumber==2
-        vData=vData(indices_of_mask,:);
-        spotcheck_data.masked.violet=vData(:, frames_for_spotchecking);
-    end 
+        % If more than 1 channel, do for violet channel as well
+        if channelNumber==2
+            vData=vData(indices_of_mask,:);
+            spotcheck_data.masked.violet=vData(:, frames_for_spotchecking);
+        end
+    end
 
     % *** 6. Correct hemodynamics. ***
     % Run HemoRegression function; 

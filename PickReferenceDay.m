@@ -18,10 +18,10 @@ function [dayi_output]=PickReferenceDay(mouse, file_paths, plot_sizes)
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
     
     % for each day
-    for dayi=1:size(file_paths,1)
+    for dayi=1:size(file_paths,2)
         
         % load the background image
-        load(file_paths{dayi,:}); 
+        load(file_paths{dayi}); 
         
         % plot the background image in the proper subplot
         subplot(plot_rows, plot_columns, dayi); imagesc(bRep);

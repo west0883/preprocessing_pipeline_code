@@ -9,8 +9,13 @@
 % This has the exact same code as manual_masking_loop, just changes the
 % output directories. 
 
-function []=manual_bloodvesselmasking_loop(days_all, dir_exper, channelNumber)
+function []=manual_bloodvesselmasking_loop(parameters)
     
+   % Assign parameters their original names
+   dir_exper = parameters.dir_exper; 
+   days_all = parameters.days_all; 
+   channelNumber = parameters.channelNumber; 
+   
    % Make a flag that says if you should continue or not, default to "don't
    % continue." --> This flag is mostly to help make sure I didn't overlook
    % anything in my logic.
@@ -97,10 +102,10 @@ function []=manual_bloodvesselmasking_loop(days_all, dir_exper, channelNumber)
             % vessel masks to get the correct number of indices?
             
             % Load brain mask 
-            load([dir_in_base '\masks\masks_m' mouse '.mat'], 'indices_of_masks'); 
+            load([dir_exper 'masks\masks_m' mouse '.mat'], 'indices_of_mask'); 
             
             % Rename brain mask indices to avoid confusion/overwriting. 
-            brain_mask_indices=indices_of_masks; 
+            brain_mask_indices=indices_of_mask; 
 
             % Apply brain masks to the bRep image 
             bRep(brain_mask_indices)=NaN; 

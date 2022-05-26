@@ -14,7 +14,26 @@
 % 7. Apples filtering. 
 % 8. Saves preprocessed stacks. 
 
-function []=Preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking, filter_flag, digitNumber, minimum_frames, correction_method, channelNumber, mask_flag)
+function []=Preprocessing(parameters)
+    
+    % Assign parameters their original names
+    dir_dataset_name = parameters.dir_dataset_name; 
+    input_data_name = parameters.input_data_name;
+    dir_exper = parameters.dir_exper; 
+    days_all = parameters.days_all; 
+    digitNumber = parameters.digitNumber; 
+    channelNumber = parameters.channelNumber;
+    skip = parameters.skip;
+    pixel_rows = parameters.pixel_rows;
+    pixel_cols = parameters.pixel_cols; 
+    filter_flag = parameters.filter_flag;
+    b = parameters.b;
+    a = parameters.a;
+    usfac = parameters.usfac; 
+    frames_for_spotchecking = parameters.frames_for_spotchecking;
+    minimum_frames = parameters.minimum_frames;
+    mask_flag = parameters.mask_flag;
+    correction_method = parameters.correction_method;
     
     % Establish base input directories
     dir_in_base_tforms=[dir_exper 'tforms across days\']; 

@@ -5,7 +5,12 @@
 % Cyles through all the mice, calls pick_reference_day, saves the day the
 % user picks for registration. Called by main pipeline code
 
-function []=registration_pick_reference_day_permouse(days_all, dir_exper, plot_sizes)
+function []=registration_pick_reference_day_permouse(parameters)
+   
+    % Assign parameters their original names
+    dir_exper = parameters.dir_exper; 
+    days_all = parameters.days_all; 
+    plot_sizes = parameters.plot_sizes; 
     
     % make the output directory
     dir_out=[dir_exper 'representative images\']; 
@@ -60,7 +65,7 @@ function []=registration_pick_reference_day_permouse(days_all, dir_exper, plot_s
             days_list=vertcat(days_all(mousei).days(:).name);
             for dayi=1:size(days_list,1)
                 day=days_all(mousei).days(dayi).name;
-                file_paths{dayi}=[dir_exper 'representative images/' mouse '/' day '/bRep.mat'];
+                file_paths{dayi}=[dir_exper 'representative images\' mouse '\' day '\bRep.mat'];
 
             end 
         

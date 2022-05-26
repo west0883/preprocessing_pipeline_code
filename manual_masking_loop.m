@@ -6,7 +6,11 @@
 % Let's you keep adding masks until you say you're done. You can return to
 % it. 
 
-function []=manual_masking_loop(days_all, dir_exper)
+function []=manual_masking_loop(parameters)
+    
+    % Assign parameters their original names
+    dir_exper = parameters.dir_exper; 
+    days_all = parameters.days_all; 
     
     % Establish input and output folders 
     dir_in_base=[dir_exper 'representative images\'];
