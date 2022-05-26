@@ -88,6 +88,9 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
                 im1=im_list(skip).data; 
                 im2=im_list(skip+1).data;
                 
+                % Get total number of images
+                nim=size(im_list,2); 
+                
                 % Figure out which is what channel
                 [first_image_channel] = DetermineChannel(im1, im2, pixel_rows, pixel_cols);
                 
@@ -122,7 +125,7 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
 
                 % Run the within-day registration function; overwrite bData
                 % so you don't take up as much memory. 
-                [bData, tforms_forviolet]=RegisterStackWithDFT(bRef, bData, usfac);
+                [bData, tforms_forviolet]=RegisterStackWithDFT(bRep, bData, usfac);
 
                 % Apply the calculated tforms to the violet stack. Overwrite vData
                 % so you don't take up as much memory.  
