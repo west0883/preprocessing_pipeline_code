@@ -79,5 +79,5 @@ function []=registration_pick_reference_day_permouse(days_all, dir_exper, plot_s
         save([dir_out 'reference_days.mat'], 'reference_days'); 
 
     end     
-   
+    close all;
 end 
