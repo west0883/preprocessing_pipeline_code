@@ -31,15 +31,12 @@ function []=Registration_Manual_Redo(redo, dir_exper)
         dir_out=[dir_out_base mouse '\' day '\']; 
         
         % Find the day you're supposed to register to with this mouse
-        mousei=find(contains(reference_days.mouse, mouse));
+        
         reference_day=reference_days.day{mousei};
         
         % Load+rename Reference_bback
-        load([dir_in_base mouse '\' reference_day '\bback.mat']); 
-        Reference_bback=bback;
         
         % Load bback for current day 
-        load([dir_in_base mouse '\' day '\bback.mat']); 
         
         % Plot each image
         fig1=figure; imagesc(Reference_bback); 
