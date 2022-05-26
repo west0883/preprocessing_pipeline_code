@@ -4,7 +4,7 @@
 % Modified from SCA_manual_masking.m, just the registration across days
 % parts
 
-function []=registration_across_days(days_all, dir_exper, transformation, configuration)
+function []=registration_across_days(days_all, dir_exper, transformation, configuration, max_step_length, max_iterations)
     
     % Establish input and output directories
     dir_in_base=[dir_exper 'hemodynamics corrected\'];
@@ -19,6 +19,11 @@ function []=registration_across_days(days_all, dir_exper, transformation, config
     
     % Find parameters for the registration you want to do
     [optimizer, metric] = imregconfig(configuration);
+    
+    % Change the default max step length and max iterations. 
+    optimizer.MaximumStepLength=max_step_length;
+    optimizer.MaximumIterations=max_iterations;
+  
     
     % **Compute t-forms** 
     % For each mouse 
@@ -44,11 +49,11 @@ function []=registration_across_days(days_all, dir_exper, transformation, config
             dir_out= [dir_out_base mouse '\' day '\']; 
             
             % See if a tform file already exists; skip if so 
-            registration_flag=exist([dir_out 'tform.mat']);
-            if registration_flag==2
-                % If the tform has already been calculated for this day,
-                % skip it.
-            elseif registration_flag==0
+%             registration_flag=exist([dir_out 'tform.mat']);
+%             if registration_flag==2
+%                 % If the tform has already been calculated for this day,
+%                 % skip it.
+%             elseif registration_flag==0
                 % If it doesn't exist yet, continue. 
                 
                 % Create the output folder 
@@ -78,13 +83,14 @@ function []=registration_across_days(days_all, dir_exper, transformation, config
                         figure; 
                         subplot(1,2,1); imshowpair(bback, Reference_bback); title('before')
                         subplot(1,2,2); imshowpair(result,Reference_bback); title('after')
+                        suptitle([mouse ', ' day])
                         % Save the check figure 
                         savefig([dir_out 'before_and_after.fig']);  
                 end
                 % Save the tform for each day (including empy tform variables, 
                 % which makes the logic easier in later steps) 
                 save([dir_out 'tform.mat'], 'tform');         
-            end           
+            %end           
         end 
     end
 end
