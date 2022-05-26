@@ -64,7 +64,7 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                 % Get the stack number for naming output files. 
                 stack_number=list(stacki).name(2:3); 
                 
-                % 1. Read in tiffs.
+                % *** 1. Read in tiffs.***
                 disp('Loading'); 
                 filename=[dir_in list(stacki).name];
                 im_list=tiffreadAltered_SCA(filename,[], 'ReadUnknownTags',1);              
@@ -74,7 +74,8 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                 yDim=size(im_list(1).data,2);
                 %zDim=size(im_list,3);
                 
-                % 2. Separate Channels
+                % ***2. Separate Channels***
+                disp('Separating channels'); 
                 
                 % Pick 2 images after the skip to compare 
                 im1=im_list(skip).data; 
@@ -105,16 +106,15 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                 sel470=sel470(1:len); 
                 sel405=sel405(1:len);
 
-            stk_ref=round(len/2); %get the stack reference frame number 
-            %stk_ref by rounding the stack length by 2 (used as background)
+                % ***3. Register within-stack/across stacks within a day.*** 
+                disp('Registering within days'); 
+           
                 
-                % 3. Register within-stack/across stacks within a day. 
+                % *** 4. Correct hemodynamics. ***
+                disp('Correcting hemodynamics');
                 
-                
-                % 4. Correct hemodynamics. 
-                
-                
-                % 5. Apply registration across days 
+                % *** 5. Apply registration across days ***
+                disp('Applying registration across days'); 
 
                 % If the tform's empty, then you don't need to register
                 if isempty(tform)==1 
@@ -134,9 +134,10 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                 % memory/time.
                 data=reshape(data, xDim*yDim, zDim);
                 
-                % ** Apply mask** 
+                % *** 6. Apply mask *** 
                 % Keep only the indices that belong to the mask; Don't rename
                 % the variable, because that will take up extra memory/time.
+                disp('Applying mask')
                 data=data(indices_of_mask,:); 
                 
                 % ** Lowpass filter** 
