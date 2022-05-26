@@ -39,15 +39,9 @@ parameters.mice_all = mice_all;
 % Ex cont: stackList=ListStacks(numberVector,digitNumber); 
 % Ex cont: mice_all(1).stacks(1)=stackList;
 
-parameters.mice_all = parameters.mice_all(2:3);
-% parameters.mice_all(1).days = parameters.mice_all(1).days(8);
- %parameters.mice_all(1).days = parameters.mice_all(1).days([9, 11:12]);
- 
- parameters.mice_all(1).days = parameters.mice_all(1).days(10);
- parameters.mice_all(1).days(10).stacks = [NaN];
- parameters.mice_all(2).days = parameters.mice_all(2).days(8:10); 
-
-
+parameters.mice_all = parameters.mice_all([1 3]);
+parameters.mice_all(1).days = parameters.mice_all(1).days(12); 
+parameters.mice_all(2).days = parameters.mice_all(2).days(10);
 % Include stacks from a "spontaneous" field of mice_all?
 parameters.use_spontaneous_also = true;
 
@@ -99,7 +93,7 @@ parameters.blue_brighter = true;
 % calculates everything as DF/F.
 % 'vessel regression'-- regresses (blue) pixels against masks drawn from
 % blood vessels in the same (blue) channel. 
-parameters.correction_method='regression';
+parameters.correction_method='scaling';
 
 % Number of initial frames to skip, allows for brightness/image
 % stabilization of camera
@@ -177,7 +171,7 @@ parameters.usfac=10;
 % Saves a representative blue-channel image from each day of recording.
 % You'll use this to align data within days, and later you'll pick one of
 % these per mouse as the image to use to draw the mask and align data
-% across imaging days. 
+% across imaging days. gi
 
 % (DON'T EDIT). Run code.
 registration_SaveRepresentativeImages(parameters); 
@@ -249,17 +243,26 @@ manual_bloodvesselmasking_loop(parameters);
 % 7. Corrects hemodynamics. 
 % 8. Saves preprocessed stacks. 
 
+% Set up output folder.
+parameters.dir_out_base = [parameters.dir_exper 'fully preprocessed stacks_DFF\'];
+
 %(DON'T EDIT). Run code.
 Preprocessing(parameters);
 
 %% Check if any of the files are corrupt. 
 % Determines if a stack is corrupt and re-preprocesses it if so.
 
+% Set up input/output folder
+parameters.dir_in_base = [parameters.dir_exper 'fully preprocessed stacks_DFF\'];
+
 %(DON'T EDIT). Run code.
 check_stacks(parameters); 
 
 %% Plot & save a subset of the spotcheck frames. 
 frames_to_plot = [1, 3, 5]; 
+
+% Set up input/output folder
+parameters.dir_in_base = [parameters.dir_exper 'fully preprocessed stacks_DFF\'];
 
 plot_spotcheck(parameters, frames_to_plot); 
 
