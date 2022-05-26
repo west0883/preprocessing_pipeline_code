@@ -237,3 +237,7 @@ Preprocessing(parameters);
 %(DON'T EDIT). Run code.
 check_stacks(parameters); 
 
+%% Plot & save a subset of the spotcheck frames. 
+frames_to_plot = [1, 3, 5]; 
+
+plot_spotcheck(parameters, frames_to_plot); 
