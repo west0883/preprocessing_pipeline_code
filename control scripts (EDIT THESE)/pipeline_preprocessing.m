@@ -78,6 +78,11 @@ parameters.channelNumber=2;
 % 257 x 257 instead of 256 x 256).
 parameters.pixels = [256, 256];
 
+% If the blue channel is brighter than the violet. Blue should almost always be brighter 
+% than violet, but rarely there's a problem with the LED settings and it's 
+% dimmer than the violet. 
+parameters.blue_brighter = true; 
+
 % Method of hemodynamics correction.
 % Options:
 % 'regression' -- Runs regression of blue pixels against corresponding
@@ -212,6 +217,9 @@ registration_Manual_Redo(redo, parameters);
 
 % (DON'T EDIT). Run code.
 manual_masking_loop(parameters);
+
+%% Delete any bad brain masks you drew. (Has interactive steps).
+delete_brain_masks(parameters);
 
 %% Draw blood vessel masks (Has interactive steps) 
 % If you only have one channel, draw blood vessel and background masks for
