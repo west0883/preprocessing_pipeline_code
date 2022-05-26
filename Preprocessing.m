@@ -217,27 +217,31 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                        % Go to next iteration of stacki for loop.
                        continue 
                     end
-                   
-                 
-
-                end  
-                % ***3. Register within-stack/across stacks within a day.*** 
+                end
+                
+                % ***3. Register within-stack/across stacks within a day.***
                 disp('Registering within days'); 
 
                 % Run the within-day registration function; overwrite bData
                 % so you don't take up as much memory. 
                 [bData, tforms_forviolet]=RegisterStackWithDFT(bRep, bData, usfac);
 
-                % Apply the calculated tforms to the violet stack. Overwrite vData
-                % so you don't take up as much memory.  
-                [vData]=RegisterStack_WithPreviousDFTShifts(tforms_forviolet, vData, usfac); 
-                 
                 % Set aside images for spotcheck 
                 spotcheck_data.withindayregistered.blue=bData(:,:, frames_for_spotchecking);
-                spotcheck_data.withindayregistered.violet=vData(:,:, frames_for_spotchecking);
-                
-                % *** 4. Apply registration across days ***
 
+                % If more than one channel
+                if channelNumber==2
+                    % Apply the calculated tforms to the violet stack. Overwrite vData
+                    % so you don't take up as much memory.  
+                    [vData]=RegisterStack_WithPreviousDFTShifts(tforms_forviolet, vData, usfac); 
+
+                    % Also set aside image for spotcheck
+                    spotcheck_data.withindayregistered.violet=vData(:,:, frames_for_spotchecking);
+                end 
+              
+
+                % *** 4. Apply registration across days ***
+                
                 % If the tform's empty, then you don't need to register
                 if isempty(tform)==1 
                     % Do nothing
@@ -247,69 +251,73 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                     % reference image using the tranform stored in the tform variable. 
                     % Should be able to apply to all images in the 3rd dimension at the same time 
                     disp('Applying registration across days');  
-                    bData=imwarp(bData,tform, 'nearest','OutputView',imref2d([yDim xDim]));
-                    vData=imwarp(vData,tform, 'nearest','OutputView',imref2d([yDim xDim]));
+                    bData=imwarp(bData,tform,'nearest', 'OutputView',imref2d([yDim xDim]));
+                    
+                    % Set aside images for spotcheck 
+                    spotcheck_data.registrationacrossdays.blue=bData(:,:, frames_for_spotchecking);
+                    
+                    % If more than 1 channel, do for violet channel as well
+                    if channelNumber==2
+                        vData=imwarp(vData,tform,'nearest', 'OutputView',imref2d([yDim xDim]));
+                        spotcheck_data.registrationacrossdays.violet=vData(:,:, frames_for_spotchecking);
+                    end 
                 end
                 
-                % Set aside images for spotcheck 
-                spotcheck_data.registrationacrossdays.blue=bData(:,:, frames_for_spotchecking);
-                spotcheck_data.registrationacrossdays.violet=vData(:,:, frames_for_spotchecking);
-                
-                
+               
                 % Reshape data into a 2D matrix (total pixels x frames) for
                 % applying the mask, regressions, and the lowpass filter. Overwrite the variable
                 % so you don't take up excess memory. 
                 bData=reshape(bData, yDim*xDim, frames);
-                vData=reshape(vData, yDim*xDim, frames);
+                
+                % If more than 1 channel, do for violet channel as well
+                if channelNumber==2
+                    vData=reshape(vData, yDim*xDim, frames);
+                end 
                 
                 
                 % *** 5. Apply mask *** 
                 % Keep only the indices that belong to the mask; Don't rename
                 % the variable, because that will take up extra memory/time.
                 disp('Applying mask')
-                bData=bData(indices_of_mask,:); 
-                vData=vData(indices_of_mask,:); 
+                bData=bData(indices_of_mask,:);  
                 
                 % Set aside images for spotcheck 
                 spotcheck_data.masked.blue=bData(:, frames_for_spotchecking);
-                spotcheck_data.masked.violet=vData(:, frames_for_spotchecking);
                 
+                % If more than 1 channel, do for violet channel as well
+                if channelNumber==2
+                    vData=vData(indices_of_mask,:);
+                    spotcheck_data.masked.violet=vData(:, frames_for_spotchecking);
+                end 
                 
                 % *** 6. Correct hemodynamics. ***
                 % Run HemoRegression function; 
                 disp('Correcting hemodynamics');
                 
                 % Depending on the method desired by user
-                
                 switch correction_method
                 
                     case 'regression' 
-                        
                         % Run regressions. 
                         data=HemoRegression(bData, vData);
                         
                     case 'scaling'
-                        
                         % Run detrend-rescale version of hemo correction
                         % (Laurentiu's version)
                         data=HemoCorrection(bData, vData);
                         
                     case 'vessel regression'
-                        
                         % Establish filename of blood vessel mask.
                         filename_vessel_mask=[dir_exper 'blood vessel masks\bloodvessel_masks_m' mouse '.mat']; 
                     
                         % Load blood vessel masks. 
-                        load(filename_vessel_mask, 'indices_of_mask'); 
-                        
-                        % Apply brain mask to blood vessel mask? 
+                        load(filename_vessel_mask, 'vessel_masks'); 
                         
                         % Run regression against extractions from blood
                         % vessel masks. 
-                        data=VesselRegression(bData, indices_of_mask, yDim, xDim); 
-                        
+                        data=VesselRegression(bData, vessel_masks, yDim, xDim); 
                 end
-                 % Set aside images for spotcheck 
+                % Set aside images for spotcheck 
                 spotcheck_data.hemodynamicscorrected=data(:, frames_for_spotchecking);
                 
                 

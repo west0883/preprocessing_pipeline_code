@@ -33,9 +33,6 @@ function []=manual_bloodvesselmasking_loop(days_all, dir_exper, channelNumber)
 
      end 
     
-    
-    
-    
     switch channelNumber
            case 2
             
@@ -94,7 +91,24 @@ function []=manual_bloodvesselmasking_loop(days_all, dir_exper, channelNumber)
 
             % Load that mouse's Reference bRep
             load([dir_in '\bRep.mat']);
+            
+            % Add the brain mask to the bRep image to make it clear not to
+            % draw masks outside of that? Then apply the brain mask to the
+            % vessel masks to get the correct number of indices?
+            
+            % Load brain mask 
+            load([dir_in_base '\masks\masks_m' mouse '.mat'], 'indices_of_masks'); 
+            
+            % Rename brain mask indices to avoid confusion/overwriting. 
+            brain_mask_indices=indices_of_masks; 
 
+            % Apply brain masks to the bRep image 
+            bRep(brain_mask_indices)=NaN; 
+            
+            % Get dimensions
+            yDim=size(bRep,1);
+            xDim=size(bRep,2); 
+            
             % Determine if a mask file for this mouse already exists.
             existing_mask_flag=isfile([dir_out 'bloodvessel_masks_m' mouse '.mat']); 
 
@@ -111,15 +125,18 @@ function []=manual_bloodvesselmasking_loop(days_all, dir_exper, channelNumber)
             % Rename existing masks so they're not confused with the new ones
             % that will be drawn.
             existing_masks=masks;
-
+            
             % ***Run the function that runs the masking itself***
-            [vessel_masks, indices_of_mask]=ManualMasking(bRep, existing_masks);     
+            [vessel_masks, ~]=ManualMasking(bRep, existing_masks);     
 
-            % Make a version of "masks" that puts all the masks on the same
-            % plane.
-
+            % Make each vessel mask into pixels x mask number
+            vessel_masks=reshape(vessel_masks, yDim*xDim, size(vessel_masks,3)); 
+            
+            % Apply the brain mask to the vessel masks.
+            vessel_masks(brain_mask_indices, :)=[]; 
+            
             % Save whatever additions you've made to the mask file 
-            save([dir_out 'bloodvessel_masks_m' mouse '.mat'], 'vessel_masks', 'indices_of_mask');
+            save([dir_out 'bloodvessel_masks_m' mouse '.mat'], 'vessel_masks');
 
             % clear things for next mouse 
             close all; 
