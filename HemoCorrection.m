@@ -17,8 +17,9 @@
 
 function [hData]=HemoCorrection(bData, vData)
     
+    n_dims = ndims(bData);
 
-    if ndims(bData > 2)
+    if n_dims > 2
         % Find blue matrix sizes
         yDim=size(bData,1);
         xDim=size(bData,2);
@@ -35,15 +36,19 @@ function [hData]=HemoCorrection(bData, vData)
     % (frames, pixels*pixels).
     bData = bData';
     vData = vData';
-    
+
     % Hemodynamic correction: 
-    % For each channel, detrend each pixel along the time dimension and 
+    % Needs to be (frames, pixels*pixels). For each channel, detrend each pixel along the time dimension and 
     % divide by that pixel's mean. Then subtract the violet data from the 
     % blue data. 
     hData=detrend(bData)./mean(bData)-detrend(vData)./mean(vData);
     
-    % Flip and reshape hData back into original shape of bData. Overwrite 
-    % variable so you don't take up excess memory. 
-    hData=reshape(hData', yDim, xDim, frames); 
+    % Flip hData back.
+    hData = hData';
+
+    % If data was put in with 3 dimensions, reshape it back.
+    if n_dims > 2
+        hData=reshape(hData, yDim, xDim, frames); 
+    end
     
 end 
