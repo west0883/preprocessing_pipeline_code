@@ -52,52 +52,48 @@ function [] = registration_SaveRepresentativeImages(parameters)
             %Create the input directory
             dir_in=CreateFileStrings(dir_dataset_name, mouse, day, stack_number, [], false);
             
-           
             % Use the stack number to make an input filename
             stackname=stackList.filenames(rep_stacki, :);
             input_filename=[dir_in stackname];
-            
-          
-                % If it doesn't exist, then need to create a new one
                 
-                % If there are 2 channels, 
-                if channelNumber == 2 
-                    
-                    % Select 2 sequential images to read; Determined by the 
-                    % skip and the ref_framei given by the user. Need 2 to 
-                    % confirm which channel is which.
-                    image_indices=[skip + rep_framei, skip + rep_framei + 1]; 
-
-                    % Read those two images
-                    im_list=tiffreadAltered_SCA(input_filename, image_indices, 'ReadUnknownTags',1);
-
-                    im1=im_list(1).data;
-                    im2=im_list(2).data; 
-
-                    % Compare the brightness of the two images; 
-                    first_image_channel = DetermineChannel(parameters.blue_brighter, im1, im2, parameters.pixel_rows, parameters.pixel_cols);
-
-                    if first_image_channel=='b'
-                       bRep=im1; 
-                    elseif first_image_channel=='v'
-                       bRep=im2;
-                    end
+            % If there are 2 channels, 
+            if channelNumber == 2 
                 
-                else
-                    % Else, there's only 1 channel.
-                    % Read in only 1 image
-                    image_indices=skip + rep_framei; 
-                    im_list=tiffreadAltered_SCA(input_filename, image_indices, 'ReadUnknownTags',1);
-                    
-                    % Assign bRep to be the image you read in. 
-                    bRep=im_list(1).data;
+                % Select 2 sequential images to read; Determined by the 
+                % skip and the ref_framei given by the user. Need 2 to 
+                % confirm which channel is which.
+                image_indices=[skip + rep_framei, skip + rep_framei + 1]; 
+
+                % Read those two images
+                im_list=tiffreadAltered_SCA(input_filename, image_indices, 'ReadUnknownTags',1);
+
+                im1=im_list(1).data;
+                im2=im_list(2).data; 
+
+                % Compare the brightness of the two images; 
+                first_image_channel = DetermineChannel(parameters.blue_brighter, im1, im2, parameters.pixel_rows, parameters.pixel_cols);
+
+                if first_image_channel=='b'
+                   bRep=im1; 
+                elseif first_image_channel=='v'
+                   bRep=im2;
                 end
+            
+            else
+                % Else, there's only 1 channel.
+                % Read in only 1 image
+                image_indices=skip + rep_framei; 
+                im_list=tiffreadAltered_SCA(input_filename, image_indices, 'ReadUnknownTags',1);
                 
-                % Convert bRep to single precision.
-                bRep=single(bRep);
-                
-                % Save the representative image
-                save([dir_out 'bRep.mat'], 'bRep');
+                % Assign bRep to be the image you read in. 
+                bRep=im_list(1).data;
+            end
+            
+            % Convert bRep to single precision.
+            bRep=single(bRep);
+            
+            % Save the representative image
+            save([dir_out 'bRep.mat'], 'bRep');
         
         end 
     end
