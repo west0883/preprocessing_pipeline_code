@@ -11,9 +11,10 @@
 % 4. Corrects hemodynamics. 
 % 5. Applies the pre-calculated across-day tforms.
 % 6. Applies the pre-caluclated mask per mouse.
-% 7. Apples lowpass filtering. 
+% 7. Apples filtering. 
+% 8. Saves preprocessed stacks. 
 
-function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, sampling_freq, fc, order, usfac, skip, pixel_rows, pixel_cols)
+function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, usfac, skip, pixel_rows, pixel_cols)
     
     % Establish base input directories
     dir_in_base_tforms=[dir_exper 'tforms across days\']; 
@@ -76,9 +77,8 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                 im_list=tiffreadAltered_SCA(filename,[], 'ReadUnknownTags',1);              
                 
                 % Find the sizes of the data
-                xDim=size(im_list(1).data,1);
-                yDim=size(im_list(1).data,2);
-                %zDim=size(im_list,3);
+                yDim=size(im_list(1).data,1);
+                xDim=size(im_list(1).data,2);
                 
                 % ***2. Separate Channels***
                 disp('Separating channels'); 
@@ -103,14 +103,14 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                     sel405=skip:2:nim;
                 end
                 
-                % Find the minimum stack length of the two  channels 
-                len=min(length(sel470),length(sel405));
+                % Find the minimum stack length of the two channels; make this the "frames" number 
+                frames=min(length(sel470),length(sel405));
                 
                 % Limit the frame indices for each color stack to the 
                 % minimum number of indices (takes care of uneven image 
                 % numbers by making them same length).
-                sel470=sel470(1:len); 
-                sel405=sel405(1:len);
+                sel470=sel470(1:frames); 
+                sel405=sel405(1:frames);
                 
                 % Put respective channels into own data matrics
                 bData=TiffreadStructureToMatrix(im_list, sel470);
@@ -123,9 +123,9 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                 % so you don't take up as much memory. 
                 [bData, tforms_forviolet]=RegisterStackWithDFT(bRef, bData, usfac);
 
-                
-                % Apply the calculated tforms to the violet stack 
-                
+                % Apply the calculated tforms to the violet stack. Overwrite vData
+                % so you don't take up as much memory.  
+                [vData]=RegisterStack_WithPreviousDFTShifts(tforms_forviolet, vData, usfac); 
                 
                 % *** 4. Correct hemodynamics. ***
                 disp('Correcting hemodynamics');
@@ -142,14 +142,14 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                     % Use imwarp to tranform the current image to align with the 
                     % reference image using the tranform stored in the tform variable. 
                     % Should be able to apply to all images in the 3rd dimension at the same time 
-                     data=imwarp(hData,tform,'OutputView',imref2d(xDim, yDim));
+                     data=imwarp(hData,tform,'OutputView',imref2d(yDim, xDim));
                 end
                 
                 % Reshape data into a 2D matrix (total pixels x frames) for
                 % applying the mask and the lowpass filter. Don't rename
                 % the variable, because that will take up extra
                 % memory/time.
-                data=reshape(data, xDim*yDim, zDim);
+                data=reshape(data, yDim*xDim, frames);
                 
                 % *** 6. Apply mask *** 
                 % Keep only the indices that belong to the mask; Don't rename
@@ -157,20 +157,15 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                 disp('Applying mask')
                 data=data(indices_of_mask,:); 
                 
-                % ** Lowpass filter** 
-                disp('Lowpass filtering');
-                
-                % Find Niquist freq for filter; sampling divided by 2
-                fn=sampling_freq/2; 
-                
-                % Find parameters of Butterworth filter. 
-                [b,a]=butter(order,[fc/fn],'low');
-                
+                % ** *7. Filter***
                 % Filter data.
+                disp('Filtering');
                 data=filtfilt(b,a, data); 
                 
+                % *** 8. Save preprocessed stacks***
                 % Save resulting stacks. 
-                save([dir_out 'data' stack_number '.mat'], 'data');
+                disp('Saving');
+                save([dir_out 'data' stack_number '.mat'], 'data', '-v7.3');
             end
         end 
     end 
