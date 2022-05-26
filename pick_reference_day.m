@@ -14,12 +14,14 @@ function [dayi_output]=pick_reference_day(mouse, file_paths, plot_sizes)
     
     % Initialize the figure to plot in
     figure; 
+    % Enlarge figure to full screen.
+    set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
     
     % for each day
     for dayi=1:size(file_paths,1)
         
         % load the background image
-        load(file_paths(dayi,:)); 
+        load(file_paths{dayi,:}); 
         
         % plot the background image in the proper subplot
         subplot(plot_rows, plot_columns, dayi); imagesc(bback);
@@ -31,5 +33,7 @@ function [dayi_output]=pick_reference_day(mouse, file_paths, plot_sizes)
     % As the user which image/day they want to use as the reference
      
     dayi_output = inputdlg('Which image would you like to use as the reference image? Type the number below.');
-
+    
+    % make the output not a cell array anymore and from str to number
+    dayi_output=str2num(dayi_output{1});
 end 

@@ -5,10 +5,10 @@
 % Cyles through all the mice, calls pick_reference_day, saves the day the
 % user picks for registration. Called by main pipeline code
 
-function []=registration_pick_reference_day_permouse(days_all, dir_exper)
+function []=registration_pick_reference_day_permouse(days_all, dir_exper, plot_sizes)
     
     % make the output directory
-    dir_out=[dir_exper 'registered_across_days\']; 
+    dir_out=[dir_exper 'registered across days\']; 
     mkdir(dir_out); 
     disp(['data saved in ' dir_out]); 
     
@@ -19,8 +19,8 @@ function []=registration_pick_reference_day_permouse(days_all, dir_exper)
         load([dir_out 'reference_days.mat']); 
     else  
         % if not, create a new variable for holding the reference days 
-        reference_days.mouse=NaN(size(days_all,2),1);
-        reference_days.day=NaN(size(days_all,2),6);
+        reference_days.mouse=cell(size(days_all,2),1);
+        reference_days.day=cell(size(days_all,2),1);
         
     end     
     % for each mouse 
@@ -32,11 +32,12 @@ function []=registration_pick_reference_day_permouse(days_all, dir_exper)
         pick_flag=0;         
  
         % see if it's been found before
-        if isnan(reference_days.mouse(mousei,1))==0 % if it HAS been found before
+        if isempty(reference_days.mouse{mousei})==0 % if it HAS been found before
             
             % ask user if they want to redo-it
             user_answer = inputdlg(['Would you like to re-find the reference day for mouse' mouse '? (y = yes, n = no)']);
-            
+            % get rid of cell formatting
+            user_answer=user_answer{1};
             % if they don't want to,
             if user_answer=='n'
                 pick_flag=0; % don't run functon
@@ -58,17 +59,17 @@ function []=registration_pick_reference_day_permouse(days_all, dir_exper)
             % put the file paths of each background image into the list, to 
             for dayi=1:size(days_all(mousei).days,1)
                 day=days_all(mousei).days(dayi,:);
-                file_paths{dayi}=[dir_exper 'hemodynamics_corrected/' mouse '/' day 'bback.mat'];
+                file_paths{dayi}=[dir_exper 'hemodynamics corrected/' mouse '/' day '/bback.mat'];
 
             end 
         
             % Run the pick_reference_day function
-            [dayi_output]=pick_reference_day(mouse, filepaths);
+            [dayi_output]=pick_reference_day(mouse, file_paths, plot_sizes);
 
             % Convert the dayi user input to the day name and put in the
             % variable
-            reference_days.mouse(mousei)=mouse; 
-            reference_days.day(mousei,:)=days_all(mousei).days(dayi_output,:);
+            reference_days.mouse{mousei}=mouse; 
+            reference_days.day{mousei}=days_all(mousei).days(dayi_output,:);
        
         end 
         
