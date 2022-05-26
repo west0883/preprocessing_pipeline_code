@@ -95,22 +95,24 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
                 % stack list), figure out the name of the stacks
                 switch all_flag
                     
-                    % If the user said use 'all' stacks.
+                    % If the user said use 'all' stacks,
                     case 1
                         
-                      % Get the stack number for naming output files. 
-                      stack_number=list(stacki).name(2:3); 
-                      
-                      % Get the filename of the stack. 
-                      filename=[dir_in list(stacki).name];
+                        % Get the stack number for naming output files. 
+                        stack_number=list(stacki).name(2:3); 
+
+                        % Get the filename of the stack. 
+                        filename=[dir_in list(stacki).name];
                     
-                    % If the user said use a specifc list of stacks. 
+                    % If the user said use a specifc list of stacks, use
+                    % the list generated from the ListStacks function. 
                     case 0
+                        % Get the stack number.
+                        stack_number=list(stacki, :); 
                         
+                        % Get the filename.
+                        filename=[dir_in '
                 end 
-                
-                
-               
                 
                 % Display what mouse, day, and stack you're on
                 disp(['mouse ' mouse ', day ' day ', stack ' stack_number]);
