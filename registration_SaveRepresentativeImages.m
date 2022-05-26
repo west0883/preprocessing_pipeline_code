@@ -49,6 +49,8 @@ function []=registration_SaveRepresentativeImages(parameters)
             dir_out=[dir_out_base '\' mouse '\' day '\']; 
             mkdir(dir_out);
             
+            parameters.dir_in = dir_dataset_name;
+            
             % Get the stack list
             [stackList]=GetStackList(mousei, dayi, parameters);
             
@@ -59,6 +61,7 @@ function []=registration_SaveRepresentativeImages(parameters)
             %Create the input directory
             dir_in=CreateFileStrings(dir_dataset_name, mouse, day, stack_number, [], false);
             
+           
             % Use the stack number to make an input filename
             stackname=stackList.filenames(rep_stacki, :);
             input_filename=[dir_in stackname];

@@ -73,6 +73,9 @@ function []=Preprocessing(parameters)
             % Load the across-day tform for that day. 
             load([dir_in_base_tforms mouse '\' day '\tform.mat']); 
             
+            
+            parameters.dir_in = dir_dataset_name;
+            
             % Get the stack list
             [stackList]=GetStackList(mousei, dayi, parameters);
             
