@@ -138,7 +138,6 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
                 [data]=HemoCorrection(bData, vData);
                 
                 % *** 5. Apply registration across days ***
-                disp('Applying registration across days'); 
 
                 % If the tform's empty, then you don't need to register
                 if isempty(tform)==1 
@@ -148,7 +147,8 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
                     % Use imwarp to tranform the current image to align with the 
                     % reference image using the tranform stored in the tform variable. 
                     % Should be able to apply to all images in the 3rd dimension at the same time 
-                     data=imwarp(data,tform,'OutputView',imref2d([yDim xDim]));
+                    disp('Applying registration across days');  
+                    data=imwarp(data,tform,'OutputView',imref2d([yDim xDim]));
                 end
                 
                 % Reshape data into a 2D matrix (total pixels x frames) for
