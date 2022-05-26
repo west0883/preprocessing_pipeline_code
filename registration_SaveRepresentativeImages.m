@@ -53,10 +53,10 @@ function []=registration_SaveRepresentativeImages(dir_dataset, dir_exper, days_a
             input_fileName=[dir_day list(stacki).name]; 
             
             % Assign the output filename
-            output_fileName=[dir_out 'bback' stack_number '.mat'];
+            output_fileName=[dir_out 'bRef' stack_number '.mat'];
             
             % find if there is a selected reference image for this day
-            if isfile([dir_out '\bback.mat'])==1 
+            if isfile([dir_out '\bRef.mat'])==1 
                 % If it exists, do nothing; don't need to create a new
                 % one
             else 
@@ -78,13 +78,13 @@ function []=registration_SaveRepresentativeImages(dir_dataset, dir_exper, days_a
                 first_image_channel = determine_channel(im1, im2, pixel_rows, pixel_cols);
                 
                 if first_image_channel=='b'
-                   bback=im1; 
+                   bRef=im1; 
                 elseif first_image_channel=='v'
-                   bback=im2;
+                   bRef=im2;
                 end
                 
                 % Save the representative image
-                save([dir_out 'bback.mat'], 'bback');
+                save([dir_out 'bRef.mat'], 'bRef');
             end 
         end 
     end

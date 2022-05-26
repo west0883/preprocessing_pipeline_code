@@ -59,7 +59,7 @@ function []=registration_pick_reference_day_permouse(days_all, dir_exper, plot_s
             % put the file paths of each background image into the list, to 
             for dayi=1:size(days_all(mousei).days,1)
                 day=days_all(mousei).days(dayi,:);
-                file_paths{dayi}=[dir_exper 'hemodynamics corrected/' mouse '/' day '/bback.mat'];
+                file_paths{dayi}=[dir_exper 'representative images/' mouse '/' day '/bRef.mat'];
 
             end 
         

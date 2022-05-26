@@ -7,7 +7,7 @@
 function []=registration_across_days(days_all, dir_exper, transformation, configuration, max_step_length, max_iterations)
     
     % Establish input and output directories
-    dir_in_base=[dir_exper 'hemodynamics corrected\'];
+    dir_in_base=[dir_exper 'representative images\'];
     dir_out_base=[dir_exper 'tforms across days\'];
     
     % Display to user where everything is saved.
@@ -36,9 +36,9 @@ function []=registration_across_days(days_all, dir_exper, transformation, config
         % Find the day you're supposed to register to with this mouse 
         reference_day=reference_days.day{mousei};
         
-        % Load the reference bback image, rename it
-        load([dir_in_base '\' mouse '\' reference_day '\bback.mat']);
-        Reference_bback=bback;
+        % Load the reference bRef image, rename it
+        load([dir_in_base '\' mouse '\' reference_day '\bRef.mat']);
+        Reference_bRef=bRef;
         
         % for each day
         for dayi=1:size(days_list,1)
@@ -69,20 +69,20 @@ function []=registration_across_days(days_all, dir_exper, transformation, config
                     % If this is NOT the reference day, perform the
                     % registration
                     
-                    % Load day's bback
-                    load([dir_in 'bback.mat']);
+                    % Load day's bRef
+                    load([dir_in 'bRef.mat']);
                     
                     % Perform registration.                 
-                     tform = imregtform(bback, Reference_bback, transformation, optimizer, metric);
+                     tform = imregtform(bRef, Reference_bRef, transformation, optimizer, metric);
                     
                     % Perform a check and save it in the folder
-                        % Apply the transform to the bback
-                        result=imwarp(bback,tform,'OutputView',imref2d(size(Reference_bback))); 
+                        % Apply the transform to the bRef
+                        result=imwarp(bRef,tform,'OutputView',imref2d(size(Reference_bRef))); 
                         
                         % Plot both images together before and after registration 
                         figure; 
-                        subplot(1,2,1); imshowpair(bback, Reference_bback); title('before')
-                        subplot(1,2,2); imshowpair(result,Reference_bback); title('after')
+                        subplot(1,2,1); imshowpair(bRef, Reference_bRef); title('before')
+                        subplot(1,2,2); imshowpair(result,Reference_bRef); title('after')
                         suptitle([mouse ', ' day])
                         % Save the check figure 
                         savefig([dir_out 'before_and_after.fig']);  
