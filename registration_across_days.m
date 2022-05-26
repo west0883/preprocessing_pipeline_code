@@ -15,7 +15,7 @@ function []=registration_across_days(days_all, dir_exper, transformation, config
     
     % Load the list of what days should be used to register everything else
     % to. 
-    load([dir_out_base 'reference_days.mat']);
+    load([dir_in_base 'reference_days.mat']);
     
     % Find parameters for the registration you want to do
     [optimizer, metric] = imregconfig(configuration);

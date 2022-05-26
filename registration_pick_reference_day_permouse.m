@@ -8,7 +8,7 @@
 function []=registration_pick_reference_day_permouse(days_all, dir_exper, plot_sizes)
     
     % make the output directory
-    dir_out=[dir_exper 'tforms across days\']; 
+    dir_out=[dir_exper 'representative images\']; 
     mkdir(dir_out); 
     disp(['data saved in ' dir_out]); 
     
