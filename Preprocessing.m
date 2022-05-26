@@ -10,7 +10,7 @@
 % 3. Registers within-stack/across stacks within a day. 
 % 4. Corrects hemodynamics. 
 % 5. Applies the pre-calculated across-day tforms.
-% 6. Applies the pre-caluclated mask per mouse.
+% 6. Applies the pre-calculated mask per mouse.
 % 7. Apples filtering. 
 % 8. Saves preprocessed stacks. 
 
@@ -19,6 +19,7 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
     % Establish base input directories
     dir_in_base_tforms=[dir_exper 'tforms across days\']; 
     dir_in_masks=[dir_exper 'masks\'];
+    dir_in_ref=[dir_exper 'representative images\']; 
     
     % Establish base output directory
     dir_out_base=[dir_exper 'fully preprocessed stacks/'];
@@ -54,7 +55,7 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
             dir_out=[dir_out_base mouse '\' day '\']; 
             
             % Load the reference image for that day
-            
+            load([dir_in_ref day '\bRep.mat']); 
             
             % Load the across-day tform for that day. 
             load([dir_in_base_tforms mouse '\' day '\tform.mat']); 
@@ -128,8 +129,9 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
                 [vData]=RegisterStack_WithPreviousDFTShifts(tforms_forviolet, vData, usfac); 
                 
                 % *** 4. Correct hemodynamics. ***
+                % Run HemoCorrection function; 
                 disp('Correcting hemodynamics');
-                
+                [data]=HemoCorrection(bData, vData);
                 
                 % *** 5. Apply registration across days ***
                 disp('Applying registration across days'); 
@@ -142,13 +144,12 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
                     % Use imwarp to tranform the current image to align with the 
                     % reference image using the tranform stored in the tform variable. 
                     % Should be able to apply to all images in the 3rd dimension at the same time 
-                     data=imwarp(hData,tform,'OutputView',imref2d(yDim, xDim));
+                     data=imwarp(data,tform,'OutputView',imref2d(yDim, xDim));
                 end
                 
                 % Reshape data into a 2D matrix (total pixels x frames) for
-                % applying the mask and the lowpass filter. Don't rename
-                % the variable, because that will take up extra
-                % memory/time.
+                % applying the mask and the lowpass filter. Overwrite the variable
+                % so you don't take up excess memory. 
                 data=reshape(data, yDim*xDim, frames);
                 
                 % *** 6. Apply mask *** 
