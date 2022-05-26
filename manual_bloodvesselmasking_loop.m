@@ -119,31 +119,23 @@ function []=manual_bloodvesselmasking_loop(parameters)
             bRep(inverse_brain_mask_indices)=NaN;             
             
             % Determine if a mask file for this mouse already exists.
-            existing_mask_flag=isfile([dir_out 'bloodvessel_masks_m' mouse '.mat']); 
 
             % If it does exist already, load the mask file
-            if existing_mask_flag==1 
+            if isfile([dir_out 'bloodvessel_masks_m' mouse '.mat'])
                load([dir_out 'bloodvessel_masks_m' mouse '.mat']); 
-
             % If it doesn't exist, 
-            elseif existing_mask_flag==0 
+            else
                 % Make a starting masks variable that's empty
-                masks=[];
+                vessel_masks=[];
             end 
 
             % Rename existing masks so they're not confused with the new ones
             % that will be drawn.
-            existing_masks=masks;
+            existing_masks=vessel_masks;
             
             % ***Run the function that runs the masking itself***
             [vessel_masks, ~]=ManualMasking(bRep, existing_masks);     
 
-            % Make each vessel mask into pixels x mask number
-            vessel_masks=reshape(vessel_masks, yDim*xDim, size(vessel_masks,3)); 
-            
-            % Apply the brain mask to the vessel masks.
-            vessel_masks(brain_mask_indices, :)=[]; 
-            
             % Save whatever additions you've made to the mask file 
             save([dir_out 'bloodvessel_masks_m' mouse '.mat'], 'vessel_masks');
 
