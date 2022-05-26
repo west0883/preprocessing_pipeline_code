@@ -14,7 +14,7 @@
 % 7. Apples filtering. 
 % 8. Saves preprocessed stacks. 
 
-function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, usfac, skip, pixel_rows, pixel_cols)
+function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking)
     
     % Establish base input directories
     dir_in_base_tforms=[dir_exper 'tforms across days\']; 
@@ -121,6 +121,10 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
                 bData=TiffreadStructureToMatrix(im_list, sel470);
                 vData=TiffreadStructureToMatrix(im_list, sel405); 
                
+                % Set aside images for spotcheck 
+                spotcheck_data.initial.blue=bData(:,:, frames_for_spotchecking);
+                spotcheck_data.initial.violet=vData(:,:, frames_for_spotchecking);
+                
                 % ***3. Register within-stack/across stacks within a day.*** 
                 disp('Registering within days'); 
 
@@ -131,11 +135,18 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
                 % Apply the calculated tforms to the violet stack. Overwrite vData
                 % so you don't take up as much memory.  
                 [vData]=RegisterStack_WithPreviousDFTShifts(tforms_forviolet, vData, usfac); 
+                 
+                % Set aside images for spotcheck 
+                spotcheck_data.withindayregistered.blue=bData(:,:, frames_for_spotchecking);
+                spotcheck_data.withindayregistered.violet=vData(:,:, frames_for_spotchecking);
                 
                 % *** 4. Correct hemodynamics. ***
                 % Run HemoCorrection function; 
                 disp('Correcting hemodynamics');
                 [data]=HemoCorrection(bData, vData);
+                
+                % Set aside images for spotcheck 
+                spotcheck_data.hemodynamicscorrected=data(:,:, frames_for_spotchecking);
                 
                 % *** 5. Apply registration across days ***
 
@@ -151,10 +162,14 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
                     data=imwarp(data,tform,'OutputView',imref2d([yDim xDim]));
                 end
                 
+                % Set aside images for spotcheck 
+                spotcheck_data.registrationacrossdays=data(:,:, frames_for_spotchecking);
+                
                 % Reshape data into a 2D matrix (total pixels x frames) for
                 % applying the mask and the lowpass filter. Overwrite the variable
                 % so you don't take up excess memory. 
                 data=reshape(data, yDim*xDim, frames);
+                 
                 
                 % *** 6. Apply mask *** 
                 % Keep only the indices that belong to the mask; Don't rename
@@ -162,10 +177,17 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
                 disp('Applying mask')
                 data=data(indices_of_mask,:); 
                 
+                % Set aside images for spotcheck 
+                spotcheck_data.masked=data(:, frames_for_spotchecking);
+                
+                
                 % ** *7. Filter***
                 % Filter data.
                 disp('Filtering');
                 data=filtfilt(b,a, data); 
+                
+                % Set aside images for spotcheck 
+                spotcheck_data.filtered=data(:, frames_for_spotchecking);
                 
                 % *** 8. Save preprocessed stacks***
                 disp('Saving');
@@ -175,6 +197,9 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
                 
                 % Save resulting stacks. 
                 save([dir_out 'data' stack_number '.mat'], 'data', '-v7.3');
+                
+                % Save spotchecking data
+                save([dir_out 'spotcheck_data' stack_number '.mat'], 'spotcheck_data', '-v7.3');  
             end
         end 
     end 
