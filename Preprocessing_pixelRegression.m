@@ -212,8 +212,8 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                     % reference image using the tranform stored in the tform variable. 
                     % Should be able to apply to all images in the 3rd dimension at the same time 
                     disp('Applying registration across days');  
-                    bData=imwarp(bData,tform,'OutputView',imref2d([yDim xDim]));
-                    vData=imwarp(vData,tform,'OutputView',imref2d([yDim xDim]));
+                    bData=imwarp(bData,tform,'nearest', 'OutputView',imref2d([yDim xDim]));
+                    vData=imwarp(vData,tform,'nearest', 'OutputView',imref2d([yDim xDim]));
                 end
                 
                 % Set aside images for spotcheck 
