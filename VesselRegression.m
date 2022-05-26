@@ -18,10 +18,10 @@ function [corrected_data]= VesselRegression(bData, vessel_masks)
 
     % Make a column of ones for intercept (length is equal to number of
     % frames)
-    intercept=ones(size(bData,2)); 
+    intercept=ones(size(bData,2),1); 
 
     % For every pixel in the blue data,
-    parfor i=1:size(bData,1)
+    for i=1:size(bData,1)
 
          % Regress the data matrix against the vessel timecourses.
          [~,~,r] = regress(bData(i,:)', [all_vessel_timecourses intercept]);
