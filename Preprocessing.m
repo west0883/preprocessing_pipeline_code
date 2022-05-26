@@ -278,6 +278,9 @@ function []=Preprocessing(parameters)
                     end
                 end
                 
+                yDim = parameters.pixels(1);
+                xDim = parameters.pixels(2);
+                
                 % *** Reshape data into a 2D matrix (total pixels x frames) for
                 % applying the mask, regressions, and the lowpass filter. Overwrite the variable
                 % so you don't take up excess memory. ***
