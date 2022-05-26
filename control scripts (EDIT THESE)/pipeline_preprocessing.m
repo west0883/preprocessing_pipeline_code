@@ -1,4 +1,4 @@
-% pipeline_preprocessing_MotorizedTreadmill.m
+% pipeline_preprocessing_randomMotorizedTreadmill.m
 % Sarah West
 % 8/17/21
 
@@ -18,7 +18,7 @@ clear all;
 % Output Directories
 
 % Create the experiment name. This is used to name the output folder. 
-parameters.experiment_name='Motorized Treadmill';
+parameters.experiment_name='Random Motorized Treadmill';
 
 % Output directory name bases
 parameters.dir_base='Y:\Sarah\Analysis\Experiments\';
@@ -39,13 +39,18 @@ parameters.mice_all = mice_all;
 % Ex cont: stackList=ListStacks(numberVector,digitNumber); 
 % Ex cont: mice_all(1).stacks(1)=stackList;
 
- parameters.mice_all=parameters.mice_all(2);
- parameters.mice_all(1).days=parameters.mice_all(1).days(3);
- % parameters.mice_all(1).days(1).stacks = 12;
+parameters.mice_all = parameters.mice_all(2:3);
+% parameters.mice_all(1).days = parameters.mice_all(1).days(8);
+ %parameters.mice_all(1).days = parameters.mice_all(1).days([9, 11:12]);
+ 
+ parameters.mice_all(1).days = parameters.mice_all(1).days(10);
+ parameters.mice_all(1).days(10).stacks = [NaN];
+ parameters.mice_all(2).days = parameters.mice_all(2).days(8:10); 
+
 
 % Include stacks from a "spontaneous" field of mice_all?
-parameters.use_spontaneous = true;
- 
+parameters.use_spontaneous_also = true;
+
 % **********************************************************************8
 % Input Directories
 
@@ -56,10 +61,9 @@ parameters.use_spontaneous = true;
 % day, or stack number will be. If you concatenated this as a sigle string,
 % it should create a file name, with the correct mouse/day/stack name 
 % inserted accordingly. 
-
-
-parameters.dir_dataset_name={'Y:\Sarah\Data\Motorized Treadmill\', 'day', '\', 'm', 'mouse number', '\stacks\'};
-parameters.input_data_name={'0', 'stack number', '.tif' }; 
+parameters.dir_dataset_name={'Y:\Sarah\Data\' parameters.experiment_name, '\', 'day', '\', 'mouse number', '\stacks\0', 'stack number', '\'};
+%parameters.input_data_name={'.tif'};
+parameters.input_data_name={'0', 'stack number', '_MMStack_Pos0.ome.tif' }; 
 
 % Give the number of digits that should be included in each stack number.
 parameters.digitNumber=2; 
@@ -83,7 +87,8 @@ parameters.pixels = [256, 256];
 
 % If the blue channel is brighter than the violet. Blue should almost always be brighter 
 % than violet, but rarely there's a problem with the LED settings and it's 
-% dimmer than the violet. 
+% dimmer than the violet. Used in registration_SaveRepresentativeImages.m and
+% Preprocessing.m
 parameters.blue_brighter = true; 
 
 % Method of hemodynamics correction.
@@ -135,25 +140,24 @@ parameters.mask_flag=true;
 
 % Do you want to temporally filter your data? Yes--> filter_flag=true, No-->
 % filter_flag=false.
-parameters.filter_flag = true; 
+parameters.filter_flag=true; 
 
 % Temporal filtering parameters. (These aren't used if filter_flag=false,
 % because no filtering is performed.) 
     % Order of Butterworth filter you want to use.
     parameters.order=5; 
 
-    % Low cut off frequency. Lowest detectable frequency is frame rate/data
-    % points (is equal to the finest possible frequency resolution).
-    parameters.fc1 = 0.02;  
+    % Low cut off frequency
+    %fc1=0.01; 
     
-    % High cutoff frequency. Highest detectable frequency is frame rate/2
+    % High cutoff frequency
     parameters.fc2=7; 
 
     % Find Niquist freq for filter; sampling divided by 2
     parameters.fn=parameters.sampling_freq/2; 
 
     % Find parameters of Butterworth filter. 
-    [parameters.b, parameters.a]=butter(parameters.order,[parameters.fc1/parameters.fn parameters.fc2/parameters.fn], 'bandpass');
+    [parameters.b, parameters.a]=butter(parameters.order, parameters.fc2/parameters.fn,'low');
 
 % Set a minimum number of frames each channel of the stack needs to have to
 % consider it a valid stack for full processing. (If less than this, code 
@@ -181,12 +185,13 @@ registration_SaveRepresentativeImages(parameters);
 %% Pick across-day reference (Has interactive steps)
 % Choose which day to use as the reference day to align all days to in each
 % mouse. (Pick the one that's the most centered, straight, nice-looking).
+% For now, offers every mouse in the original, saved version of "mice_all".
 
 % Determine how many subplots you want for displaying your potential
 % reference images at once. If you have lots of images, you'll want more
 % subplots. If you have only a few, you want only a few subplots so each
 % image is plotted as large as possible. 
-parameters.plot_sizes=[2,2]; 
+parameters.plot_sizes=[2,3]; 
 
 %(DON'T EDIT). Run code.
 registration_pick_reference_day_permouse(parameters);
@@ -203,8 +208,8 @@ registration_across_days(parameters);
 
 % List of days to redo. Format: cell array, first column mouse, second
 % column day. Each row is the mouse and day of a day that should be redone.
-% Eg redo={mouse, day}--> redo={'1088', '070921'}; 
-redo={'1088','093021'}; 
+% Eg redo={mouse, day}--> 
+redo={'1087', '121721'};
 
 % The function will plot both the reference image and the current image.
 % Select 3+ points on the first image, hit "enter", then select the same 3+
@@ -221,14 +226,13 @@ registration_Manual_Redo(redo, parameters);
 % (DON'T EDIT). Run code.
 manual_masking_loop(parameters);
 
-%% Delete any bad brain masks you drew. (Has interactive steps).
+%% Delete any bad masks you drew. (Has interactive steps).
 delete_brain_masks(parameters);
 
 %% Draw blood vessel masks (Has interactive steps) 
 % If you only have one channel, draw blood vessel and background masks for
 % hemodynamic regression correction. 
 % Only need to do once per mouse. 
-
 manual_bloodvesselmasking_loop(parameters);
 
 %% Apply Preprocessing (Automatic,takes 5+ minutes per stack).
@@ -241,8 +245,8 @@ manual_bloodvesselmasking_loop(parameters);
 % 3. Registers within-stack/across stacks within a day. 
 % 4. Applies the pre-calculated across-day tforms.
 % 5. Applies the pre-calculated mask per mouse.
-% 6. Corrects hemodynamics. 
-% 7. Applies any filtering. 
+% 6. Applies any filtering.
+% 7. Corrects hemodynamics. 
 % 8. Saves preprocessed stacks. 
 
 %(DON'T EDIT). Run code.
@@ -258,3 +262,4 @@ check_stacks(parameters);
 frames_to_plot = [1, 3, 5]; 
 
 plot_spotcheck(parameters, frames_to_plot); 
+
