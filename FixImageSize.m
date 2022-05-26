@@ -17,7 +17,7 @@ function [data] = FixImageSize(data, pixels)
     % the first frame. ***
     image_dimensions = size(data); 
     
-    for i = 1:numel(image_dimensions)
+    for i = 1:numel(pixels)
         % Get a list of dimensions, repeat the ':'.
         inds = repmat({':'}, 1, ndims(data));
 
