@@ -145,7 +145,7 @@ parameters.filter_flag = true;
     parameters.fn=parameters.sampling_freq/2; 
 
     % Find parameters of Butterworth filter. 
-    [parameters.b, parameters.a]=butter(parameters.order,[parameters.fc1/parameters.fn parameters.fc2/parameters.fn], 'bandpass');
+    [parameters.b, parameters.a]=butter(parameters.order,[parameters.fc1/parameters parameters.fc2/parameters.fn, 'bandpass');
 
 % Set a minimum number of frames each channel of the stack needs to have to
 % consider it a valid stack for full processing. (If less than this, code 

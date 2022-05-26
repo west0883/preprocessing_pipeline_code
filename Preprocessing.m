@@ -312,7 +312,39 @@ function []=Preprocessing(parameters)
                     end 
                 end
                 
-                % *** 6. Correct hemodynamics. ***
+                 % ** *6. Filter***
+                % Filter data.
+                
+                % Only if the user said they wanted to (if
+                % filter_flag=true).
+                if filter_flag
+                    disp('Filtering');
+
+                    % filtfilt treats each column as its own channel. Flip 
+                    % data as you put it into the filter so it's filtered
+                    % in temporal dimension. (frames x pixesl). 
+                    bData=filtfilt(b,a, bData'); 
+
+                    bData=bData'; 
+                    
+                    % Set aside images for spotcheck 
+                    spotcheck_data.filtered.blue=bData(:, frames_for_spotchecking);
+                    
+                    % If 2 channels, repeat for violet channel.
+                    if parameters.channelNumber == 2
+                        
+                        vData=filtfilt(b,a, vData'); 
+
+                        vData=vData'; 
+                    
+                        % Set aside images for spotcheck 
+                        spotcheck_data.filtered.violet=vData(:, frames_for_spotchecking);
+                        
+                    end 
+                end 
+                
+                
+                % *** 7. Correct hemodynamics. ***
                 % Run HemoRegression function; 
                 disp('Correcting hemodynamics');
                 
@@ -350,25 +382,6 @@ function []=Preprocessing(parameters)
                 end
                 % Set aside images for spotcheck 
                 spotcheck_data.hemodynamicscorrected=data(:, frames_for_spotchecking);
-                
-                
-                % ** *7. Filter***
-                % Filter data.
-                
-                % Only if the user said they wanted to (if
-                % filter_flag=true).
-                if filter_flag
-                    disp('Filtering');
-
-                    % flip data as you put it into the filter so it's filtered
-                    % in the right dimension. 
-                    data=filtfilt(b,a, data'); 
-
-                    data=data'; 
-                    % Set aside images for spotcheck 
-                    spotcheck_data.filtered=data(:, frames_for_spotchecking);
-                end 
-                
                 
                 % *** 8. Save preprocessed stacks***
                 disp('Saving');
