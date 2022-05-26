@@ -53,6 +53,7 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
             % later if needed.
             dir_in=[dir_dataset day '\' day 'm' mouse '\' dataset_str]; 
             dir_out=[dir_out_base mouse '\' day '\']; 
+            mkdir(dir_out); 
             
             % Load the reference image for that day
             load([dir_in_ref mouse '\' day '\bRep.mat']); 
@@ -147,7 +148,7 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
                     % Use imwarp to tranform the current image to align with the 
                     % reference image using the tranform stored in the tform variable. 
                     % Should be able to apply to all images in the 3rd dimension at the same time 
-                     data=imwarp(data,tform,'OutputView',imref2d(yDim, xDim));
+                     data=imwarp(data,tform,'OutputView',imref2d([yDim xDim]));
                 end
                 
                 % Reshape data into a 2D matrix (total pixels x frames) for
