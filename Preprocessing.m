@@ -119,14 +119,13 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                 % ***3. Register within-stack/across stacks within a day.*** 
                 disp('Registering within days'); 
 
-                % Run the within-day registration function
-                [registered_stack, all_tforms]=RegisterStackWithDFT(bRef, bData, usfac);
+                % Run the within-day registration function; overwrite bData
+                % so you don't take up as much memory. 
+                [bData, tforms_forviolet]=RegisterStackWithDFT(bRef, bData, usfac);
 
-                 parfor t=1:len 
-                     % make a function for this
-                      % Perform fourier transform of the background/reference image 
-                       fbback=fft2(bRef); 
-                 end
+                
+                % Apply the calculated tforms to the violet stack 
+                
                 
                 % *** 4. Correct hemodynamics. ***
                 disp('Correcting hemodynamics');
