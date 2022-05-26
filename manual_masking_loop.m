@@ -9,7 +9,7 @@
 function []=manual_masking_loop(days_all, dir_exper)
     
     % Establish input and output folders 
-    dir_in_base=[dir_exper 'hemodynamics corrected\'];
+    dir_in_base=[dir_exper 'representative images\'];
     dir_out=[dir_exper 'masks\']; 
     mkdir(dir_out); 
 
@@ -17,7 +17,7 @@ function []=manual_masking_loop(days_all, dir_exper)
     disp(['data saved in ' dir_out]); 
     
     % Load reference days
-    load([dir_exper 'tforms across days/reference_days.mat']); 
+    load([dir_in_base '\reference_days.mat']); 
         
     % Cycle through mice based on the willingness of the user
     mousei=1; 
@@ -35,8 +35,8 @@ function []=manual_masking_loop(days_all, dir_exper)
         % Define input folder based on reference day
         dir_in=[dir_in_base mouse '\' reference_day '\'];
         
-        % Load that mouse's Reference bback
-        load([dir_in '\bback.mat']);
+        % Load that mouse's Reference bRep
+        load([dir_in '\bRep.mat']);
         
         % Determine if a mask file for this mouse already exists.
         existing_mask_flag=isfile([dir_out 'masks_m' mouse '.mat']); 
@@ -56,7 +56,7 @@ function []=manual_masking_loop(days_all, dir_exper)
         existing_masks=masks;
         
         % ***Run the function that runs the masking itself***
-        [masks, indices_of_mask]=ManualMasking(bback, existing_masks);     
+        [masks, indices_of_mask]=ManualMasking(bRep, existing_masks);     
         
         % Make a version of "masks" that puts all the masks on the same
         % plane.
