@@ -6,7 +6,7 @@
 % reference image for the within- and across-stack registrations) and plots them
 % so you can pick what day to use. Called by "registration_pick_reference_day_permouse.m"
 
-function []=pick_reference_day(days_all, dir_exper)
+function [dayname]=pick_reference_day(days_all, dir_exper)
 
 
 
