@@ -1,6 +1,7 @@
-% apply_registration_and_masks.m
+% Preprocessing.m
 % Sarah Wests
 % 8/24/21
+
 % Takes the pre-calculated tforms and masks and applies it to the
 % hemocorrected data stacks at the same time, then saves. This is happening
 % in the same code to reduce the amount of data being saved in intermediate
@@ -13,7 +14,7 @@
  
 % Should also apply lowpass filtering here? 
 
-function []=apply_registration_and_masks(days_all, dir_exper, sampling_freq, fc, order)
+function []=Preprocessing(days_all, dir_exper, sampling_freq, fc, order)
     
     % Establish base input directories
     dir_in_base_data=[dir_exper 'hemodynamics corrected\']; 

@@ -4,12 +4,9 @@
 % Edited from SCA_Preprocessing_Hemo.m
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This code runs through all folders of a brain imaging database and
-% calls SCA_LoadStack_Hemo_Split to calculate hemodynamic corrected data 
-% for each dual-wavelength stack of images. The data is saved with the same 
-% folder structure as the database containing the raw data in a location of 
-% the user's choosing.
-
+% Register within stacks & across stacks within days, correct hemodynamics, 
+% apply tforms for across-day transformations, apply drawn masks, lowpass filter 
+% and save data.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function []=Preprocessing_Hemo(dir_dataset, dir_exper, days_all, skip, usfac)
