@@ -31,7 +31,7 @@ function []=registration_across_days(days_all, dir_exper, transformation, config
         mouse=days_all(mousei).mouse;
         
         % Get the list of days for that mouse
-        days_list=days_all(mousei).days; 
+        days_list=vertcat(days_all(mousei).days(:).name); 
         
         % Find the day you're supposed to register to with this mouse 
         reference_day=reference_days.day{mousei};

@@ -70,7 +70,7 @@ function []=registration_pick_reference_day_permouse(days_all, dir_exper, plot_s
             % Convert the dayi user input to the day name and put in the
             % variable
             reference_days.mouse{mousei}=mouse; 
-            reference_days.day{mousei}=days_all(mousei).days(dayi_output,:);
+            reference_days.day{mousei}=days_all(mousei).days(dayi_output).name;
        
         end 
         
