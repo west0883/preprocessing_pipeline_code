@@ -6,11 +6,13 @@
 function [] = check_stacks(days_all, dir_exper, dir_dataset_name, input_data_name, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking, filter_flag, digitNumber, minimum_frames, correction_method, channelNumber) 
 
     % Set input (and re-preprocessing output) directory base.
-
-    dir_in_base=[dir_exper 'fully preprocessed stacks\']; 
+    dir_preprocessed_base=[dir_exper 'fully preprocessed stacks\']; 
+    
+    % Create output file name
+    output_filename='corrupt_stacks.mat';
 
     % Tell user what you're doing.
-    disp(['Finding corrupt stacks. Saving data in ' dir_in_base]);
+    disp(['Finding corrupt stacks. Saving data in ' dir_preprocessed_base]);
     
     % Initiate an empty cell array
     corrupt_files={};
@@ -31,7 +33,7 @@ function [] = check_stacks(days_all, dir_exper, dir_dataset_name, input_data_nam
             disp(['mouse ' mouse ', ' day ]); 
             
             % Establish input directory. 
-            dir_in=[dir_in_base '\' mouse '\' day '\'];
+            dir_preprocessed=[dir_preprocessed_base '\' mouse '\' day '\'];
             
             % Find the correct stack list entry of days_all. 
             stackList=days_all(mousei).days(dayi).stacks; 
@@ -45,7 +47,7 @@ function [] = check_stacks(days_all, dir_exper, dir_dataset_name, input_data_nam
                    
                    % If it is the character string 'all', list stacks from
                    % the day directory. 
-                   list=dir([dir_in '0*.tif']);
+                   list=dir([dir_preprocessed 'data*.mat']);
                    
                    % Assign a flag for marking if this happened. 
                    all_flag=1; 
@@ -70,29 +72,12 @@ function [] = check_stacks(days_all, dir_exper, dir_dataset_name, input_data_nam
                     % If the user said use 'all' stacks,
                     case 1
                         
-                        % Get the stack number for naming output files
-                        % using the input_data_name (allows for flexible
-                        % outside-package file names). 
-                        
-                        % Find the index of the stack number within the input data name.  
-                        stackindex=find(contains(input_data_name,'stack number'));
-                        
-                        % Find the letters in the filename before the stack
-                        % number. 
-                        pre_stackindex=horzcat(input_data_name{1:(stackindex-1)}); 
-                        
-                        % Find the number of letters in the filename before
-                        % the stack number. 
-                        length_pre=length(pre_stackindex); 
-                        
-                        % Now take range of the file list that corresponds
-                        % to the stack number, according to number of
-                        % letters that came before the stack number and the
-                        % number of digits assigned to the stack number. 
-                        stack_number=list(stacki).name(length_pre+1:length_pre+digitNumber); 
+                        % Get the stack number assuming the filename is
+                        % 'data' [stack_number] '.mat'.
+                        stack_number=list(stacki).name(5:5+digitNumber-1); 
                           
                         % Get the filename of the stack. 
-                        filename=[dir_in list(stacki).name];
+                        filename=[dir_preprocessed list(stacki).name];
                     
                     % If the user said use a specifc list of stacks, use
                     % the list generated from the ListStacks function. 
@@ -102,16 +87,16 @@ function [] = check_stacks(days_all, dir_exper, dir_dataset_name, input_data_nam
                         
                         % Get the filename.
                         stackname=CreateFileStrings(input_data_name, [], [], stack_number); 
-                        filename=[dir_in stackname];
+                        filename=[dir_preprocessed stackname];
                 end 
                 
                % Run filename in CheckIfCorruptFast 
                [isCorrupt]=CheckIfCorruptFast(filename);
-               
+              
                % If the file was corrupt, 
-               if isCorrupt==1
+               if isCorrupt==true
                    % Add to list of corrupt stacks.
-                   corrupt_files=[corrupt_files; {day list(stacki).name}]; 
+                   corrupt_files=[corrupt_files; {mouse} {day} {stack_number}]; 
 
                    % Tell user there was a corrupt stack. 
                    disp('Found a corrupt stack.');
@@ -126,6 +111,6 @@ function [] = check_stacks(days_all, dir_exper, dir_dataset_name, input_data_nam
     end 
 
 % Save list of corrupt stacks, just in case.  
-save([dir_in_base output_filename], 'corrupt_files');
+save([dir_preprocessed_base output_filename], 'corrupt_files');
 
 end 
