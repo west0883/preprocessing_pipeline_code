@@ -1,7 +1,9 @@
-% manual_masking.m
+% registration_across_days.m
 % Sarah West
 % 8/23/21
-% Modified from SCA_manual_masking.m
+% Modified from SCA_manual_masking.m, just the registration across days
+% parts
+
 
 % Run this scrip twice:
 % First time with with Preffered_mask_list empty to inspect background
