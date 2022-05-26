@@ -49,7 +49,7 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
             % Create cleaner data input and output directories; Is just a
             % preference, but might make it easier to edit directories
             % later if needed.
-            dir_in=[dir_dataset day '\' day 'm' mouse '\' dbase_str]; 
+            dir_in=[dir_dataset day '\' day 'm' mouse '\' dataset_str]; 
             dir_out=[dir_out_base mouse '\' day '\']; 
             
             % Load the tform for that day. 
@@ -63,6 +63,9 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                 
                 % Get the stack number for naming output files. 
                 stack_number=list(stacki).name(2:3); 
+                
+                % Display what mouse, day, and stack you're on
+                disp(['mouse ' mouse ', day ' day ', stack ' stack_number]);
                 
                 % *** 1. Read in tiffs.***
                 disp('Loading'); 
@@ -118,7 +121,7 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
 
                 % If the tform's empty, then you don't need to register
                 if isempty(tform)==1 
-                    % Do  nothing
+                    % Do nothing
                 else
                     % Else (the tform isn't empty) perform the registration/warp. 
                     % Use imwarp to tranform
