@@ -85,6 +85,8 @@ function []=Preprocessing(parameters)
             % to 'all' as a default. 
             if isfield(mice_all(mousei).days(dayi), 'stacks')==0
                mice_all(mousei).days(dayi).stacks='all'; 
+            elseif isempty(mice_all(mousei).days(dayi).stacks)==1
+               mice_all(mousei).days(dayi).stacks='all'; 
             end
             
             % Find the correct stack list entry of mice_all. 
@@ -97,9 +99,12 @@ function []=Preprocessing(parameters)
                % 'all'. 
                if strcmp(stackList, 'all')
                    
+                   % Create a file name string for searching. 
+                   searching_name=CreateFileStrings(input_data_name, [], [], [], true); 
+                    
                    % If it is the character string 'all', list stacks from
                    % the day directory. 
-                   list=dir([dir_in '0*.tif']);
+                   list=dir([dir_in searching_name]);
                    
                    % Assign a flag for marking if this happened. 
                    all_flag=1; 

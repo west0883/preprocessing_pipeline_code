@@ -18,6 +18,7 @@ function []=registration_SaveRepresentativeImages(parameters)
     rep_stacki = parameters.rep_stacki; 
     rep_framei = parameters.rep_framei; 
     digitNumber = parameters.digitNumber; 
+    channelNumber = parameters.channelNumber;
     
     dir_out_base=[dir_exper 'representative images\'];
     disp(['Data saved in ' dir_out_base]); 
@@ -30,19 +31,19 @@ function []=registration_SaveRepresentativeImages(parameters)
         % Get the mouse's dataset days
         days_list=vertcat(mice_all(mousei).days(:).name); 
         
-        % Make skip always odd.
-        if mod(skip,2)==0 
-            %if the remainder of the length of the skip 
-            %(specified as an input argument) after division by 2 is 0
-            skip=skip-1; %subtract 1 from the skip value 
-        end
+%         % Make skip always odd.
+%         if mod(skip,2)==0 
+%             %if the remainder of the length of the skip 
+%             %(specified as an input argument) after division by 2 is 0
+%             skip=skip-1; %subtract 1 from the skip value 
+%         end
         
         % For each day of the mouse 
         for dayi=1:size(days_list,1)
             day=days_list(dayi,:);
             
             %create the input directory by day
-            dir_in=CreateFileStrings(dir_dataset_name, mouse, day, []);
+            dir_in=CreateFileStrings(dir_dataset_name, mouse, day, [], false);
             
             % get the day name
             day=days_list(dayi,:); 
@@ -50,6 +51,14 @@ function []=registration_SaveRepresentativeImages(parameters)
             % make the output directory by day
             dir_out=[dir_out_base '\' mouse '\' day '\']; 
             mkdir(dir_out);
+            
+            % Find if there's a stack list entry for that day. If not, set
+            % to 'all' as a default. 
+            if isfield(mice_all(mousei).days(dayi), 'stacks')==0
+               mice_all(mousei).days(dayi).stacks='all'; 
+            elseif isempty(mice_all(mousei).days(dayi).stacks)==1
+               mice_all(mousei).days(dayi).stacks='all'; 
+            end
             
             % find the list of stacks in that day (so you can find the
             % first one)
@@ -62,16 +71,19 @@ function []=registration_SaveRepresentativeImages(parameters)
                % If it is a character string, check to see if it's the string
                % 'all'. 
                if strcmp(stackList, 'all')
-                   
-                    % If it is the character string 'all', list stacks from
-                    % the day directory. 
-                    list=dir([dir_in '0*.tif']);
+                   % If it is the character string 'all',
+                    
+                    % Create a file name string for searching. 
+                    searching_name=CreateFileStrings(input_data_name, [], [], [], true); 
+                    
+                    % List stacks from the day directory. 
+                    list=dir([dir_in searching_name]);
 
                     % Find the index of the stack number within the input data name.  
                     stackindex=find(contains(input_data_name,'stack number'));
 
-                    % Find the letters in the filename before the stack
-                    % number. 
+                    % Find the letters in the filename before & after the
+                    % stack index number. 
                     pre_stackindex=horzcat(input_data_name{1:(stackindex-1)}); 
 
                     % Find the number of letters in the filename before
@@ -97,7 +109,7 @@ function []=registration_SaveRepresentativeImages(parameters)
             end 
             
             % Use the stacknumber to make an input filename
-            stackname=CreateFileStrings(input_data_name, [], [], stack_number); 
+            stackname=CreateFileStrings(input_data_name, [], [], stack_number, false); 
             input_filename=[dir_in stackname];
             
             % find if there is a selected reference image for this day
@@ -106,26 +118,38 @@ function []=registration_SaveRepresentativeImages(parameters)
                 % one
             else 
                 % If it doesn't exist, then need to create a new one
-                  
                 
-                % Select 2 sequential images to read; Determined by the 
-                % skip and the ref_framei given by the user. Need 2 to 
-                % confirm which channel is which.
-                image_indices=[skip + rep_framei, skip + rep_framei + 1]; 
+                % If there are 2 channels, 
+                if channelNumber == 2 
+                    
+                    % Select 2 sequential images to read; Determined by the 
+                    % skip and the ref_framei given by the user. Need 2 to 
+                    % confirm which channel is which.
+                    image_indices=[skip + rep_framei, skip + rep_framei + 1]; 
+
+                    % Read those two images
+                    im_list=tiffreadAltered_SCA(input_filename, image_indices, 'ReadUnknownTags',1);
+
+                    im1=im_list(1).data;
+                    im2=im_list(2).data; 
+
+                    % Compare the brightness of the two images; 
+                    first_image_channel = DetermineChannel(im1, im2, pixel_rows, pixel_cols);
+
+                    if first_image_channel=='b'
+                       bRep=im1; 
+                    elseif first_image_channel=='v'
+                       bRep=im2;
+                    end
                 
-                % Read those two images
-                im_list=tiffreadAltered_SCA(input_filename, image_indices, 'ReadUnknownTags',1);
-                
-                im1=im_list(1).data;
-                im2=im_list(2).data; 
-                
-                % Compare the brightness of the two images; 
-                first_image_channel = DetermineChannel(im1, im2, pixel_rows, pixel_cols);
-                
-                if first_image_channel=='b'
-                   bRep=im1; 
-                elseif first_image_channel=='v'
-                   bRep=im2;
+                else
+                    % Else, there's only 1 channel.
+                    % Read in only 1 image
+                    image_indices=skip + rep_framei; 
+                    im_list=tiffreadAltered_SCA(input_filename, image_indices, 'ReadUnknownTags',1);
+                    
+                    % Assign bRep to be the image you read in. 
+                    bRep=im_list(1).data;
                 end
                 
                 % Convert bRep to single precision.
