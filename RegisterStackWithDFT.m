@@ -10,7 +10,8 @@ function [registered_stack, all_tforms]=RegisterStackWithDFT(reference_image, st
  % Inputs: 
  % reference_image -- the representative image (of that recording day) that
     % you're registering all frames of all stacks to. MUST BE BLUE CHANNEL
- % stack_to_register -- the data matrix of a stack to register. MUST BE
+ % stack_to_register -- the data matrix of a stack to register. 3D (pixels,
+    % pixels, frames). MUST BE
     % BLUE CHANNEL
  % usfac -- "upsampling factor" for dftregistration function (for within stack & 
     % day registration); determines the sub-pixel resolution of the registration; 

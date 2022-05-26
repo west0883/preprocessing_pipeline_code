@@ -52,7 +52,10 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
             dir_in=[dir_dataset day '\' day 'm' mouse '\' dataset_str]; 
             dir_out=[dir_out_base mouse '\' day '\']; 
             
-            % Load the tform for that day. 
+            % Load the reference image for that day
+            
+            
+            % Load the across-day tform for that day. 
             load([dir_in_base_tforms mouse '\' day '\tform.mat']); 
             
             % List the stacks in this day
@@ -110,21 +113,20 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                 sel405=sel405(1:len);
                 
                 % Put respective channels into own data matrics
-                bData=double(im_list(sel470).data); 
-                vData=double(im_list(sel470).data); 
-
+                bData=TiffreadStructureToMatrix(im_list, sel470);
+                vData=TiffreadStructureToMatrix(im_list, sel405); 
+               
                 % ***3. Register within-stack/across stacks within a day.*** 
                 disp('Registering within days'); 
                 
-                % Initialize bData and vData as a matrix of zeros with size frame number and pixels
                 
                 % Run the within-day registration function
-                [registered_stack, all_tforms]=RegisterStackWithDFT(reference_image, stack_to_register, usfac);
+                [registered_stack, all_tforms]=RegisterStackWithDFT(bRef, bData, usfac);
 
                  parfor t=1:len 
                      % make a function for this
                       % Perform fourier transform of the background/reference image 
-                       fbback=fft2(bback); 
+                       fbback=fft2(bRef); 
                  end
                 
                 % *** 4. Correct hemodynamics. ***
