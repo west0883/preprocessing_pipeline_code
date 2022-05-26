@@ -254,7 +254,7 @@ function []=Preprocessing(parameters)
                     end
                     
                     % Put data into data matrix
-                    bData=TiffreadStructureToMatrix(im_list, sel470);
+                    bData=TiffreadStructureToMatrix(im_list, frames_list);
                     
                     % Set aside images for spotcheck 
                     spotcheck_data.initial.blue=bData(:,:, frames_for_spotchecking);
