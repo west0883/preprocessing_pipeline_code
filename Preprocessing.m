@@ -14,7 +14,7 @@
 % 7. Apples filtering. 
 % 8. Saves preprocessed stacks. 
 
-function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking, filter_flag)
+function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking, filter_flag, digitNumber)
     
     % Establish base input directories
     dir_in_base_tforms=[dir_exper 'tforms across days\']; 
@@ -63,11 +63,11 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
             stackList=days_all(mousei).stacks{dayi}; 
             
             % If stackList is a character string (to see if 'all')
-            if ischar(numberVector)
+            if ischar(stackList)
         
                % If it is a character string, check to see if it's the string
                % 'all'. 
-               if strcmp(numberVector, 'all')
+               if strcmp(stackList, 'all')
                    
                    % If it is the character string 'all', list stacks from
                    % the day directory. 
@@ -109,7 +109,7 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                         stack_number=list(stacki, :); 
                         
                         % Get the filename.
-                        stackname=CreateFileString(input_data_name, [], [], stack_number); 
+                        stackname=CreateFileStrings(input_data_name, [], [], stack_number); 
                         filename=[dir_in stackname];
                 end 
                 

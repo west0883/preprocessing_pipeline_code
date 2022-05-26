@@ -56,7 +56,7 @@ function [file_string]=CreateFileStrings(file_format_cell, mouse, day, stack_num
          stack_index=find(contains(file_format_cell,'stack number'));
          
          % If there is, make sure the stack number entry isn't empty 
-         if isempty(stack)==0
+         if isempty(stack_number)==0
              
              % Put the mouse number in place of the mouse number tag
              file_format_output_cell(stack_index)={stack_number}; 
