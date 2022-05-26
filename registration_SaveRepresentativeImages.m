@@ -12,8 +12,7 @@ function [] = registration_SaveRepresentativeImages(parameters)
     input_data_name = parameters.input_data_name;
     dir_exper = parameters.dir_exper;  
     skip = parameters.skip;
-    pixel_rows = parameters.pixel_rows;
-    pixel_cols = parameters.pixel_cols; 
+ 
     rep_stacki = parameters.rep_stacki; 
     rep_framei = parameters.rep_framei; 
     digitNumber = parameters.digitNumber; 
@@ -76,7 +75,7 @@ function [] = registration_SaveRepresentativeImages(parameters)
                     im2=im_list(2).data; 
 
                     % Compare the brightness of the two images; 
-                    first_image_channel = DetermineChannel(parameters.blue_brighter, im1, im2, pixel_rows, pixel_cols);
+                    first_image_channel = DetermineChannel(parameters.blue_brighter, im1, im2, parameters.pixel_rows, parameters.pixel_cols);
 
                     if first_image_channel=='b'
                        bRep=im1; 
