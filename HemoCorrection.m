@@ -24,13 +24,18 @@ function [hData]=HemoCorrection(bData, vData)
         xDim=size(bData,2);
         frames=size(bData, 3); 
         
-        % Reshape and flip the matrices so the "detrend" function below will work
-        % properly. Needs to be 2D (frames, pixels*pixels). Overwrite variables
-        % so you don't take up excess memory. 
-        bData=[reshape(bData, yDim*xDim, frames)]'; 
-        vData=[reshape(vData, yDim*xDim, frames)]'; 
+        % Reshape matrices so the "detrend" function below will work
+        % properly. Needs to be 2D (frames, pixels*pixels).
+        bData=[reshape(bData, yDim*xDim, frames)]; 
+        vData=[reshape(vData, yDim*xDim, frames)]; 
     
     end 
+
+    % Flipe matrices so "detrend" function below works properly. Needs to be 
+    % (frames, pixels*pixels).
+    bData = bData';
+    vData = vData';
+    
     % Hemodynamic correction: 
     % For each channel, detrend each pixel along the time dimension and 
     % divide by that pixel's mean. Then subtract the violet data from the 
