@@ -26,7 +26,7 @@ function [file_string]=CreateFileStrings(file_format_cell, mouse, day, stack_num
          if isempty(mouse)==0
              
              % Put the mouse number in place of the mouse number tag
-             file_format_output_cell{mouse_index}=mouse; 
+             file_format_output_cell(mouse_index)={mouse}; 
          
          % If the mouse input is empty, throw an error
          else 
@@ -43,7 +43,7 @@ function [file_string]=CreateFileStrings(file_format_cell, mouse, day, stack_num
          if isempty(day)==0
              
              % Put the mouse number in place of the mouse number tag
-             file_format_output_cell{day_index}=day; 
+             file_format_output_cell(day_index)={day}; 
          
          % If the mouse input is empty, throw an error
          else 
@@ -59,7 +59,7 @@ function [file_string]=CreateFileStrings(file_format_cell, mouse, day, stack_num
          if isempty(stack)==0
              
              % Put the mouse number in place of the mouse number tag
-             file_format_output_cell{stack_index}=stack_number; 
+             file_format_output_cell(stack_index)={stack_number}; 
          
          % If the stack input is empty, throw an error
          else 
