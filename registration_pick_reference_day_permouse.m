@@ -30,7 +30,7 @@ function []=registration_pick_reference_day_permouse(parameters)
     end     
     % for each mouse 
     for mousei=1:size(mice_all,2)
-        mouse=mice_all(mousei).mouse;
+        mouse=mice_all(mousei).name;
         
         % Use a flag for determining if the "pick_reference_day"
         % function should be run.

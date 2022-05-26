@@ -25,7 +25,7 @@ function []=registration_SaveRepresentativeImages(parameters)
     % for each mouse
     for mousei=1:size(mice_all,2)
         % Get the mouse name
-        mouse=mice_all(mousei).mouse;
+        mouse=mice_all(mousei).name;
         
         % Get the mouse's dataset days
         days_list=vertcat(mice_all(mousei).days(:).name); 

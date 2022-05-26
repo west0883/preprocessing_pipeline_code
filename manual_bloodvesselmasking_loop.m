@@ -83,7 +83,7 @@ function []=manual_bloodvesselmasking_loop(parameters)
         while mousei <= size(mice_all,2) 
 
             % Find the mouse name
-            mouse=mice_all(mousei).mouse;
+            mouse=mice_all(mousei).name;
 
             % Display which mouse you're working on
             disp(['working on mouse ' mouse]); 

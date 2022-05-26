@@ -27,7 +27,7 @@ function [] = check_stacks(parameters)
     for mousei=1:size(mice_all,1)
         
         % Get the mouse name.
-        mouse=mice_all(mousei).mouse; 
+        mouse=mice_all(mousei).name; 
 
         % Cycle through days.
         for dayi=1:size(mice_all(mousei).days, 2)

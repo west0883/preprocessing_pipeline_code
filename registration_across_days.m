@@ -36,7 +36,7 @@ function []=registration_across_days(parameters)
     % **Compute t-forms** 
     % For each mouse 
     for mousei=1:size(mice_all,2)
-        mouse=mice_all(mousei).mouse;
+        mouse=mice_all(mousei).name;
         
         % Get the list of days for that mouse
         days_list=vertcat(mice_all(mousei).days(:).name); 

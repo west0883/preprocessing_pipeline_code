@@ -58,7 +58,7 @@ function []=Preprocessing(parameters)
     
     % For each mouse 
     for mousei=1:size(mice_all,2)
-        mouse=mice_all(mousei).mouse;
+        mouse=mice_all(mousei).name;
         
         % Load the mask indices for that mouse
         load([dir_in_masks 'masks_m' mouse '.mat'], 'indices_of_mask'); 
