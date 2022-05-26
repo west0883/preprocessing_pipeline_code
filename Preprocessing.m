@@ -252,6 +252,12 @@ function []=Preprocessing(parameters)
                        % Go to next iteration of stacki for loop.
                        continue 
                     end
+                    
+                    % Put data into data matrix
+                    bData=TiffreadStructureToMatrix(im_list, sel470);
+                    
+                    % Set aside images for spotcheck 
+                    spotcheck_data.initial.blue=bData(:,:, frames_for_spotchecking);
                 end
                 
                 % ***3. Register within-stack/across stacks within a day.***
