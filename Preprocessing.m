@@ -237,7 +237,7 @@ function []=Preprocessing(parameters)
                 if parameters.channelNumber ==2
                    vData = FixImageSize(vData, parameters.pixels); 
                 end 
-                    
+                
                 % Make sure dimensions are updated to desired dimensions.
                 yDim = parameters.pixels(1);
                 xDim = parameters.pixels(2);
@@ -251,8 +251,7 @@ function []=Preprocessing(parameters)
                 if channelNumber==2
                     vData=reshape(vData, yDim*xDim, frames);
                 end 
-                
-                
+                 
                 % *** 5. Apply mask *** 
                 % Keep only the indices that belong to the mask; Don't rename
                 % the variable, because that will take up extra memory/time.
