@@ -118,8 +118,7 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                
                 % ***3. Register within-stack/across stacks within a day.*** 
                 disp('Registering within days'); 
-                
-                
+
                 % Run the within-day registration function
                 [registered_stack, all_tforms]=RegisterStackWithDFT(bRef, bData, usfac);
 
