@@ -48,7 +48,7 @@ function []=registration_pick_reference_day_permouse(parameters)
         pick_flag=0;         
  
         % see if it's been found before
-        if isempty(reference_days.mouse{mousei_original})==0 % if it HAS been found before
+        if size(reference_days.mouse, 1) >= mousei_original && ~isempty(reference_days.mouse{mousei_original}) % if it HAS been found before
             
             % ask user if they want to redo-it
             user_answer = inputdlg(['Would you like to re-find the reference day for mouse' mouse '? (y = yes, n = no)']);
@@ -85,8 +85,8 @@ function []=registration_pick_reference_day_permouse(parameters)
 
             % Convert the dayi user input to the day name and put in the
             % variable
-            reference_days.mouse{mousei}=mouse; 
-            reference_days.day{mousei}=parameters.mice_all(mousei).days(dayi_output).name;
+            reference_days.mouse{mousei_original}=mouse; 
+            reference_days.day{mousei_original}=parameters.mice_all(mousei).days(dayi_output).name;
        
         end 
         
