@@ -29,10 +29,10 @@ function [data] = FixImageSize(data, pixels)
             % stack.
             if image_dimensions(i) - pixels(i) == 1
 
-                disp('Fixing image y dimension.'); 
+                disp(['Fixing image dimension '  num2str(i)]); 
 
                 % Remove very last pixel
-                inds{i} = 'end'; 
+                inds{i} = image_dimensions(i); 
                 data(inds{:}) = [];
 
             else 
