@@ -11,7 +11,7 @@ function [corrected_data]= VesselRegression(bData, vessel_masks)
 % bData-- a 2D matrix of all the data in the stacks 
 
     % Extract blood vessel timecourse averages  
-    all_vessel_timecourses=bData'*vessel_masks;           
+    all_vessel_timecourses=bData'*vessel_masks ./sum(vessel_masks,1);           
 
     % Establish empty output matrix
     corrected_data=NaN(size(bData));
