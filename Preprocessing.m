@@ -63,8 +63,7 @@ function []=Preprocessing(parameters)
             % Get the day name.
             day=mice_all(mousei).days(dayi).name; 
             
-            % Create data input directory and cleaner output directory. 
-            dir_in=CreateFileStrings(dir_dataset_name, mouse, day, [], [], false);
+            % Create cleaner output directory. 
             dir_out=[dir_out_base mouse '\' day '\']; 
             mkdir(dir_out); 
             
@@ -75,13 +74,16 @@ function []=Preprocessing(parameters)
             load([dir_in_base_tforms mouse '\' day '\tform.mat']); 
             
             % Get the stack list
-            [stackList]=GetStackList(mousei, dayi, dir_in, parameters);
+            [stackList]=GetStackList(mousei, dayi, parameters);
             
             for stacki=1:size(stackList.filenames,1)
                 
                 % Get the stack number and filename for the stack.
                 stack_number = stackList.numberList(stacki, :);
                 filename = stackList.filenames(stacki, :);
+                
+                % Get a cleaner data input directory.
+                dir_in=CreateFileStrings(dir_dataset_name, mouse, day, stack_number, [], false);
                 
                 % Display what mouse, day, and stack you're on
                 disp(['mouse ' mouse ', day ' day ', stack ' stack_number]);
