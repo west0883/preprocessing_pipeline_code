@@ -3,7 +3,7 @@
 % 8/27/21
 % Checks if a preprocessed stack is corrupt
 
-function [] = check_stacks(days_all, dir_exper, stack_to_check, yDim, xDim) 
+function [] = check_stacks(days_all, dir_exper, dir_dataset_name, input_data_name, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking, filter_flag, digitNumber, minimum_frames, correction_method, channelNumber) 
 
     % Set input (and re-preprocessing output) directory base.
 
@@ -115,22 +115,12 @@ function [] = check_stacks(days_all, dir_exper, stack_to_check, yDim, xDim)
 
                    % Tell user there was a corrupt stack. 
                    disp('Found a corrupt stack.');
+                   disp(['Preprocesing ' mouse ', ' day ' stack' stack_number ]); 
                
                    % Run the re-do preprocessing here (I don't feel like writing
                    % out the logic of stack names again.) 
-                   
-               
-               
-               
-               
-               
-               
-               
-               
+                   Preprocessing_specificStacks(mouse, day, stack_number, dir_exper, dir_dataset_name, input_data_name, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking, filter_flag, digitNumber, minimum_frames, correction_method, channelNumber);
                end
-               
-               
-
             end
         end 
     end 
