@@ -281,17 +281,25 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                 % *** 5. Apply mask *** 
                 % Keep only the indices that belong to the mask; Don't rename
                 % the variable, because that will take up extra memory/time.
-                disp('Applying mask')
-                bData=bData(indices_of_mask,:);  
                 
-                % Set aside images for spotcheck 
-                spotcheck_data.masked.blue=bData(:, frames_for_spotchecking);
-                
-                % If more than 1 channel, do for violet channel as well
-                if channelNumber==2
-                    vData=vData(indices_of_mask,:);
-                    spotcheck_data.masked.violet=vData(:, frames_for_spotchecking);
-                end 
+                % Only if user said to use mask (if mask_flag= true)
+                if mask_flag
+                    
+                    % Tell user what's happening.
+                    disp('Applying mask')
+                    
+                    % Apply mask (keep only pixels included in the mask).
+                    bData=bData(indices_of_mask,:);  
+
+                    % Set aside images for spotcheck 
+                    spotcheck_data.masked.blue=bData(:, frames_for_spotchecking);
+
+                    % If more than 1 channel, do for violet channel as well
+                    if channelNumber==2
+                        vData=vData(indices_of_mask,:);
+                        spotcheck_data.masked.violet=vData(:, frames_for_spotchecking);
+                    end 
+                end
                 
                 % *** 6. Correct hemodynamics. ***
                 % Run HemoRegression function; 
@@ -327,8 +335,9 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                 % ** *7. Filter***
                 % Filter data.
                 
-                % Only if the user said they wanted to.
-                if filter_flag==1
+                % Only if the user said they wanted to (if
+                % filter_flag=true).
+                if filter_flag
                     disp('Filtering');
 
                     % flip data as you put it into the filter so it's filtered
