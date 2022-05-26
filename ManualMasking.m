@@ -12,7 +12,7 @@
 % Outputs: 
 % masks-- a 
 
-function[]=ManualMasking(image_to_mask, existing_masks)
+function[masks]=ManualMasking(image_to_mask, existing_masks)
 
     % Apply any existing masks to image_to_mask
         if isempty(existing_masks)
@@ -28,6 +28,7 @@ function[]=ManualMasking(image_to_mask, existing_masks)
         end 
         
         % Display image_to_mask. Displays masks as black
+        mymap=[0 0 0; parula(512)];
         figure; imagesc(image_to_mask); colormap(mymap);
         
         % Ask user if they want to add a mask

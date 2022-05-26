@@ -16,6 +16,9 @@ function []=manual_masking_loop(days_all, dir_exper)
     % Display where data is being saved for user
     disp(['data saved in ' dir_out]); 
     
+    % Load reference days
+    load([dir_exper 'tforms across days/reference_days.mat']); 
+        
     % Cycle through mice based on the willingness of the user
     mousei=1; 
     while mousei <= size(days_all,2) 
@@ -33,7 +36,7 @@ function []=manual_masking_loop(days_all, dir_exper)
         dir_in=[dir_in_base mouse '\' reference_day '\'];
         
         % Load that mouse's Reference bback
-        load([day_in '\bback.mat']);
+        load([dir_in '\bback.mat']);
         
         % Determine if a mask file for this mouse already exists.
         existing_mask_flag=isfile([dir_out 'masks_m' mouse '.mat']); 
