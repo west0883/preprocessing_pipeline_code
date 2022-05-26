@@ -43,7 +43,8 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
             % For each stack
             for stacki=1:size(stackList.filenames,1)
                 
-                figure; 
+                fig = figure;
+                fig.WindowState = 'maximized';
                 
                 % Get the stack number and filename for the stack.
                 stack_number = stackList.numberList(stacki, :);
