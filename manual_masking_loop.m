@@ -48,64 +48,12 @@ function []=manual_masking_loop(days_all, dir_exper)
             masks=[];
         end 
         
-         % ****Could make this section below into a function ***
-           % if a function, just have to pass in bback and previously
-           % existing masks
+        % Rename existing masks so they're not confused with the new ones
+        % that will be drawn.
+        existing_masks=masks;
         
-        rep_image_drawn=bback;
-        
-        % Apply any existing masks to rep_image_drawn
-        if isempty(masks)
-           % If no previous masks, don't need to add anything to rep_image_drawn 
-        else
-            % If there are pre-existing masks, apply them to
-            % rep_image_drawn
-            for i=1:size(masks,3)
-                mask_flat=masks(:,:,i);
-                indices=[indices; find(mask_flat)]; 
-            end
-            rep_image_drawn(indices)=NaN;
-        end 
-        
-        % Display rep_image_drawn. Displays masks as black
-        figure; imagesc(rep_image_drawn); colormap(mymap);
-        
-        % Ask user if they want to add a mask
-        user_answer1= inputdlg('Do you want to draw additional masks? 1=Y, 0=N'); 
-        
-        %Convert the user's answer into a value
-        answer1=str2num(user_answer1{1});
-
-        % If the user said yes,
-        while answer1==1      
-            
-            % Run function "PolyDraw" on the image with previous masks; will 
-            % output the coordinates of the ROI drawn
-            ROI1=PolyDraw; 
-            mask1=flipud(poly2mask(ROI1(1,:),ROI1(2,:),256, 256)); % make a mask of the ROI drawn 
-            
-            % Close the figure that was being drawn on
-            close all;   
-            
-            % Add the new mask to the matrix of masks that have been drawn so far
-            masks=cat(3, masks, mask1); 
-            
-            % Find the indices of the new mask
-            indices=find(mask1);
-            
-            % Set the new mask to NaN for display
-            rep_image_drawn(indices)=NaN; 
-            
-            % Draw the representative image with the new masks on it
-            figure; imagesc(rep_image_drawn); colormap(mymap); 
-            
-            % Repeat
-            user_answer1= inputdlg('Do you want to draw additional masks on this mouse? 1=Y, 0=N'); 
-            answer1=str2num(user_answer1{1});
-        end
-        
-        % leaves while loop if user answers anything other than "1"
-        % [This is where the function would stop]
+        % ***Run the function that runs the masking itself***
+        masks=ManualMasking(bback, existing_masks);     
         
         % Save whatever additions you've made to the mask file 
         save([dir_out 'mask_m' mouse '.mat'], 'masks');
