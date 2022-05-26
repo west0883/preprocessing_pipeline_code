@@ -108,14 +108,18 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                 % numbers by making them same length).
                 sel470=sel470(1:len); 
                 sel405=sel405(1:len);
+                
+                % Put respective channels into own data matrics
+                bData=double(im_list(sel470).data); 
+                vData=double(im_list(sel470).data); 
 
                 % ***3. Register within-stack/across stacks within a day.*** 
                 disp('Registering within days'); 
                 
-                %initialize bData and vData as a matrix of zeros with size frame number and pixels
-                bData = zeros(length(sel470),im_pixels); 
-                vData = zeros(length(sel405),im_pixels);
+                % Initialize bData and vData as a matrix of zeros with size frame number and pixels
                 
+                % Run the within-day registration function
+                [registered_stack, all_tforms]=RegisterStackWithDFT(reference_image, stack_to_register, usfac);
 
                  parfor t=1:len 
                      % make a function for this
