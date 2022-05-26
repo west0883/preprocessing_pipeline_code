@@ -57,7 +57,7 @@ function []=Preprocessing_Hemo(dir_dataset, dir_exper, days_all, skip, usfac)
                % rescalethe image, making it a poor choice for across-day
                % differences--which might have different zoom levels)
            
-                  if exist([dir_out '\bback.mat'])==2 % has to equal 2 for this function
+                  if isfile([dir_out '\bback.mat'])==1 % If it exists,
                     % then enter bback_flag as 0; don't need to create a new
                     % one
                     bback_flag=0; 
