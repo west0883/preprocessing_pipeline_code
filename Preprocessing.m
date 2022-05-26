@@ -200,24 +200,6 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                 spotcheck_data.initial.blue=bData(:,:, frames_for_spotchecking);
                 spotcheck_data.initial.violet=vData(:,:, frames_for_spotchecking);
                 
-                 % *** 3. Apply registration across days ***
-
-                % If the tform's empty, then you don't need to register
-                if isempty(tform)==1 
-                    % Do nothing
-                else
-                    % Else (the tform isn't empty) perform the registration/warp. 
-                    % Use imwarp to tranform the current image to align with the 
-                    % reference image using the tranform stored in the tform variable. 
-                    % Should be able to apply to all images in the 3rd dimension at the same time 
-                    disp('Applying registration across days');  
-                    bData=imwarp(bData,tform,'OutputView',imref2d([yDim xDim]));
-                    vData=imwarp(vData,tform,'OutputView',imref2d([yDim xDim]));
-                end
-                
-                % Set aside images for spotcheck 
-                spotcheck_data.registrationacrossdays.blue=bData(:,:, frames_for_spotchecking);
-                spotcheck_data.registrationacrossdays.violet=vData(:,:, frames_for_spotchecking);
                 
                 % ***4. Register within-stack/across stacks within a day.*** 
                 disp('Registering within days'); 
@@ -241,6 +223,27 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                 
                 % Set aside images for spotcheck 
                 spotcheck_data.hemodynamicscorrected=data(:,:, frames_for_spotchecking);
+                
+                 % *** 3. Apply registration across days ***
+
+                % If the tform's empty, then you don't need to register
+                if isempty(tform)==1 
+                    % Do nothing
+                else
+                    % Else (the tform isn't empty) perform the registration/warp. 
+                    % Use imwarp to tranform the current image to align with the 
+                    % reference image using the tranform stored in the tform variable. 
+                    % Should be able to apply to all images in the 3rd dimension at the same time 
+                    disp('Applying registration across days');  
+                    
+                    hData=imwarp(hData,tform,'OutputView',imref2d([yDim xDim]));
+                   % bData=imwarp(bData,tform,'OutputView',imref2d([yDim xDim]));
+                   % vData=imwarp(vData,tform,'OutputView',imref2d([yDim xDim]));
+                end
+                
+                % Set aside images for spotcheck 
+                spotcheck_data.registrationacrossdays.blue=bData(:,:, frames_for_spotchecking);
+                spotcheck_data.registrationacrossdays.violet=vData(:,:, frames_for_spotchecking);
                 
                 % Reshape data into a 2D matrix (total pixels x frames) for
                 % applying the mask and the lowpass filter. Overwrite the variable
