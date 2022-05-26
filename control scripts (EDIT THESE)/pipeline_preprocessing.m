@@ -43,6 +43,9 @@ parameters.mice_all = mice_all;
  parameters.mice_all(1).days=parameters.mice_all(1).days(3);
  % parameters.mice_all(1).days(1).stacks = 12;
 
+% Include stacks from a "spontaneous" field of mice_all?
+parameters.use_spotaneous = true;
+ 
 % **********************************************************************8
 % Input Directories
 
