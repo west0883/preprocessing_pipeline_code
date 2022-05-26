@@ -23,7 +23,7 @@ function []=Preprocessing_Hemo(dir_dataset, dir_exper, days_all, skip, usfac)
     %else. It's where the tiff files are stored and must be entered manually
     
     % for each mouse
-    for mousei=1:size(days_all,1)
+    for mousei=1:size(days_all,2)
         % get the mouse name
         mouse=days_all(mousei).mouse;
         
@@ -49,6 +49,9 @@ function []=Preprocessing_Hemo(dir_dataset, dir_exper, days_all, skip, usfac)
             % for each stack
             for stacki=1:size(list,1)
                 
+               % get the stack number (for making output names and disp progress)
+                stack_number=list(stacki).name(2:3);   
+                
                % find if there is a selected reference image for this day
                % (dftregistration does well with horizontal shifts across stacks within a day, but it doesn't 
                % rescalethe image, making it a poor choice for across-day
@@ -65,12 +68,11 @@ function []=Preprocessing_Hemo(dir_dataset, dir_exper, days_all, skip, usfac)
                     bback=[];
                   end 
                 
-                disp(['mouse ' num2str(mousei) ', day ' num2str(dayi) ', stack ' num2str(stacki)]);
+                disp(['mouse ' mouse ', day ' day ', stack ' stack_number]);
                 % assign the input file name 
                 input_fileName=[dir_day list(stacki).name]; 
                 
-                % get the stack number (for making output names)
-                stack_number=list(stacki).name(2:3); 
+                
                 
                 % Hemocorrected data output name
                 output_fileName=[dir_out 'hData' stack_number '.mat'];
