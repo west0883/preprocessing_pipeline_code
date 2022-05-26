@@ -61,21 +61,62 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
             % Load the across-day tform for that day. 
             load([dir_in_base_tforms mouse '\' day '\tform.mat']); 
             
-            % List the stacks in this day
-            list=dir([dir_in '0*.tif']); 
+            % Find the correct stack list entry of days_all. 
+            stackList=days_all(mousei).stacks{dayi}; 
+            
+            % If stackList is a character string (to see if 'all')
+            if ischar(numberVector)
+        
+               % If it is a character string, check to see if it's the string
+               % 'all'. 
+               if strcmp(numberVector, 'all')
+                   
+                   % If it is the character string 'all', list stacks from
+                   % the day directory. 
+                   list=dir([dir_in '0*.tif']);
+                   
+                   % Assign a flag for marking if this happened. 
+                   all_flag=1; 
+               end
+               
+               % If stackList is not a character string, assume it's a
+               % vector of integer stacknumbers.  
+            else
+                list=ListStacks(stackList, digitNumber); 
+                
+                % Assign a flag for marking if the list was already made
+                all_flag=0;
+            end 
             
             % For each stack 
             for stacki=1:size(list,1)
                 
-                % Get the stack number for naming output files. 
-                stack_number=list(stacki).name(2:3); 
+                % Depending on the value of the all_flag (the format of the
+                % stack list), figure out the name of the stacks
+                switch all_flag
+                    
+                    % If the user said use 'all' stacks.
+                    case 1
+                        
+                      % Get the stack number for naming output files. 
+                      stack_number=list(stacki).name(2:3); 
+                      
+                      % Get the filename of the stack. 
+                      filename=[dir_in list(stacki).name];
+                    
+                    % If the user said use a specifc list of stacks. 
+                    case 0
+                        
+                end 
+                
+                
+               
                 
                 % Display what mouse, day, and stack you're on
                 disp(['mouse ' mouse ', day ' day ', stack ' stack_number]);
                 
                 % *** 1. Read in tiffs.***
                 disp('Reading tiffs'); 
-                filename=[dir_in list(stacki).name];
                 im_list=tiffreadAltered_SCA(filename,[], 'ReadUnknownTags',1);              
                 
                 % Find the sizes of the data
@@ -96,20 +137,28 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
                 [first_image_channel] = DetermineChannel(im1, im2, pixel_rows, pixel_cols);
                 
                 % Make two lists of which images are what channel.
-                if first_image_channel=='b'
-                    % Then assign every other frame starting with "skip"
-                    % to the blue list, the others to the violet list.
-                    sel470=skip:2:nim;
-                    sel405=skip+1:2:nim;
-                elseif first_image_channel=='v' 
-                    % Then assign every other frame starting with
-                    % "skip"+1 to the blue list, the others to the violet list.
-                    sel470=skip+1:2:nim; 
-                    sel405=skip:2:nim;
+                switch first_image_channel
+                    
+                    % If the first image is blue
+                    case 'b'
+                        % Then assign every other frame starting with "skip"
+                        % to the blue list, the others to the violet list.
+                        sel470=skip:2:nim;
+                        sel405=skip+1:2:nim;
+                    
+                    % If the first image is violet. 
+                    case'v' 
+                        % Then assign every other frame starting with
+                        % "skip"+1 to the blue list, the others to the violet list.
+                        sel470=skip+1:2:nim; 
+                        sel405=skip:2:nim;
                 end
                 
                 % Find the minimum stack length of the two channels; make this the "frames" number 
                 frames=min(length(sel470),length(sel405));
+                
+                % Figure out if this frames number is long enough for
+                % further processing. If not, quit this stack. 
                 
                 % Limit the frame indices for each color stack to the 
                 % minimum number of indices (takes care of uneven image 
