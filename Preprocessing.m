@@ -42,7 +42,7 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
         load([dir_in_masks 'masks_m' mouse '.mat'], 'indices_of_mask'); 
         
         % Get the list of all days for that mouse
-        days_list=days_all(mousei).days; 
+        days_list=vertcat(days_all(mousei).days(:).name);
 
         % For each day
         for dayi=1:size(days_list,1)
@@ -60,7 +60,7 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
             load([dir_in_base_tforms mouse '\' day '\tform.mat']); 
             
             % Find the correct stack list entry of days_all. 
-            stackList=days_all(mousei).stacks{dayi}; 
+            stackList=days_all(mousei).days(dayi).stacks; 
             
             % If stackList is a character string (to see if 'all')
             if ischar(stackList)
@@ -180,7 +180,9 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                 % further processing. If not, quit this stack. 
                 if frames<minimum_frames
                    warning('This stack is too short-- will not be processed.');
-                   break 
+                   
+                   % Go to next iteration of stacki for loop.
+                   continue 
                 end
                 
                 % Limit the frame indices for each color stack to the 
