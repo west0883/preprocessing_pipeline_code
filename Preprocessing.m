@@ -71,7 +71,7 @@ function []=Preprocessing(parameters)
             day=mice_all(mousei).days(dayi).name; 
             
             % Create data input directory and cleaner output directory. 
-            dir_in=CreateFileStrings(dir_dataset_name, mouse, day, []);
+            dir_in=CreateFileStrings(dir_dataset_name, mouse, day, [], false);
             dir_out=[dir_out_base mouse '\' day '\']; 
             mkdir(dir_out); 
             
@@ -160,7 +160,7 @@ function []=Preprocessing(parameters)
                         stack_number=list(stacki, :); 
                         
                         % Get the filename.
-                        stackname=CreateFileStrings(input_data_name, [], [], stack_number); 
+                        stackname=CreateFileStrings(input_data_name, [], [], stack_number, false); 
                         filename=[dir_in stackname];
                 end 
                 
