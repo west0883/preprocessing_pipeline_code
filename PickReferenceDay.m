@@ -1,4 +1,4 @@
-% pick_reference_day.m
+% PickReferenceDay.m
 % Sarah West
 % 8/23/21
 
@@ -6,7 +6,7 @@
 % reference image for the within- and across-stack registrations) and plots them
 % so you can pick what day to use. Called by "registration_pick_reference_day_permouse.m"
 
-function [dayi_output]=pick_reference_day(mouse, file_paths, plot_sizes)
+function [dayi_output]=PickReferenceDay(mouse, file_paths, plot_sizes)
     
     % Set the dimensions/layout of the subplots you want to use
     plot_rows=plot_sizes(1); 

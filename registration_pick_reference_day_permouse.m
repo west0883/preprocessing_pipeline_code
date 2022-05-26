@@ -64,7 +64,7 @@ function []=registration_pick_reference_day_permouse(days_all, dir_exper, plot_s
             end 
         
             % Run the pick_reference_day function
-            [dayi_output]=pick_reference_day(mouse, file_paths, plot_sizes);
+            [dayi_output]=PickReferenceDay(mouse, file_paths, plot_sizes);
 
             % Convert the dayi user input to the day name and put in the
             % variable

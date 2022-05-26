@@ -68,7 +68,7 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                 disp(['mouse ' mouse ', day ' day ', stack ' stack_number]);
                 
                 % *** 1. Read in tiffs.***
-                disp('Loading'); 
+                disp('Reading tiffs'); 
                 filename=[dir_in list(stacki).name];
                 im_list=tiffreadAltered_SCA(filename,[], 'ReadUnknownTags',1);              
                 
@@ -105,7 +105,7 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                 
                 % Limit the frame indices for each color stack to the 
                 % minimum number of indices (takes care of uneven image 
-                % numbers by making them even).
+                % numbers by making them same length).
                 sel470=sel470(1:len); 
                 sel405=sel405(1:len);
 
@@ -116,6 +116,7 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                 % *** 4. Correct hemodynamics. ***
                 disp('Correcting hemodynamics');
                 
+                
                 % *** 5. Apply registration across days ***
                 disp('Applying registration across days'); 
 
@@ -124,10 +125,9 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                     % Do nothing
                 else
                     % Else (the tform isn't empty) perform the registration/warp. 
-                    % Use imwarp to tranform
-                    % the current image to align with the reference image using the tranform
-                    % stored in the tform variable. Should be able to apply to all
-                    % images in the 3rd dimension at the same time 
+                    % Use imwarp to tranform the current image to align with the 
+                    % reference image using the tranform stored in the tform variable. 
+                    % Should be able to apply to all images in the 3rd dimension at the same time 
                      data=imwarp(hData,tform,'OutputView',imref2d(xDim, yDim));
                 end
                 
@@ -144,7 +144,7 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                 data=data(indices_of_mask,:); 
                 
                 % ** Lowpass filter** 
-                disp('Filtering');
+                disp('Lowpass filtering');
                 
                 % Find Niquist freq for filter; sampling divided by 2
                 fn=sampling_freq/2; 
