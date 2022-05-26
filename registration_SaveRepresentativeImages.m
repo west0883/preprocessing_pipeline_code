@@ -31,6 +31,7 @@ function []=registration_SaveRepresentativeImages(dir_dataset, dir_exper, days_a
         
         % For each day of the mouse 
         for dayi=1:size(days_list,1)
+            day=days_list(dayi,:);
             
             %create the input directory by day
             dir_in=[dir_dataset day '\' day 'm' mouse '\' dbase_str]; 
@@ -44,16 +45,13 @@ function []=registration_SaveRepresentativeImages(dir_dataset, dir_exper, days_a
             
             % find the list of stacks in that day (so you can find the
             % first one)
-            list=dir([dir_day '0*.tif']);
+            list=dir([dir_in '0*.tif']);
             
             % Find the stack to use for the representative image.
             stack_number=list(rep_stacki).name(2:3);   
             
             % Assign the input file name 
-            input_fileName=[dir_day list(stacki).name]; 
-            
-            % Assign the output filename
-            output_fileName=[dir_out 'bRep' stack_number '.mat'];
+            input_fileName=[dir_in list(rep_stacki).name]; 
             
             % find if there is a selected reference image for this day
             if isfile([dir_out '\bRep.mat'])==1 
@@ -69,7 +67,7 @@ function []=registration_SaveRepresentativeImages(dir_dataset, dir_exper, days_a
                 image_indices=[skip + rep_framei, skip + rep_framei + 1]; 
                 
                 % Read those two images
-                im_list=tiffreadAltered_SCA(fileName, image_indices, 'ReadUnknownTags',1);
+                im_list=tiffreadAltered_SCA(input_fileName, image_indices, 'ReadUnknownTags',1);
                 
                 im1=im_list(1).data;
                 im2=im_list(2).data; 
@@ -82,6 +80,9 @@ function []=registration_SaveRepresentativeImages(dir_dataset, dir_exper, days_a
                 elseif first_image_channel=='v'
                    bRep=im2;
                 end
+                
+                % Convert bRep to single precision.
+                bRep=single(bRep);
                 
                 % Save the representative image
                 save([dir_out 'bRep.mat'], 'bRep');
