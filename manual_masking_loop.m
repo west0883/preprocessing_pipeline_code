@@ -3,8 +3,10 @@
 % 8/23/21
 % Modified from SCA_manual_masking.m, just the manual masking parts. Will
 % also put in code from create_bloodvessel_masks_withbackgroundmasks.m . 
+% Let's you keep adding masks until you say you're done. You can return to
+% it. 
 
-function []=manual_masking_loop(days_all, dir_exper, MaskComponent)
+function []=manual_masking_loop(days_all, dir_exper)
     
     % Establish input and output folders 
     dir_in_base=[dir_exper 'hemodynamics corrected\'];
@@ -14,9 +16,15 @@ function []=manual_masking_loop(days_all, dir_exper, MaskComponent)
     % Display where data is being saved for user
     disp(['data saved in ' dir_out]); 
     
-    % For each mouse
-    for mousei=1:size(days_all,2) 
+    % Cycle through mice based on the willingness of the user
+    mousei=1; 
+    while mousei <= size(days_all,2) 
+        
+        % Find the mouse name
         mouse=days_all(mousei).mouse;
+        
+        % Display which mouse you're working on
+        disp(['working on mouse ' mouse]); 
         
         % Find the reference day
         reference_day=reference_days.day{mousei};
@@ -29,7 +37,6 @@ function []=manual_masking_loop(days_all, dir_exper, MaskComponent)
         
         % Determine if a mask file for this mouse already exists.
         existing_mask_flag=isfile([dir_out 'masks_m' mouse '.mat']); 
-%         rep_image_drawn=bback; 
         
         % If it does exist already, load the mask file
         if existing_mask_flag==1 
@@ -41,7 +48,7 @@ function []=manual_masking_loop(days_all, dir_exper, MaskComponent)
             masks=[];
         end 
         
-         %% Could make this section below into a function
+         % ****Could make this section below into a function ***
            % if a function, just have to pass in bback and previously
            % existing masks
         
@@ -93,15 +100,32 @@ function []=manual_masking_loop(days_all, dir_exper, MaskComponent)
             figure; imagesc(rep_image_drawn); colormap(mymap); 
             
             % Repeat
-            user_answer1= inputdlg('Do you want to draw additional masks? 1=Y, 0=N'); 
+            user_answer1= inputdlg('Do you want to draw additional masks on this mouse? 1=Y, 0=N'); 
             answer1=str2num(user_answer1{1});
         end
         
         % leaves while loop if user answers anything other than "1"
-        
+        % [This is where the function would stop]
         
         % Save whatever additions you've made to the mask file 
         save([dir_out 'mask_m' mouse '.mat'], 'masks');
-            
+       
+        % clear things for next mouse 
+        close all; 
+        
+        % Ask if the user wants to keep working
+        user_answer1= inputdlg('Do you want to work on the next mouse? 1=Y, 0=N'); 
+        answer1=str2num(user_answer1{1});
+        
+        % If the user says yes,
+        if answer1==1
+            % Increase the valuse of mousei and continue 
+            mousei=mousei+1; 
+        else
+            % If the user says anything else, break the while loop so
+            % another mouse isn't started 
+            break
+        end
+        
     end
 end 
