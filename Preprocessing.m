@@ -242,6 +242,8 @@ function []=Preprocessing(parameters)
                    % Get list of frames after the skip
                    frames_list=skip:nim; 
                   
+                   frames=length(frames_list); 
+                   
                     % Figure out if this frames number is long enough for
                     % further processing. If not, quit this stack. 
                     if frames<minimum_frames
