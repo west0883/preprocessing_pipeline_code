@@ -96,9 +96,27 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                     % If the user said use 'all' stacks,
                     case 1
                         
-                        % Get the stack number for naming output files. 
-                        stack_number=list(stacki).name(2:3); 
-
+                        % Get the stack number for naming output files
+                        % using the input_data_name (allows for flexible
+                        % outside-package file names). 
+                        
+                        % Find the index of the stack number within the input data name.  
+                        stackindex=find(contains(input_data_name,'stack number'));
+                        
+                        % Find the letters in the filename before the stack
+                        % number. 
+                        pre_stackindex=horzcat(input_data_name{1:(stackindex-1)}); 
+                        
+                        % Find the number of letters in the filename before
+                        % the stack number. 
+                        length_pre=length(pre_stackindex); 
+                        
+                        % Now take range of the file list that corresponds
+                        % to the stack number, according to number of
+                        % letters that came before the stack number and the
+                        % number of digits assigned to the stack number. 
+                        stack_number=list(stacki).name(length_pre+1:length_pre+digitNumber); 
+                          
                         % Get the filename of the stack. 
                         filename=[dir_in list(stacki).name];
                     
