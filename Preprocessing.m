@@ -14,7 +14,7 @@
 % 7. Apples filtering. 
 % 8. Saves preprocessed stacks. 
 
-function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking)
+function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking, filter_flag)
     
     % Establish base input directories
     dir_in_base_tforms=[dir_exper 'tforms across days\']; 
@@ -183,15 +183,19 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
                 
                 % ** *7. Filter***
                 % Filter data.
-                disp('Filtering');
                 
-                % flip data as you put it into the filter so it's filtered
-                % in the right dimension. 
-                data=filtfilt(b,a, data'); 
-                
-                data=data'; 
-                % Set aside images for spotcheck 
-                spotcheck_data.filtered=data(:, frames_for_spotchecking);
+                % Only if the user said they wanted to.
+                if filter_flag==1
+                    disp('Filtering');
+
+                    % flip data as you put it into the filter so it's filtered
+                    % in the right dimension. 
+                    data=filtfilt(b,a, data'); 
+
+                    data=data'; 
+                    % Set aside images for spotcheck 
+                    spotcheck_data.filtered=data(:, frames_for_spotchecking);
+                end 
                 
                 % *** 8. Save preprocessed stacks***
                 disp('Saving');
