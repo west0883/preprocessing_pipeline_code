@@ -11,12 +11,13 @@
 %% Parameters for directories
 clear all;
 
-experiment_name='Motorized Treadmill';
+experiment_name='Motorized Treadmill Demonstration';
 
 dir_base='Y:\Sarah\Analysis\Experiments\';
 dir_exper=[dir_base experiment_name '\']; 
 
 dir_out=dir_exper; 
+mkdir(dir_out);
 
 %% List of days
 
@@ -60,7 +61,6 @@ mice_all(4).days(3).name='072021';
 mice_all(4).days(3).stacks='all';
 mice_all(4).days(4).name='093021';
 mice_all(4).days(4).stacks='all';
-
 
 
 
