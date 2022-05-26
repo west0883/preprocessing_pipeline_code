@@ -21,7 +21,8 @@ function [residual_data]=HemoRegression(bData, vData)
    % Find lenght of each channel for regression 
    frames=size(vData,2); 
    
-   parfor i=1:size(bData,2)
+   % For each frame,
+   parfor i=1:size(bData,1)
          % The "regress" function needs everything in column format. 
          
          % Create the column of dependent data; Take a pixel from blue
