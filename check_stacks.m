@@ -41,6 +41,12 @@ function [] = check_stacks(parameters)
             % Establish input directory. 
             dir_preprocessed=[dir_preprocessed_base '\' mouse '\' day '\'];
             
+            % If user wants to use spontaneous stacks & there are also spontaneous stacks, combine them
+            % into the same stack list.
+            if parameters.use_spontaneous && isfield(parameters.mice_all(mousei).days(dayi), 'spontaneous')
+               parameters.mice_all(mousei).days(dayi).stacks = [parameters.mice_all(mousei).days(dayi).stacks  parameters.mice_all(mousei).days(dayi).spontaneous];
+            end
+            
             % Find the correct stack list entry of mice_all. 
             stackList=mice_all(mousei).days(dayi).stacks; 
             
