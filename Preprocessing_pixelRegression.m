@@ -22,7 +22,7 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
     dir_in_ref=[dir_exper 'representative images\']; 
     
     % Establish base output directory
-    dir_out_base=[dir_exper 'fully preprocessed stacks/'];
+    dir_out_base=[dir_exper 'fully preprocessed stacks with pixel regression\'];
     
     % Load reference days
     load([dir_in_ref 'reference_days.mat']);
@@ -217,8 +217,8 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                 end
                 
                 % Set aside images for spotcheck 
-                spotcheck_data.registrationacrossdays=data(:,:, frames_for_spotchecking);
-                
+                spotcheck_data.registrationacrossdays.blue=bData(:,:, frames_for_spotchecking);
+                spotcheck_data.registrationacrossdays.violet=vData(:,:, frames_for_spotchecking);
                 
                 % ***4. Register within-stack/across stacks within a day.*** 
                 disp('Registering within days'); 
@@ -235,40 +235,21 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                 spotcheck_data.withindayregistered.blue=bData(:,:, frames_for_spotchecking);
                 spotcheck_data.withindayregistered.violet=vData(:,:, frames_for_spotchecking);
                 
-                % *** 5. Correct hemodynamics. ***
-                % Run HemoCorrection function; 
-                disp('Correcting hemodynamics');
-                [data]=HemoCorrection(bData, vData);
-                
-                % Set aside images for spotcheck 
-                spotcheck_data.hemodynamicscorrected=data(:,:, frames_for_spotchecking);
-                
-                 % *** 3. Apply registration across days ***
-
-                % If the tform's empty, then you don't need to register
-                if isempty(tform)==1 
-                    % Do nothing
-                else
-                    % Else (the tform isn't empty) perform the registration/warp. 
-                    % Use imwarp to tranform the current image to align with the 
-                    % reference image using the tranform stored in the tform variable. 
-                    % Should be able to apply to all images in the 3rd dimension at the same time 
-                    disp('Applying registration across days');  
-                    
-                    hData=imwarp(hData,tform,'OutputView',imref2d([yDim xDim]));
-                   % bData=imwarp(bData,tform,'OutputView',imref2d([yDim xDim]));
-                   % vData=imwarp(vData,tform,'OutputView',imref2d([yDim xDim]));
-                end
-                
-                % Set aside images for spotcheck 
-                spotcheck_data.registrationacrossdays.blue=bData(:,:, frames_for_spotchecking);
-                spotcheck_data.registrationacrossdays.violet=vData(:,:, frames_for_spotchecking);
-                
-                % Reshape data into a 2D matrix (total pixels x frames) for
-                % applying the mask and the lowpass filter. Overwrite the variable
+                 % Reshape data into a 2D matrix (total pixels x frames) for
+                % applying the mask, regressions, and the lowpass filter. Overwrite the variable
                 % so you don't take up excess memory. 
-                data=reshape(data, yDim*xDim, frames);
+                bData=reshape(bData, yDim*xDim, frames);
+                vData=reshape(vData, yDim*xDim, frames);
+                
+                % *** 5. Correct hemodynamics. ***
+                % Run HemoRegression function; 
+                disp('Correcting hemodynamics');
+
                  
+                [data]=HemoRegression(bData, vData); 
+                
+                 % Set aside images for spotcheck 
+                spotcheck_data.hemodynamicscorrected=data(:, frames_for_spotchecking);
                 
                 % *** 6. Apply mask *** 
                 % Keep only the indices that belong to the mask; Don't rename
