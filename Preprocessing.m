@@ -14,7 +14,7 @@
 % 7. Apples filtering. 
 % 8. Saves preprocessed stacks. 
 
-function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking, filter_flag, digitNumber)
+function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking, filter_flag, digitNumber, minimum_frames)
     
     % Establish base input directories
     dir_in_base_tforms=[dir_exper 'tforms across days\']; 
@@ -178,6 +178,10 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                 
                 % Figure out if this frames number is long enough for
                 % further processing. If not, quit this stack. 
+                if frames<minimum_frames
+                   warning('This stack is too short-- will not be processed.');
+                   break 
+                end
                 
                 % Limit the frame indices for each color stack to the 
                 % minimum number of indices (takes care of uneven image 
