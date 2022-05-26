@@ -10,33 +10,60 @@
 % transforms calculated on the blue images--> for accurate hemodynamics
 % correction.) The calculations were copied from dftregistration. 
 
-function [registered_stack] =RegisterStack_WithPreviousDFTShifts() 
+% Inputs:
+% tforms -- Is an output from RegisterStackWithDFT. Is a 2D matrix, with
+    % (first dim) diffphase,row_shift,col_shift for each frame (2nd dim).
+% stack_to_register -- a (violet channel) stack matrix to register. 3D
+    % matrix (pixels, pixels,frames)
+% usfac -- "upsampling factor"; Determines the sub-pixel resolution of the registration; 
 
-            
-                % Create a Fourier-transformed version of the image you want to
-                %register, keeping with the name of the variable used in the
-                %dftregistration code to try to keep copying and pasting
-                %simple.
-                buf2ft=fft2(vim);  
-                
-                % find dimensions of images needed for the calulations
-                % (from dftregistration.m)
-                [nr,nc]=size(buf2ft);
-                Nr = ifftshift(-fix(nr/2):ceil(nr/2)-1);
-                Nc = ifftshift(-fix(nc/2):ceil(nc/2)-1);
+% Outputs:
+% registered_stack -- the registered stack. 3D matrix (pixels, pixels,
+    % frames)   
+    
+function [registered_stack] =RegisterStack_WithPreviousDFTShifts(tforms, stack_to_register, usfac) 
+    
+    % Initialize output registered stack
+    registered_stack=NaN(size(stack_to_register)); 
+    
+    % Find number of frames of stack
+    frames=size(stack_to_register,3); 
+    
+    % For each frame 
+    parfor t=1:frames
+       % Grab variables from tforms for this frame.
+       diffphase=tforms(1,t);
+       row_shift=tforms(2,t); 
+       col_shift=tforms(3,t);
+    
+       % Grab the image you want to work with 
+       im=stack_to_register(:,:,t); 
+       
+       % Create a Fourier-transformed version of the image you want to
+       % register, keeping with the name of the variable used in the
+       % dftregistration code to try to keep comparisons simple
+       buf2ft=fft2(im);  
 
-                % calculate violet registered image
-                if (usfac > 0)
-                    [Nc,Nr] = meshgrid(Nc,Nr);
-                    vGreg = buf2ft.*exp(1i*2*pi*(-row_shift*Nr/nr-col_shift*Nc/nc));
-                    vGreg = vGreg*exp(1i*diffphase);
-                elseif (usfac == 0)
-                    vGreg = buf2ft*exp(1i*diffphase);
-                end
+        % find dimensions of images needed for the calulations
+        % (from dftregistration.m)
+        [nr,nc]=size(buf2ft);
+        Nr = ifftshift(-fix(nr/2):ceil(nr/2)-1);
+        Nc = ifftshift(-fix(nc/2):ceil(nc/2)-1);
 
-            %Get the absolute value of the inverse fourier transform of the
-            %registered images; overwrite old variables to reducce memory
-            %needs 
-            vim = abs(ifft2(vGreg));
-            
+        % calculate violet registered image
+        if (usfac > 0)
+            [Nc,Nr] = meshgrid(Nc,Nr);
+            vGreg = buf2ft.*exp(1i*2*pi*(-row_shift*Nr/nr-col_shift*Nc/nc));
+            vGreg = vGreg*exp(1i*diffphase);
+        elseif (usfac == 0)
+            vGreg = buf2ft*exp(1i*diffphase);
+        end
+
+        %Get the absolute value of the inverse fourier transform of the
+        %registered images.
+        registered_im = abs(ifft2(vGreg));
+        
+        % Put registered image into variable holding registered stack.
+        registered_stack(:,:,t)=registered_im;
+    end
 end 
