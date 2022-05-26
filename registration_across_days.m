@@ -81,30 +81,5 @@ function []=registration_across_days(days_all, dir_exper, transformation, config
             save([dir_out 'tform.mat'], 'tform');
         end    
     end 
-    
-    % **Using tforms, transform the stacks.**
-    
-     for mousei=1:size(days_all,2)
-        mouse=days_all(mousei).mouse;
-        
-        % get the list of days for that mouse
-        days_list=days_all(mousei).days; 
-        
-        % for each day
-          for dayi=1:size(days_list,1)
-            day=days_list(dayi,:); 
-         
-            % Load that day's tform
-            
-            % if the tform's empty, then you don't need to register
-          
-            % Else, perform the registration/warp. Use imwarp to tranform
-            % the current image to align with the reference image using the tranform
-            % stored in the tform variable
-             back=imwarp(bback,tform,'OutputView',imref2d(size(Rback)));
-          end 
-     end 
-
-   
-
+    end
 end
