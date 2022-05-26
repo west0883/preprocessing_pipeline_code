@@ -5,10 +5,10 @@
 % Plots a subset of the saved "spotcheck" frames from preprocessing and
 % saves the plots. Makes a plot for each stack, also a plot for each day.
 
-function [] = plot_spotcheck(parameters, frames_to_plot)
+function [] = plot_spotcheck(parameters)
     
     dir_in_base = parameters.dir_in_base;
-
+ 
     % For each mouse
     for mousei = 1:size(parameters.mice_all,2) 
         
@@ -38,7 +38,7 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
             % Make holder matrix for all final (hemodynamics corrected)
             % plots
             
-            hemo_all = NaN(size(stackList.filenames,1), numel(frames_to_plot), 256,256);
+            hemo_all = NaN(size(stackList.filenames,1), numel(parameters.frames_to_plot), 256,256);
             
             % For each stack
             for stacki=1:size(stackList.filenames,1)
@@ -57,7 +57,7 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
                 % to be registered across days, and on how many channels
                 % there are.
                 a = (numel(fieldnames(spotcheck_data)));  
-                b =  numel(frames_to_plot)*parameters.channelNumber;
+                b =  numel(parameters.frames_to_plot)*parameters.channelNumber;
                 number_of_subplots = [a , b];
                     
                 % Plot each step, in preprocessing order
@@ -78,37 +78,40 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
                     end
                     
                     % First the initial image
-                    for i = 1:numel(frames_to_plot)
+                    for i = 1:numel(parameters.frames_to_plot)
                          
                         subplot(a, b, (row -1) * b + column_start + (i-1) *2); 
                         eval(['imagesc(spotcheck_data.initial.' channel '(:, :, i));']);    
                        if column_start + (i-1) *2 ==1
                             ylabel('initial');
-                        end
+                       end
+                       caxis(parameters.color_range);
                     end 
                   
                     % Within day registered
                     row =row + 1;
-                    for i = 1:numel(frames_to_plot)
+                    for i = 1:numel(parameters.frames_to_plot)
                          
                         subplot(a, b, (row -1) * b + column_start + (i-1) *2); 
                         eval(['imagesc(spotcheck_data.withindayregistered.' channel '(:, :, i));']);    
                        if column_start + (i-1) *2 ==1
                             ylabel('within-day');
-                        end
+                       end
+                       caxis(parameters.color_range);
                     end 
                     
                     % Across day registered
                     if isfield(spotcheck_data,'registrationacrossdays')
                         row =row +1;
                         
-                        for i = 1:numel(frames_to_plot)
+                        for i = 1:numel(parameters.frames_to_plot)
                             
                             subplot(a, b, (row -1) * b + column_start + (i-1) *2); 
                             eval(['imagesc(spotcheck_data.registrationacrossdays.' channel '(:, :, i));']); 
                             if column_start + (i-1) *2 ==1
                                 ylabel('across-day');
-                             end
+                            end
+                            caxis(parameters.color_range);
                         end 
                       
                     end
@@ -121,13 +124,14 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
                         eval(['data_matrix = spotcheck_data.masked.' channel ';']);
                         [data_matrix_filled]=FillMasks(data_matrix, indices_of_mask, parameters.pixels(1), parameters.pixels(2));
                         
-                        for i = 1:numel(frames_to_plot)
+                        for i = 1:numel(parameters.frames_to_plot)
                             
                             subplot(a, b, (row -1) * b + column_start + (i-1) *2); 
                             imagesc(data_matrix_filled(:, :, i)); 
                            if column_start + (i-1) *2 ==1
                                 ylabel('masked');
-                            end
+                           end
+                           caxis(parameters.color_range);
                         end 
                         
                     end 
@@ -143,13 +147,14 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
                             data_matrix_filled = data;
                         end        
                         
-                        for i = 1:numel(frames_to_plot) 
+                        for i = 1:numel(parameters.frames_to_plot) 
                          
                             subplot(a, b, (row -1) * b + column_start + (i-1) *2); 
                             imagesc(data_matrix_filled(:,:, i));
                             if column_start + (i-1) *2 ==1
                                 ylabel('filtered');
                             end
+                            caxis(parameters.color_range);
                         end
                     end
                     
@@ -169,13 +174,13 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
                     data_matrix_filled = spotcheck_data.hemodynamicscorrected;
                 end        
                 
-                for i = 1:numel(frames_to_plot)
+                for i = 1:numel(parameters.frames_to_plot)
                     subplot(a, b, (row -1) * b + column_start + (i-1) *2); 
                     imagesc(data_matrix_filled(:, :, i)); 
                     if column_start + (i-1) *2 ==1
                         ylabel('hemo corrected');
                     end
-                    
+                    caxis(parameters.color_range_hemocorrected);
                     hemo_all(stacki, i, :, :) = data_matrix_filled(:,:,i); 
                 end
                 
@@ -191,7 +196,7 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
             
             % Make a new count of suplots
             a = size(stackList.filenames,1);
-            b = numel(frames_to_plot); 
+            b = numel(parameters.frames_to_plot); 
              
             fig = figure;
             fig.WindowState = 'maximized';
@@ -200,9 +205,10 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
             % For each stack
             for stacki=1:size(stackList.filenames,1)
                 
-                for i = 1:numel(frames_to_plot)
+                for i = 1:numel(parameters.frames_to_plot)
                     subplot( b, a, (i-1)*a + stacki); 
                     imagesc(squeeze(hemo_all(stacki,i,:,:)));
+                    caxis(parameters.color_range_hemocorrected);
                     xticks([]);
                     xticklabels([]);
                     yticks([]);
