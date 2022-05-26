@@ -68,7 +68,7 @@ function []=Registration_Manual_Redo(redo, parameters)
         figure; 
         subplot(1,2,1); imshowpair(bRep, Reference_bRep); title('before')
         subplot(1,2,2); imshowpair(result,Reference_bRep); title('after')
-        suptitle([mouse ', ' day])
+        sgtitle([mouse ', ' day])
         
         % Save the check figure 
         savefig([dir_out 'before_and_after.fig']); 
