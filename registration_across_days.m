@@ -39,23 +39,24 @@ function []=registration_across_days(days_all, dir_exper, transformation, config
         for dayi=1:size(days_list,1)
             day=days_list(dayi,:); 
             
+            % See if a tform file already exists; skip if so 
+            
+            
             % See if this day is the reference day
             if strcmp(day, reference_day)
                 % If this is the reference day, tform is empty
-                regis_flag=0; 
+               
                 tform=[];
                 
             else
                 % If this is NOT the reference day, perform the
                 % registration
                 
-                % calculate the transform
                 tform = imregtform(bback, Reference_bback, transformation, optimizer, metric);
-                regis_flag=1; 
+                % perform a check? 
             end 
            
             
-            % perform a check? 
             % save the tform for each day 
         end    
     end 
