@@ -216,8 +216,8 @@ function []=preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                 end
                 
                 % Set aside images for spotcheck 
-                spotcheck_data.registrationacrossdays=data(:,:, frames_for_spotchecking);
-                
+                spotcheck_data.registrationacrossdays.blue=bData(:,:, frames_for_spotchecking);
+                spotcheck_data.registrationacrossdays.violet=vData(:,:, frames_for_spotchecking);
                 
                 % ***4. Register within-stack/across stacks within a day.*** 
                 disp('Registering within days'); 
