@@ -131,11 +131,19 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
                     
                     % Any filtering
                     if parameters.filter_flag
-
+                        row =row + 1;
+                        
+                        eval(['data = spotcheck_data.filtered.' channel ';']);    
+                        if parameters.mask_flag   
+                            [data_matrix_filled] = FillMasks(data, indices_of_mask, size(spotcheck_data.initial.blue, 1),size(spotcheck_data.initial.blue, 2) );
+                        else 
+                            data_matrix_filled = data;
+                        end        
+                        
                         for i = 1:numel(frames_to_plot) 
-                            row = row + 1; 
+                         
                             subplot(a, b, (row -1) * b + column_start + (i-1) *2); 
-
+                            imagesc(data_matrix_filled(:,:, i));
                             if column_start + (i-1) *2 ==1
                                 ylabel('filtered');
                             end
