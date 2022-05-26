@@ -88,7 +88,7 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, samplin
                 im2=im_list(skip+1).data;
                 
                 % Figure out which is what channel
-                [first_image_channel] = determine_channel(im1, im2, pixel_rows, pixel_cols);
+                [first_image_channel] = DetermineChannel(im1, im2, pixel_rows, pixel_cols);
                 
                 % Make two lists of which images are what channel.
                 if first_image_channel=='b'

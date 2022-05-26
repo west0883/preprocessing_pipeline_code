@@ -1,4 +1,4 @@
-% determine_channel.m
+% DetermineChannel.m
 % Sarah West
 % 8/25/21
 
@@ -6,7 +6,7 @@
 % recording and determines which belongs to which channel depending on the
 % brightness in a region of interest over the brain. 
 
-function [first_image_channel] = determine_channel(im1, im2, pixel_rows, pixel_cols)
+function [first_image_channel] = DetermineChannel(im1, im2, pixel_rows, pixel_cols)
        
         % get the mean gray level from a brain ROI 
         lev1=mean2(im1(pixel_rows, pixel_cols));
