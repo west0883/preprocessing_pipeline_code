@@ -184,8 +184,12 @@ function []=preprocessing(days_all, dir_exper, dir_dataset, dataset_str, b, a, u
                 % ** *7. Filter***
                 % Filter data.
                 disp('Filtering');
-                data=filtfilt(b,a, data); 
                 
+                % flip data as you put it into the filter so it's filtered
+                % in the right dimension. 
+                data=filtfilt(b,a, data'); 
+                
+                data=data'; 
                 % Set aside images for spotcheck 
                 spotcheck_data.filtered=data(:, frames_for_spotchecking);
                 
