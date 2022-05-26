@@ -30,8 +30,9 @@ function [data_matrix]=TiffreadStructureToMatrix(data_structure,frames_list)
         % Make things a bit easier by defining your frame numbers. 
         frame_structure=frames_list(framei); 
       
-        % Now move the frames.
-        data_matrix(:,:,framei)=data_structure(frame_structure).data; 
+        % Now, convert the frames to single precision (from uint16) and move them. 
+        % Single precision takes up much less memory than double. 
+        data_matrix(:,:,framei)=singele(data_structure(frame_structure).data); 
     end 
 
 end 
