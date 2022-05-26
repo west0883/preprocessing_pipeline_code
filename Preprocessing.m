@@ -47,6 +47,10 @@ function []=Preprocessing(parameters)
     
     % Load reference days
     load([dir_in_ref 'reference_days.mat']);
+
+    % Establish a holding cell array to keep track of what days need to be
+    % checked on.
+    bad_trials = {};
     
     % For each mouse 
     for mousei=1:size(parameters.mice_all,2)
@@ -92,7 +96,22 @@ function []=Preprocessing(parameters)
                 
                 % *** 1. Read in tiffs.***
                 disp('Reading tiffs'); 
-                im_list=tiffreadAltered_SCA([dir_in filename],[], 'ReadUnknownTags',1);              
+
+                % Check if file exists. If it doesn't, report and keep track. 
+                if ~isfile([dir_in filename])
+                    disp(['file for ' mouse ', ' day ', ' stack ' does not exist.']);
+                    bad_trials = [bad_trials; {[dir_in filename], 'couldn"t find'}];
+                    continue 
+                end   
+                
+                % Attempt to load
+                try
+                    im_list=tiffreadAltered_SCA([dir_in filename],[], 'ReadUnknownTags',1);       
+                catch 
+                    disp(['couldn"t load ' mouse ', ' day ', ' stack '.']);
+                    bad_trials = [bad_trials; {[dir_in filename], 'couldn"t load'}];
+                    continue 
+                end
                 
                 % Find the sizes of the data
                 yDim=size(im_list(1).data,1);
@@ -359,4 +378,9 @@ function []=Preprocessing(parameters)
             end
         end 
     end 
+
+    % Save the bad trial data. Give the file a name with the date & time so
+    % you can always find the list again.
+    date_string = strrep(datestr(datetime),':','');
+    save([parameters.dir_exper 'bad_trials_' date_string '.mat'], 'bad_trials');
 end
