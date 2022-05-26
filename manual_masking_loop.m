@@ -10,7 +10,7 @@ function []=manual_masking_loop(parameters)
     
     % Assign parameters their original names
     dir_exper = parameters.dir_exper; 
-    days_all = parameters.days_all; 
+    mice_all = parameters.mice_all; 
     
     % Establish input and output folders 
     dir_in_base=[dir_exper 'representative images\'];
@@ -25,10 +25,10 @@ function []=manual_masking_loop(parameters)
         
     % Cycle through mice based on the willingness of the user
     mousei=1; 
-    while mousei <= size(days_all,2) 
+    while mousei <= size(mice_all,2) 
         
         % Find the mouse name
-        mouse=days_all(mousei).mouse;
+        mouse=mice_all(mousei).mouse;
         
         % Display which mouse you're working on
         disp(['working on mouse ' mouse]); 

@@ -8,7 +8,7 @@ function [] = check_stacks(parameters)
     % Assign parameters their original names
     input_data_name = parameters.input_data_name;
     dir_exper = parameters.dir_exper; 
-    days_all = parameters.days_all; 
+    mice_all = parameters.mice_all; 
     digitNumber = parameters.digitNumber; 
    
     % Set input (and re-preprocessing output) directory base.
@@ -24,16 +24,16 @@ function [] = check_stacks(parameters)
     corrupt_files={};
     
     % Cycle through mice. 
-    for mousei=1:size(days_all,1)
+    for mousei=1:size(mice_all,1)
         
         % Get the mouse name.
-        mouse=days_all(mousei).mouse; 
+        mouse=mice_all(mousei).mouse; 
 
         % Cycle through days.
-        for dayi=1:size(days_all(mousei).days, 2)
+        for dayi=1:size(mice_all(mousei).days, 2)
             
             % Get the day name.
-            day=days_all(mousei).days(dayi).name; 
+            day=mice_all(mousei).days(dayi).name; 
             
             % Tell user where the code is.
             disp(['mouse ' mouse ', ' day ]); 
@@ -41,8 +41,8 @@ function [] = check_stacks(parameters)
             % Establish input directory. 
             dir_preprocessed=[dir_preprocessed_base '\' mouse '\' day '\'];
             
-            % Find the correct stack list entry of days_all. 
-            stackList=days_all(mousei).days(dayi).stacks; 
+            % Find the correct stack list entry of mice_all. 
+            stackList=mice_all(mousei).days(dayi).stacks; 
             
             % If stackList is a character string (to see if 'all')
             if ischar(stackList)

@@ -11,7 +11,7 @@ function []=registration_SaveRepresentativeImages(parameters)
     dir_dataset_name = parameters.dir_dataset_name; 
     input_data_name = parameters.input_data_name;
     dir_exper = parameters.dir_exper; 
-    days_all = parameters.days_all; 
+    mice_all = parameters.mice_all; 
     skip = parameters.skip;
     pixel_rows = parameters.pixel_rows;
     pixel_cols = parameters.pixel_cols; 
@@ -23,12 +23,12 @@ function []=registration_SaveRepresentativeImages(parameters)
     disp(['Data saved in ' dir_out_base]); 
     
     % for each mouse
-    for mousei=1:size(days_all,2)
+    for mousei=1:size(mice_all,2)
         % Get the mouse name
-        mouse=days_all(mousei).mouse;
+        mouse=mice_all(mousei).mouse;
         
         % Get the mouse's dataset days
-        days_list=vertcat(days_all(mousei).days(:).name); 
+        days_list=vertcat(mice_all(mousei).days(:).name); 
         
         % Make skip always odd.
         if mod(skip,2)==0 
@@ -53,8 +53,8 @@ function []=registration_SaveRepresentativeImages(parameters)
             
             % find the list of stacks in that day (so you can find the
             % first one)
-            % Find the correct stack list entry of days_all. 
-            stackList=days_all(mousei).days(dayi).stacks; 
+            % Find the correct stack list entry of mice_all. 
+            stackList=mice_all(mousei).days(dayi).stacks; 
             
             % If stackList is a character string (to see if 'all')
             if ischar(stackList)

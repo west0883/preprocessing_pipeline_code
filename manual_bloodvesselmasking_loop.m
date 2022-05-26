@@ -13,7 +13,7 @@ function []=manual_bloodvesselmasking_loop(parameters)
     
    % Assign parameters their original names
    dir_exper = parameters.dir_exper; 
-   days_all = parameters.days_all; 
+   mice_all = parameters.mice_all; 
    channelNumber = parameters.channelNumber; 
    
    % Make a flag that says if you should continue or not, default to "don't
@@ -80,10 +80,10 @@ function []=manual_bloodvesselmasking_loop(parameters)
 
         % Cycle through mice based on the willingness of the user
         mousei=1; 
-        while mousei <= size(days_all,2) 
+        while mousei <= size(mice_all,2) 
 
             % Find the mouse name
-            mouse=days_all(mousei).mouse;
+            mouse=mice_all(mousei).mouse;
 
             % Display which mouse you're working on
             disp(['working on mouse ' mouse]); 

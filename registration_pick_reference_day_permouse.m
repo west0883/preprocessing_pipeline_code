@@ -9,7 +9,7 @@ function []=registration_pick_reference_day_permouse(parameters)
    
     % Assign parameters their original names
     dir_exper = parameters.dir_exper; 
-    days_all = parameters.days_all; 
+    mice_all = parameters.mice_all; 
     plot_sizes = parameters.plot_sizes; 
     
     % make the output directory
@@ -24,13 +24,13 @@ function []=registration_pick_reference_day_permouse(parameters)
         load([dir_out 'reference_days.mat']); 
     else  
         % if not, create a new variable for holding the reference days 
-        reference_days.mouse=cell(size(days_all,2),1);
-        reference_days.day=cell(size(days_all,2),1);
+        reference_days.mouse=cell(size(mice_all,2),1);
+        reference_days.day=cell(size(mice_all,2),1);
         
     end     
     % for each mouse 
-    for mousei=1:size(days_all,2)
-        mouse=days_all(mousei).mouse;
+    for mousei=1:size(mice_all,2)
+        mouse=mice_all(mousei).mouse;
         
         % Use a flag for determining if the "pick_reference_day"
         % function should be run.
@@ -59,12 +59,12 @@ function []=registration_pick_reference_day_permouse(parameters)
         if pick_flag==1 
             % find the directories and images for the pick_reference_day function
             % holding variable for the images to show
-            file_paths=cell(size(days_all(mousei).days,1),1); 
+            file_paths=cell(size(mice_all(mousei).days,1),1); 
 
             % put the file paths of each background image into the list
-            days_list=vertcat(days_all(mousei).days(:).name);
+            days_list=vertcat(mice_all(mousei).days(:).name);
             for dayi=1:size(days_list,1)
-                day=days_all(mousei).days(dayi).name;
+                day=mice_all(mousei).days(dayi).name;
                 file_paths{dayi}=[dir_exper 'representative images\' mouse '\' day '\bRep.mat'];
 
             end 
@@ -75,7 +75,7 @@ function []=registration_pick_reference_day_permouse(parameters)
             % Convert the dayi user input to the day name and put in the
             % variable
             reference_days.mouse{mousei}=mouse; 
-            reference_days.day{mousei}=days_all(mousei).days(dayi_output).name;
+            reference_days.day{mousei}=mice_all(mousei).days(dayi_output).name;
        
         end 
         

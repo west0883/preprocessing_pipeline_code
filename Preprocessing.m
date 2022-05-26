@@ -20,7 +20,7 @@ function []=Preprocessing(parameters)
     dir_dataset_name = parameters.dir_dataset_name; 
     input_data_name = parameters.input_data_name;
     dir_exper = parameters.dir_exper; 
-    days_all = parameters.days_all; 
+    mice_all = parameters.mice_all; 
     digitNumber = parameters.digitNumber; 
     channelNumber = parameters.channelNumber;
     skip = parameters.skip;
@@ -57,18 +57,18 @@ function []=Preprocessing(parameters)
     end
     
     % For each mouse 
-    for mousei=1:size(days_all,2)
-        mouse=days_all(mousei).mouse;
+    for mousei=1:size(mice_all,2)
+        mouse=mice_all(mousei).mouse;
         
         % Load the mask indices for that mouse
         load([dir_in_masks 'masks_m' mouse '.mat'], 'indices_of_mask'); 
         
 
         % For each day
-        for dayi=1:size(days_all(mousei).days, 2)
+        for dayi=1:size(mice_all(mousei).days, 2)
             
             % Get the day name.
-            day=days_all(mousei).days(dayi).name; 
+            day=mice_all(mousei).days(dayi).name; 
             
             % Create data input directory and cleaner output directory. 
             dir_in=CreateFileStrings(dir_dataset_name, mouse, day, []);
@@ -83,12 +83,12 @@ function []=Preprocessing(parameters)
             
             % Find if there's a stack list entry for that day. If not, set
             % to 'all' as a default. 
-            if isfield(days_all(mousei).days(dayi), 'stacks')==0
-               days_all(mousei).days(dayi).stacks='all'; 
+            if isfield(mice_all(mousei).days(dayi), 'stacks')==0
+               mice_all(mousei).days(dayi).stacks='all'; 
             end
             
-            % Find the correct stack list entry of days_all. 
-            stackList=days_all(mousei).days(dayi).stacks; 
+            % Find the correct stack list entry of mice_all. 
+            stackList=mice_all(mousei).days(dayi).stacks; 
             
             % If stackList is a character string (to see if 'all')
             if ischar(stackList)

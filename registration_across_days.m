@@ -8,7 +8,7 @@ function []=registration_across_days(parameters)
     
     % Assign parameters their original names
     dir_exper = parameters.dir_exper; 
-    days_all = parameters.days_all; 
+    mice_all = parameters.mice_all; 
     transformation = parameters.transformation; 
     configuration = parameters.configuration; 
     max_step_length = parameters.max_step_length;
@@ -35,11 +35,11 @@ function []=registration_across_days(parameters)
     
     % **Compute t-forms** 
     % For each mouse 
-    for mousei=1:size(days_all,2)
-        mouse=days_all(mousei).mouse;
+    for mousei=1:size(mice_all,2)
+        mouse=mice_all(mousei).mouse;
         
         % Get the list of days for that mouse
-        days_list=vertcat(days_all(mousei).days(:).name); 
+        days_list=vertcat(mice_all(mousei).days(:).name); 
         
         % Find the day you're supposed to register to with this mouse 
         reference_day=reference_days.day{mousei};
