@@ -58,6 +58,7 @@ function [] = delete_brain_masks(parameters)
         % If it doesn't exist, announce that & go to next mouse. 
         elseif existing_mask_flag==0 
             disp(['No masks for mouse ' mouse ]); 
+             mousei = mousei + 1;
             continue 
         end 
         
