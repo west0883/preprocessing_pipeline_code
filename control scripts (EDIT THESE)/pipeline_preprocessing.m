@@ -18,7 +18,7 @@ clear all;
 % Output Directories
 
 % Create the experiment name. This is used to name the output folder. 
-parameters.experiment_name='Motorized Treadmill';
+parameters.experiment_name='Motorized Treadmill Demonstration';
 
 % Output directory name bases
 parameters.dir_base='Y:\Sarah\Analysis\Experiments\';
@@ -55,7 +55,7 @@ parameters.mice_all = mice_all;
 % inserted accordingly. 
 
 
-parameters.dir_dataset_name={'Y:\Sarah\Data\' parameters.experiment_name, '\', 'day', '\', 'm', 'mouse number', '\stacks\'};
+parameters.dir_dataset_name={'Y:\Sarah\Data\Motorized Treadmill\', 'day', '\', 'm', 'mouse number', '\stacks\'};
 parameters.input_data_name={'0', 'stack number', '.tif' }; 
 
 % Give the number of digits that should be included in each stack number.
@@ -72,6 +72,11 @@ parameters.sampling_freq=20;
 % channel, 1= had only blue and need to find blood vessel masks for
 % hemodynamic correction. 
 parameters.channelNumber=2;
+
+% Number of pixels in the recorded image. Used to check that the 472 rig
+% did, indeed, record at the correct number of pixels (sometimes records at
+% 257 x 257 instead of 256 x 256).
+parameters.pixels = [256, 256];
 
 % Method of hemodynamics correction.
 % Options:
