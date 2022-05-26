@@ -48,7 +48,7 @@ function []=manual_masking_loop(parameters)
         load([dir_in '\bRep.mat']);
         
         % Check the size of the bRep, cut to size if needed. 
-        bRep = FixImageSixe(bRep, parameters.pixels); 
+        bRep = FixImageSize(bRep, parameters.pixels); 
 
         yDim = parameters.pixels(1);
         xDim = parameters.pixels(2);
