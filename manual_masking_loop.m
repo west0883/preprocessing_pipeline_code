@@ -33,14 +33,25 @@ function []=manual_masking_loop(parameters)
         % Display which mouse you're working on
         disp(['working on mouse ' mouse]); 
         
-        % Find the reference day
-        reference_day=reference_days.day{mousei};
+        % Find the day you're supposed to register to with this mouse 
+        ind = NaN(1,size(reference_days.mouse,1)); 
+        for i=1:size(reference_days.mouse,1)
+           ind(i)=strcmp(mouse, reference_days.mouse{i}); 
+        end
+        refdayi=find(ind); 
+        reference_day=reference_days.day{refdayi};
         
         % Define input folder based on reference day
         dir_in=[dir_in_base mouse '\' reference_day '\'];
         
         % Load that mouse's Reference bRep
         load([dir_in '\bRep.mat']);
+        
+        % Check the size of the bRep, cut to size if needed. 
+        bRep = FixImageSixe(bRep, parameters.pixels); 
+
+        yDim = parameters.pixels(1);
+        xDim = parameters.pixels(2);
         
         % Determine if a mask file for this mouse already exists.
         existing_mask_flag=isfile([dir_out 'masks_m' mouse '.mat']); 

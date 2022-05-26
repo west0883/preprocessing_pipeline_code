@@ -231,53 +231,14 @@ function []=Preprocessing(parameters)
                 
                 % ***Check if image of stack are the right size. Use just
                 % the first frame. ***
-                yDim = size(bData, 1);
-                xDim = size(bData, 2); 
-                
-                % Check fist dimension
-                if yDim ~= parameters.pixels(1) 
+                bData = FixImageSize(bData, parameters.pixels); 
+
+                % If two channels, repeat with violetdata
+                if parameters.channelNumber ==2
+                   vData = FixImageSize(vData, parameters.pixels); 
+                end 
                     
-                    % Only do this step if the pixels are 1 more than
-                    % expected, else display a message and continue to next
-                    % stack.
-                    if yDim - parameters.pixels(1) == 1
-                        
-                        disp('Fixing image y dimension.'); 
-                        
-                        % Remove very last pixel of blue data.
-                        bData(end, :, :) = []; 
-                        
-                        % If two channels, repeat with violetdata
-                        if parameters.channelNumber ==2
-                            vData(end, :, :) = [];
-                        end 
-                    else 
-                        disp(['First dimension wrong size, mouse ' mouse ', day ' day ', stack ' stack_number ]);  
-                        continue
-                    end
-                    
-                end
-                
-                % Check second dimension
-                if xDim ~= parameters.pixels(2)
-                    if xDim - parameters.pixels(1) == 1
-                        
-                        disp('Fixing image x dimension.'); 
-                        
-                        % Remove very last pixel of blue data.
-                        bData(:, end, :) = []; 
-                        
-                        % If two channels, repeat with violetdata
-                        if parameters.channelNumber ==2
-                            vData(:, end, :) = [];
-                        end 
-                        
-                    else 
-                        disp(['Second dimension wrong size, mouse ' mouse ', day ' day ', stack ' stack_number ]);  
-                        continue 
-                    end
-                end
-                
+                % Make sure dimensions are updated to desired dimensions.
                 yDim = parameters.pixels(1);
                 xDim = parameters.pixels(2);
                 
