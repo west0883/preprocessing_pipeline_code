@@ -62,6 +62,12 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
             % Load the across-day tform for that day. 
             load([dir_in_base_tforms mouse '\' day '\tform.mat']); 
             
+            % Find if there's a stack list entry for that day. If not, set
+            % to 'all' as a default. 
+            if isfield(days_all(mousei).days(dayi), 'stacks')==0
+               days_all(mousei).days(dayi).stacks='all'; 
+            end
+            
             % Find the correct stack list entry of days_all. 
             stackList=days_all(mousei).days(dayi).stacks; 
             
