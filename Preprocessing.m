@@ -14,7 +14,7 @@
 % 7. Apples filtering. 
 % 8. Saves preprocessed stacks. 
 
-function []=Preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking, filter_flag, digitNumber, minimum_frames, correction_method)
+function []=Preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name, b, a, usfac, skip, pixel_rows, pixel_cols, frames_for_spotchecking, filter_flag, digitNumber, minimum_frames, correction_method, channelNumber)
     
     % Establish base input directories
     dir_in_base_tforms=[dir_exper 'tforms across days\']; 
@@ -142,65 +142,85 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                 yDim=size(im_list(1).data,1);
                 xDim=size(im_list(1).data,2);
                 
-                
-                % ***2. Separate Channels***
-                disp('Separating channels'); 
-                
-                % Pick 2 images after the skip to compare 
-                im1=im_list(skip).data; 
-                im2=im_list(skip+1).data;
-                
                 % Get total number of images
                 nim=size(im_list,2); 
                 
-                % Figure out which is what channel
-                [first_image_channel] = DetermineChannel(im1, im2, pixel_rows, pixel_cols);
+                % ***2. Separate Channels***
                 
-                % Make two lists of which images are what channel.
-                switch first_image_channel
+                % Only if number of channels is 2. 
+                switch channelNumber
+                    case 2
+                    disp('Separating channels'); 
+
+                    % Pick 2 images after the skip to compare 
+                    im1=im_list(skip).data; 
+                    im2=im_list(skip+1).data;
+
+                    % Figure out which is what channel
+                    [first_image_channel] = DetermineChannel(im1, im2, pixel_rows, pixel_cols);
+
+                    % Make two lists of which images are what channel.
+                    switch first_image_channel
+
+                        % If the first image is blue
+                        case 'b'
+                            % Then assign every other frame starting with "skip"
+                            % to the blue list, the others to the violet list.
+                            sel470=skip:2:nim;
+                            sel405=skip+1:2:nim;
+
+                        % If the first image is violet. 
+                        case'v' 
+                            % Then assign every other frame starting with
+                            % "skip"+1 to the blue list, the others to the violet list.
+                            sel470=skip+1:2:nim; 
+                            sel405=skip:2:nim;
+                    end
+
+                    % Find the minimum stack length of the two channels; make this the "frames" number 
+                    frames=min(length(sel470),length(sel405));
+
+                    % Figure out if this frames number is long enough for
+                    % further processing. If not, quit this stack. 
+                    if frames<minimum_frames
+                       warning('This stack is too short-- will not be processed.');
+
+                       % Go to next iteration of stacki for loop.
+                       continue 
+                    end
+
+                    % Limit the frame indices for each color stack to the 
+                    % minimum number of indices (takes care of uneven image 
+                    % numbers by making them same length).
+                    sel470=sel470(1:frames); 
+                    sel405=sel405(1:frames);
+
+                    % Put respective channels into own data matrics
+                    bData=TiffreadStructureToMatrix(im_list, sel470);
+                    vData=TiffreadStructureToMatrix(im_list, sel405); 
+
+                    % Set aside images for spotcheck 
+                    spotcheck_data.initial.blue=bData(:,:, frames_for_spotchecking);
+                    spotcheck_data.initial.violet=vData(:,:, frames_for_spotchecking);
                     
-                    % If the first image is blue
-                    case 'b'
-                        % Then assign every other frame starting with "skip"
-                        % to the blue list, the others to the violet list.
-                        sel470=skip:2:nim;
-                        sel405=skip+1:2:nim;
-                    
-                    % If the first image is violet. 
-                    case'v' 
-                        % Then assign every other frame starting with
-                        % "skip"+1 to the blue list, the others to the violet list.
-                        sel470=skip+1:2:nim; 
-                        sel405=skip:2:nim;
-                end
-                
-                % Find the minimum stack length of the two channels; make this the "frames" number 
-                frames=min(length(sel470),length(sel405));
-                
-                % Figure out if this frames number is long enough for
-                % further processing. If not, quit this stack. 
-                if frames<minimum_frames
-                   warning('This stack is too short-- will not be processed.');
+                case 1 
+                   % If only one channel
                    
-                   % Go to next iteration of stacki for loop.
-                   continue 
-                end
-                
-                % Limit the frame indices for each color stack to the 
-                % minimum number of indices (takes care of uneven image 
-                % numbers by making them same length).
-                sel470=sel470(1:frames); 
-                sel405=sel405(1:frames);
-                
-                % Put respective channels into own data matrics
-                bData=TiffreadStructureToMatrix(im_list, sel470);
-                vData=TiffreadStructureToMatrix(im_list, sel405); 
-               
-                % Set aside images for spotcheck 
-                spotcheck_data.initial.blue=bData(:,:, frames_for_spotchecking);
-                spotcheck_data.initial.violet=vData(:,:, frames_for_spotchecking);
-               
-                
+                   % Get list of frames after the skip
+                   frames_list=skip:nim; 
+                  
+                    % Figure out if this frames number is long enough for
+                    % further processing. If not, quit this stack. 
+                    if frames<minimum_frames
+                       warning('This stack is too short-- will not be processed.');
+
+                       % Go to next iteration of stacki for loop.
+                       continue 
+                    end
+                   
+                 
+
+                end  
                 % ***3. Register within-stack/across stacks within a day.*** 
                 disp('Registering within days'); 
 
@@ -266,18 +286,27 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                     case 'regression' 
                         
                         % Run regressions. 
-                        [data]=HemoRegression(bData, vData);
+                        data=HemoRegression(bData, vData);
                         
                     case 'scaling'
                         
                         % Run detrend-rescale version of hemo correction
-                        
+                        % (Laurentiu's version)
+                        data=HemoCorrection(bData, vData);
                         
                     case 'vessel regression'
-                          
+                        
+                        % Establish filename of blood vessel mask.
+                        filename_vessel_mask=[dir_exper 'blood vessel masks\bloodvessel_masks_m' mouse '.mat']; 
+                    
+                        % Load blood vessel masks. 
+                        load(filename_vessel_mask, 'indices_of_mask'); 
+                        
+                        % Apply brain mask to blood vessel mask? 
+                        
                         % Run regression against extractions from blood
                         % vessel masks. 
-                        
+                        data=VesselRegression(bData, indices_of_mask, yDim, xDim); 
                         
                 end
                  % Set aside images for spotcheck 
@@ -299,6 +328,7 @@ function []=Preprocessing(days_all, dir_exper, dir_dataset_name, input_data_name
                     % Set aside images for spotcheck 
                     spotcheck_data.filtered=data(:, frames_for_spotchecking);
                 end 
+                
                 
                 % *** 8. Save preprocessed stacks***
                 disp('Saving');
