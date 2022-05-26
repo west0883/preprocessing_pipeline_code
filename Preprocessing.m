@@ -206,6 +206,12 @@ function []=Preprocessing(parameters)
                     % Find the minimum stack length of the two channels; make this the "frames" number 
                     frames=min(length(sel470),length(sel405));
 
+                    % Limit the frame indices for each color stack to the 
+                    % minimum number of indices (takes care of uneven image 
+                    % numbers by making them same length).
+                    sel470=sel470(1:frames); 
+                    sel405=sel405(1:frames);
+                    
                     % Figure out if this frames number is long enough for
                     % further processing. If not, quit this stack. 
                     if frames<minimum_frames
@@ -214,12 +220,6 @@ function []=Preprocessing(parameters)
                        % Go to next iteration of stacki for loop.
                        continue 
                     end
-
-                    % Limit the frame indices for each color stack to the 
-                    % minimum number of indices (takes care of uneven image 
-                    % numbers by making them same length).
-                    sel470=sel470(1:frames); 
-                    sel405=sel405(1:frames);
 
                     % Put respective channels into own data matrics
                     bData=TiffreadStructureToMatrix(im_list, sel470);
