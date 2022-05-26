@@ -128,6 +128,20 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
                         end 
                         
                     end 
+                    
+                    % Any filtering
+                    if parameters.filter_flag
+
+                        for i = 1:numel(frames_to_plot) 
+                            row = row + 1; 
+                            subplot(a, b, (row -1) * b + column_start + (i-1) *2); 
+
+                            if column_start + (i-1) *2 ==1
+                                ylabel('filtered');
+                            end
+                        end
+                    end
+                    
                 end
                 
                 % Reset column start to 1 for the post-hemo correction
@@ -152,20 +166,6 @@ function [] = plot_spotcheck(parameters, frames_to_plot)
                     end
                     
                     hemo_all(stacki, i, :, :) = data_matrix_filled(:,:,i); 
-                end
-                
-           
-                % Any filtering
-                if parameters.filter_flag
-                    
-                    for i = 1:numel(frames_to_plot) 
-                        row = row + 1; 
-                        subplot(a, b, (row -1) * b + column_start + (i-1) *2); 
-                  
-                        if column_start + (i-1) *2 ==1
-                            ylabel('filtered');
-                        end
-                    end
                 end
                 
                 % Add global title.
