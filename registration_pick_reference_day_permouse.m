@@ -9,8 +9,11 @@ function []=registration_pick_reference_day_permouse(parameters)
    
     % Assign parameters their original names
     dir_exper = parameters.dir_exper; 
-    mice_all = parameters.mice_all; 
     plot_sizes = parameters.plot_sizes; 
+    
+    % Load the ORIGINAL mice_all 
+    load([dir_exper 'mice_all.mat']); 
+    mice_all_original = mice_all;
     
     % make the output directory
     dir_out=[dir_exper 'representative images\']; 
@@ -24,13 +27,13 @@ function []=registration_pick_reference_day_permouse(parameters)
         load([dir_out 'reference_days.mat']); 
     else  
         % if not, create a new variable for holding the reference days 
-        reference_days.mouse=cell(size(mice_all,2),1);
-        reference_days.day=cell(size(mice_all,2),1);
+        reference_days.mouse=cell(size(mice_all_original,2),1);
+        reference_days.day=cell(size(mice_all_original,2),1);
         
     end     
     % for each mouse 
-    for mousei=1:size(mice_all,2)
-        mouse=mice_all(mousei).name;
+    for mousei=1:size(mice_all_original,2)
+        mouse=mice_all_original(mousei).name;
         
         % Use a flag for determining if the "pick_reference_day"
         % function should be run.
@@ -59,12 +62,12 @@ function []=registration_pick_reference_day_permouse(parameters)
         if pick_flag==1 
             % find the directories and images for the pick_reference_day function
             % holding variable for the images to show
-            file_paths=cell(size(mice_all(mousei).days,1),1); 
+            file_paths=cell(size(mice_all_original(mousei).days,1),1); 
 
             % put the file paths of each background image into the list
-            days_list=vertcat(mice_all(mousei).days(:).name);
+            days_list=vertcat(mice_all_original(mousei).days(:).name);
             for dayi=1:size(days_list,1)
-                day=mice_all(mousei).days(dayi).name;
+                day=mice_all_original(mousei).days(dayi).name;
                 file_paths{dayi}=[dir_exper 'representative images\' mouse '\' day '\bRep.mat'];
 
             end 
@@ -75,7 +78,7 @@ function []=registration_pick_reference_day_permouse(parameters)
             % Convert the dayi user input to the day name and put in the
             % variable
             reference_days.mouse{mousei}=mouse; 
-            reference_days.day{mousei}=mice_all(mousei).days(dayi_output).name;
+            reference_days.day{mousei}=mice_all_original(mousei).days(dayi_output).name;
        
         end 
         

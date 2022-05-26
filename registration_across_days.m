@@ -60,50 +60,42 @@ function []=registration_across_days(parameters)
             % make a dir_in and dir_out folder name for each day
             dir_in = [dir_in_base mouse '\' day '\']; 
             dir_out= [dir_out_base mouse '\' day '\']; 
-            
-            % See if a tform file already exists; skip if so 
-%             registration_flag=isfile([dir_out 'tform.mat']);
-%             if registration_flag==1
-%                 % If the tform has already been calculated for this day,
-%                 % skip it.
-%             elseif registration_flag==0
-                % If it doesn't exist yet, continue. 
-                
-                % Create the output folder 
-                mkdir(dir_out); 
-                
-                % See if this day is the reference day
-                if strcmp(day, reference_day)
-                    
-                    % If this is the reference day, make tform empty
-                    tform=[];
 
-                else
-                    % If this is NOT the reference day, perform the
-                    % registration
-                    
-                    % Load day's bRep
-                    load([dir_in 'bRep.mat']);
-                    
-                    % Perform registration.                 
-                     tform = imregtform(bRep, Reference_bRep, transformation, optimizer, metric);
-                    
-                    % Perform a check and save it in the folder
-                        % Apply the transform to the bRep
-                        result=imwarp(bRep,tform,'OutputView',imref2d(size(Reference_bRep))); 
-                        
-                        % Plot both images together before and after registration 
-                        figure; 
-                        subplot(1,2,1); imshowpair(bRep, Reference_bRep); title('before')
-                        subplot(1,2,2); imshowpair(result,Reference_bRep); title('after')
-                        suptitle([mouse ', ' day])
-                        % Save the check figure 
-                        savefig([dir_out 'before_and_after.fig']);  
-                end
-                % Save the tform for each day (including empy tform variables, 
-                % which makes the logic easier in later steps) 
-                save([dir_out 'tform.mat'], 'tform');         
-            %end           
+            % Create the output folder 
+            mkdir(dir_out); 
+
+            % See if this day is the reference day
+            if strcmp(day, reference_day)
+
+                % If this is the reference day, make tform empty
+                tform=[];
+
+            else
+                % If this is NOT the reference day, perform the
+                % registration
+
+                % Load day's bRep
+                load([dir_in 'bRep.mat']);
+
+                % Perform registration.                 
+                 tform = imregtform(bRep, Reference_bRep, transformation, optimizer, metric);
+
+                % Perform a check and save it in the folder
+                    % Apply the transform to the bRep
+                    result=imwarp(bRep,tform,'OutputView',imref2d(size(Reference_bRep))); 
+
+                    % Plot both images together before and after registration 
+                    figure; 
+                    subplot(1,2,1); imshowpair(bRep, Reference_bRep); title('before')
+                    subplot(1,2,2); imshowpair(result,Reference_bRep); title('after')
+                    suptitle([mouse ', ' day])
+                    % Save the check figure 
+                    savefig([dir_out 'before_and_after.fig']);  
+            end
+            % Save the tform for each day (including empy tform variables, 
+            % which makes the logic easier in later steps) 
+            save([dir_out 'tform.mat'], 'tform');         
+            
         end 
     end
 end
