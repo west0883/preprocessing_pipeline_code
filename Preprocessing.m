@@ -218,6 +218,8 @@ function []=Preprocessing(parameters)
                     % Set aside images for spotcheck 
                     spotcheck_data.initial.blue=bData(:,:, frames_for_spotchecking);
                 end
+
+                clear im_list;
                 
                 % ***3. Register within-stack/across stacks within a day.***
                 disp('Registering within days'); 
