@@ -22,13 +22,13 @@ parameters.experiment_name='Random Motorized Treadmill';
 
 % Output directory name bases
 parameters.dir_base='Y:\Sarah\Analysis\Experiments\';
-parameters.dir_exper=[parameters.dir_base parameters.experiment_name '\']; 
+parameters.dir_exper=[parameters.dir_base parameters.experiment_name '\preprocessing\']; 
 
 % *********************************************************
 % Data to preprocess
 
 % (DON'T EDIT). Load the "mice_all" variable you've created with "create_mice_all.m"
-load([parameters.dir_exper 'mice_all.mat']);
+load([parameters.dir_base parameters.experiment_name '\mice_all.mat']);
 
 % Add mice_all to parameters structure.
 parameters.mice_all = mice_all; 
