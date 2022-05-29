@@ -39,8 +39,8 @@ parameters.mice_all = mice_all;
 % Ex cont: stackList=ListStacks(numberVector,digitNumber); 
 % Ex cont: mice_all(1).stacks(1)=stackList;
 
-parameters.mice_all = parameters.mice_all([3]); 
-parameters.mice_all(1).days =parameters.mice_all(1).days(2:3);
+parameters.mice_all = parameters.mice_all([7:8]); 
+%parameters.mice_all(1).days =parameters.mice_all(1).days(2:3);
 
 % Include stacks from a "spontaneous" field of mice_all?
 parameters.use_spontaneous_also = true;
@@ -55,7 +55,7 @@ parameters.use_spontaneous_also = true;
 % day, or stack number will be. If you concatenated this as a sigle string,
 % it should create a file name, with the correct mouse/day/stack name 
 % inserted accordingly. 
-parameters.dir_dataset_name={'Y:\Sarah\Data\' parameters.experiment_name, '\', 'day', '\', 'mouse number', '\stacks\0', 'stack number', '\'};
+parameters.dir_dataset_name={'Y:\Sarah\Data\' parameters.experiment_name, '\', 'day', '\m', 'mouse number', '\stacks\0', 'stack number', '\'};
 %parameters.input_data_name={'.tif'};
 parameters.input_data_name={'0', 'stack number', '_MMStack_Pos0.ome.tif' }; 
 
