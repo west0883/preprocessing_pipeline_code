@@ -262,10 +262,12 @@ parameters.dir_in_base = [parameters.dir_exper 'fully preprocessed stacks\'];
 check_stacks(parameters); 
 
 %% Plot & save a subset of the spotcheck frames. 
-frames_to_plot = [1, 3, 5]; 
+parameters.frames_to_plot = [1, 3, 5]; 
+parameters.color_range = [0 3000];
+parameters.color_range_hemocorrected = [-200 200];
 
 % Set up input/output folder
 parameters.dir_in_base = [parameters.dir_exper 'fully preprocessed stacks\'];
 
-plot_spotcheck(parameters, frames_to_plot); 
+plot_spotcheck(parameters); 
 
