@@ -136,6 +136,15 @@ function []=Preprocessing(parameters)
                 
                 % Get total number of images
                 nim=size(im_list,2); 
+
+                % Figure out if this frames number is long enough for
+                % further processing. If not, quit this stack. 
+                if (nim - skip)/channelNumber < minimum_frames
+                     warning('This stack is too short-- will not be processed.');
+
+                   % Go to next iteration of stacki for loop.
+                   continue 
+                end 
                 
                 % ***2. Separate Channels***
                 
@@ -178,15 +187,6 @@ function []=Preprocessing(parameters)
                     sel470=sel470(1:frames); 
                     sel405=sel405(1:frames);
                     
-                    % Figure out if this frames number is long enough for
-                    % further processing. If not, quit this stack. 
-                    if frames<minimum_frames
-                       warning('This stack is too short-- will not be processed.');
-
-                       % Go to next iteration of stacki for loop.
-                       continue 
-                    end
-
                     % Put respective channels into own data matrics
                     bData = cell2mat({im_list(sel470).data});
                     bData = reshape(bData, yDim, xDim, []);
@@ -207,14 +207,6 @@ function []=Preprocessing(parameters)
                    % Get the number of frames after the skip
                    frames=length(frames_list); 
                    
-                    % Figure out if this frames number is long enough for
-                    % further processing. If not, quit this stack. 
-                    if frames<minimum_frames
-                       warning('This stack is too short-- will not be processed.');
-
-                       % Go to next iteration of stacki for loop.
-                       continue 
-                    end
                     bData = cell2mat({im_list(frames_list).data});
                     bData = reshape(bData, yDim, xDim, []);
                     
