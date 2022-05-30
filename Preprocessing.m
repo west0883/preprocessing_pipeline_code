@@ -109,7 +109,8 @@ function []=Preprocessing(parameters)
                 
                 % Display what mouse, day, and stack you're on
                 disp(['mouse ' mouse ', day ' day ', stack ' stack_number]);
-                
+                tic 
+
                 % *** 1. Read in tiffs.***
                 disp('Reading tiffs'); 
 
@@ -394,7 +395,9 @@ function []=Preprocessing(parameters)
                 save([dir_out 'data' stack_number '.mat'], 'data', '-v7.3');
                 
                 % Save spotchecking data
-                save([dir_out 'spotcheck_data' stack_number '.mat'], 'spotcheck_data', '-v7.3');  
+                save([dir_out 'spotcheck_data' stack_number '.mat'], 'spotcheck_data', '-v7.3');
+
+                toc;
             end
         end 
     end 
