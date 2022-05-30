@@ -26,7 +26,7 @@ function [registered_stack] =RegisterStack_WithPreviousDFTShifts(tforms, stack_t
     % Create a Fourier-transformed version of the image you want to
     % register, keeping with the name of the variable used in the
     % dftregistration code to try to keep comparisons simple
-    buf2ft=fft2(im);  
+    buf2ft=fft2(stack_to_register);  
     
     % find dimensions of images needed for the calulations
     % (from dftregistration.m)
@@ -42,7 +42,7 @@ function [registered_stack] =RegisterStack_WithPreviousDFTShifts(tforms, stack_t
 
         elseif (usfac == 0)
             vGreg = buf2ft*exp(1i*tforms(1, :));
-            
+
         end
 
         %Get the absolute value of the inverse fourier transform of the
