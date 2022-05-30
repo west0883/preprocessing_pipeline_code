@@ -187,9 +187,12 @@ function []=Preprocessing(parameters)
                     end
 
                     % Put respective channels into own data matrics
-                    bData=TiffreadStructureToMatrix(im_list, sel470);
-                    vData=TiffreadStructureToMatrix(im_list, sel405); 
+                    bData = cell2mat({im_list(sel470).data});
+                    bData = reshape(bData, yDim, xDim, []);
 
+                    vData = cell2mat({im_list(sel405).data});
+                    vData = reshape(vData, yDim, xDim, []);
+                   
                     % Set aside images for spotcheck 
                     spotcheck_data.initial.blue=bData(:,:, frames_for_spotchecking);
                     spotcheck_data.initial.violet=vData(:,:, frames_for_spotchecking);
