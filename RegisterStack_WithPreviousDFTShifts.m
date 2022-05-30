@@ -37,17 +37,17 @@ function [registered_stack] =RegisterStack_WithPreviousDFTShifts(tforms, stack_t
     
         % calculate violet registered image
         if (usfac > 0)
-            vGreg = buf2ft.*exp(1i*2*pi*(-tforms(2, :)*Nr/nr-tforms(3, :)*Nc/nc));
-            vGreg = vGreg*exp(1i*tforms(1, :));
+            registered_stack = buf2ft.*exp(1i*2*pi*(-tforms(2, :)*Nr/nr-tforms(3, :)*Nc/nc));
+            registered_stack = registered_stack*exp(1i*tforms(1, :));
 
         elseif (usfac == 0)
-            vGreg = buf2ft*exp(1i*tforms(1, :));
+            registered_stack = buf2ft*exp(1i*tforms(1, :));
 
         end
 
         %Get the absolute value of the inverse fourier transform of the
         %registered images.
-        registered_stack = abs(ifft2(vGreg));
+        registered_stack = abs(ifft2(registered_stack));
         
         
 end 
