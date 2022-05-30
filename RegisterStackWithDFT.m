@@ -38,6 +38,8 @@ function [registered_stack, all_tforms]=RegisterStackWithDFT(reference_image, st
     % Apply the 2D Fourier transform to the frame/image.
     fim=fft2(stack_to_register); 
     
+    clear stack_to_register reference_image;
+    
     % Use dftregistration function to align the fourier transform of
     % the current BLUE image with the fourier transform of the
     % background/reference image of the reference BLUE image
@@ -52,6 +54,8 @@ function [registered_stack, all_tforms]=RegisterStackWithDFT(reference_image, st
 
         registered_stack(:,:,t) = Greg;
     end 
+
+    clear fim fRef; 
 
     % Perform inferse Fourier as well.
     registered_stack =abs(ifft2(registered_stack));
