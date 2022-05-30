@@ -214,9 +214,8 @@ function []=Preprocessing(parameters)
                        % Go to next iteration of stacki for loop.
                        continue 
                     end
-                    
-                    % Put data into data matrix
-                    bData=TiffreadStructureToMatrix(im_list, frames_list);
+                    bData = cell2mat({im_list(frames_list).data});
+                    bData = reshape(bData, yDim, xDim, []);
                     
                     % Set aside images for spotcheck 
                     spotcheck_data.initial.blue=bData(:,:, frames_for_spotchecking);
