@@ -49,9 +49,11 @@ function [registered_stack, all_tforms]=RegisterStackWithDFT(reference_image, st
         % Grab variables from "output" that you'll need to find the registered VIOLET image
         % From dftregistration code: output=[error,diffphase,row_shift,col_shift];
         all_tforms(:, t)=output(2:4); 
-        
-        % Perform inferse Fourier as well.
-        registered_stack(:,:,t)=abs(ifft2(Greg));
+
+        registered_stack(:,:,t) = Greg;
     end 
+
+    % Perform inferse Fourier as well.
+    registered_stack =abs(ifft2(registered_stack));
 
 end 
