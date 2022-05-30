@@ -382,6 +382,8 @@ function []=Preprocessing(parameters)
                         % vessel masks. 
                         data=VesselRegression(bData, vessel_masks); 
                 end
+                clear bData vData;
+
                 % Set aside images for spotcheck 
                 spotcheck_data.hemodynamicscorrected=data(:, frames_for_spotchecking);
                 
@@ -393,9 +395,11 @@ function []=Preprocessing(parameters)
                 
                 % Save resulting stacks. 
                 save([dir_out 'data' stack_number '.mat'], 'data', '-v7.3');
+                clear data;
                 
                 % Save spotchecking data
                 save([dir_out 'spotcheck_data' stack_number '.mat'], 'spotcheck_data', '-v7.3');
+                clear spotcheck data.
 
                 toc;
             end
