@@ -40,7 +40,9 @@ parameters.mice_all = mice_all;
 % Ex cont: mice_all(1).stacks(1)=stackList;
 
 parameters.mice_all = parameters.mice_all([7:8]); 
-%parameters.mice_all(1).days =parameters.mice_all(1).days(2:3);
+parameters.mice_all(1).days = parameters.mice_all(1).days(4:end);
+parameters.mice_all(1).days(1).stacks = [7:15];
+
 
 % Include stacks from a "spontaneous" field of mice_all?
 parameters.use_spontaneous_also = true;
@@ -171,7 +173,7 @@ parameters.usfac=10;
 % Saves a representative blue-channel image from each day of recording.
 % You'll use this to align data within days, and later you'll pick one of
 % these per mouse as the image to use to draw the mask and align data
-% across imaging days. gi
+% across imaging days.
 
 % (DON'T EDIT). Run code.
 registration_SaveRepresentativeImages(parameters); 
