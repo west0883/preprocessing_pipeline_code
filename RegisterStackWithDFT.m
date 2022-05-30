@@ -31,28 +31,25 @@ function [registered_stack, all_tforms]=RegisterStackWithDFT(reference_image, st
     % Initialize output matrices
     % The "all_tforms" will hold the diffphase, row shift, and column shift for each frame 
     all_tforms=NaN(3,frames); 
+   
     % The registered stack will be the same size as the input stack
     registered_stack=NaN(size(stack_to_register)); 
+  
+    % Apply the 2D Fourier transform to the frame/image.
+    fim=fft2(stack_to_register); 
+    
+    % Use dftregistration function to align the fourier transform of
+    % the current BLUE image with the fourier transform of the
+    % background/reference image of the reference BLUE image
     
     %for each frame of the stack as indexed by variable t
     parfor t=1:frames
-        
-        % Find the frame/image to work with 
-        im=stack_to_register(:,:,t);  
-        
-        % Apply the 2D Fourier transform to the frame/image.
-        fim=fft2(im); 
-        
-        % Use dftregistration function to align the fourier transform of
-        % the current BLUE image with the fourier transform of the
-        % background/reference image of the reference BLUE image
-    
-        [output , Greg] = dftregistration(fRef,fim,usfac);
+        [output , Greg] = dftregistration(fRef, fim(:,:,t), usfac);
 
         % Grab variables from "output" that you'll need to find the registered VIOLET image
         % From dftregistration code: output=[error,diffphase,row_shift,col_shift];
-        
         all_tforms(:, t)=output(2:4); 
+        
         % Perform inferse Fourier as well.
         registered_stack(:,:,t)=abs(ifft2(Greg));
     end 
