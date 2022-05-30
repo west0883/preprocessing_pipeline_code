@@ -23,9 +23,6 @@
     
 function [registered_stack] =RegisterStack_WithPreviousDFTShifts(tforms, stack_to_register, usfac) 
     
-    % Initialize output registered stack
-    registered_stack=NaN(size(stack_to_register)); 
-    
     % Find number of frames of stack
     frames=size(stack_to_register,3);
 
@@ -33,28 +30,38 @@ function [registered_stack] =RegisterStack_WithPreviousDFTShifts(tforms, stack_t
     % register, keeping with the name of the variable used in the
     % dftregistration code to try to keep comparisons simple
     buf2ft=fft2(stack_to_register);  
-
-    % find dimensions of images needed for the calulations
-    % (from dftregistration.m)
-    [nr,nc]=size(buf2ft, [1 2]);
-    Nr = ifftshift(-fix(nr/2):ceil(nr/2)-1);
-    Nc = ifftshift(-fix(nc/2):ceil(nc/2)-1);
-    [Nc,Nr] = meshgrid(Nc,Nr);
-    Nc = repmat(Nc, [1 1 frames]);
-    Nr = repmat(Nr, [1 1 frames]);
-
-    diffphase = permute(repmat(tforms(1,:), [256 1 256]), [1 3 2]);
-    row_shift = permute(repmat(tforms(2,:), [256 1 256]), [1 3 2]);
-    col_shift = permute(repmat(tforms(3,:), [256 1 256]), [1 3 2]);
+    clear stack_to_register;
 
     % calculate violet registered image
     if (usfac > 0)
+
+        % find dimensions of images needed for the calulations
+        % (from dftregistration.m)
+        [nr,nc]=size(buf2ft, [1 2]);
+        Nr = ifftshift(-fix(nr/2):ceil(nr/2)-1);
+        Nc = ifftshift(-fix(nc/2):ceil(nc/2)-1);
+        [Nc,Nr] = meshgrid(Nc,Nr);
+        Nc = repmat(Nc, [1 1 frames]);
+        Nr = repmat(Nr, [1 1 frames]);
+
+        row_shift = permute(repmat(tforms(2,:), [256 1 256]), [1 3 2]);
+        col_shift = permute(repmat(tforms(3,:), [256 1 256]), [1 3 2]);
+
+        % First step
         registered_stack = buf2ft .* exp(1i*2*pi*(-row_shift.*Nr/nr-col_shift.*Nc/nc));
-        registered_stack = registered_stack*exp(1i.*diffphase);
+
+        clear row_shift col_shift Nr Nc;
+        
+        % Second step
+        diffphase = permute(repmat(tforms(1,:), [256 1 256]), [1 3 2]);
+        registered_stack = registered_stack.*exp(1i.*diffphase);
+
     elseif (usfac == 0)
+        diffphase = permute(repmat(tforms(1,:), [256 1 256]), [1 3 2]);
         registered_stack = buf2ft .* exp(1i*diffphase);
     end
-   
+    clear diffphase;
+
     %Get the absolute value of the inverse fourier transform of the
     %registered images.
     registered_stack = abs(ifft2(registered_stack));
