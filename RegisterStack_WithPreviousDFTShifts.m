@@ -29,8 +29,7 @@ function [registered_stack] =RegisterStack_WithPreviousDFTShifts(tforms, stack_t
     % Create a Fourier-transformed version of the image you want to
     % register, keeping with the name of the variable used in the
     % dftregistration code to try to keep comparisons simple
-    buf2ft=fft2(stack_to_register);  
-    clear stack_to_register;
+    buf2ft=fft2(stack_to_register); 
 
     % calculate violet registered image
     if (usfac > 0)
