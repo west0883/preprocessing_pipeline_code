@@ -159,7 +159,7 @@ parameters.filter_flag=true;
 % consider it a valid stack for full processing. (If less than this, code 
 % will assume something very bad happened and won't continue processing the
 % stack, will jump to the next stack.) 
-parameters.minimum_frames=5999; 
+parameters.minimum_frames=5980; 
 
 % Give list of individual frames to save from intermediate steps of
 % preprocessing from each stack to use for spot checking.
