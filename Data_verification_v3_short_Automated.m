@@ -1,6 +1,8 @@
 
 % Inputs:
 % day -- string; the "stacks" directory where all the data is saved
+% Ex: day = 'Y:\Sarah\Data\Random Motorized Treadmill\012122\1088\stacks'
+% roi_1_mask = 
 
 function [ ] = Data_verification_v3_short_Automated(day, roi_1_mask, roi_2_mask)
     
@@ -114,30 +116,25 @@ function [ ] = Data_verification_v3_short_Automated(day, roi_1_mask, roi_2_mask)
             disp('Time to hemocorrect')
             toc    
     
-            % Create placeholdes for ROI data
+            % **Start extraction**
             tic
-            bROI_1=zeros(1,size(bData_3D,3));
-            bROI_2=zeros(1,size(bData_3D,3));
-            vROI_1=zeros(1,size(vData_3D,3));
-            vROI_2=zeros(1,size(vData_3D,3));
-            hROI_1=zeros(1,size(hemo_Data_3D,3));
-            hROI_2=zeros(1,size(hemo_Data_3D,3));
-    
-            % Iterate extraction of data from ROIs
-            for frame=1:size(hemo_Data_3D,3)
-                im=squeeze(bData_3D(:,:,frame));
-                bROI_1(:,frame)=mean(im(roi_1_mask==1));
-                bROI_2(:,frame)=mean(im(roi_2_mask==1));
-    
-                im=squeeze(vData_3D(:,:,frame));
-                vROI_1(:,frame)=mean(im(roi_1_mask==1));
-                vROI_2(:,frame)=mean(im(roi_2_mask==1));
-    
-                im=squeeze(hemo_Data_3D(:,:,frame));
-                hROI_1(:,frame)=mean(im(roi_1_mask==1));
-                hROI_2(:,frame)=mean(im(roi_2_mask==1));
-            end
-    
+
+            % Reshape roi masks.
+            roi_1_mask_vector = reshape(roi_1_mask, 1,  []);
+            roi_2_mask_vector = reshape(roi_2_mask, 1, []);
+
+           % Extract data with matrix multiplication.
+
+            bROI_1 = (roi_1_mask_vector * bData)./sum(roi_1_mask_vector);
+            bROI_2 = (roi_2_mask_vector * bData)./sum(roi_2_mask_vector);
+
+            vROI_1 = (roi_1_mask_vector * vData)./sum(roi_1_mask_vector);
+            vROI_2 = (roi_2_mask_vector * vData)./sum(roi_2_mask_vector);
+
+            hROI_1 = (roi_1_mask_vector * hemo_Data)./sum(roi_1_mask_vector);
+            hROI_2 = (roi_2_mask_vector * hemo_Data)./sum(roi_2_mask_vector);
+            
+         
             % Collect background image to check/plot later
             bCheck=bData_3D(:,:,1);
             vCheck=vData_3D(:,:,1);
@@ -223,6 +220,8 @@ function [ ] = Data_verification_v3_short_Automated(day, roi_1_mask, roi_2_mask)
     
             % Calculate mean fluorescence levels inside both ROIs for both blue and
             % violet images
+
+            % [Why only the first 600 frames? You're not plotting this, and you need to know the value across the whole stack, right?]
             b_brain_mean=round(mean(bROI_1(1:600)));
     
             v_brain_mean=round(mean(vROI_1(1:600)));
