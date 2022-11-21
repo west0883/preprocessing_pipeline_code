@@ -13,8 +13,8 @@ function []=manual_masking_loop(parameters)
     mice_all = parameters.mice_all; 
     
     % Establish input and output folders 
-    dir_in_base=[dir_exper 'representative images\'];
-    dir_out=[dir_exper 'masks\']; 
+    dir_in_base = [dir_exper 'representative images\'];
+    dir_out = [dir_exper 'masks\']; 
     mkdir(dir_out); 
 
     % Display where data is being saved for user
@@ -24,25 +24,25 @@ function []=manual_masking_loop(parameters)
     load([dir_in_base '\reference_days.mat']); 
         
     % Cycle through mice based on the willingness of the user
-    mousei=1; 
+    mousei = 1; 
     while mousei <= size(mice_all,2) 
         
         % Find the mouse name
-        mouse=mice_all(mousei).name;
+        mouse = mice_all(mousei).name;
         
         % Display which mouse you're working on
         disp(['working on mouse ' mouse]); 
         
         % Find the day you're supposed to register to with this mouse 
         ind = NaN(1,size(reference_days.mouse,1)); 
-        for i=1:size(reference_days.mouse,1)
-           ind(i)=strcmp(mouse, reference_days.mouse{i}); 
+        for i = 1:size(reference_days.mouse,1)
+           ind(i) = strcmp(mouse, reference_days.mouse{i}); 
         end
-        refdayi=find(ind); 
-        reference_day=reference_days.day{refdayi};
+        refdayi = find(ind); 
+        reference_day = reference_days.day{refdayi};
         
         % Define input folder based on reference day
-        dir_in=[dir_in_base mouse '\' reference_day '\'];
+        dir_in = [dir_in_base mouse '\' reference_day '\'];
         
         % Load that mouse's Reference bRep
         load([dir_in '\bRep.mat']);
@@ -54,14 +54,14 @@ function []=manual_masking_loop(parameters)
         xDim = parameters.pixels(2);
         
         % Determine if a mask file for this mouse already exists.
-        existing_mask_flag=isfile([dir_out 'masks_m' mouse '.mat']); 
+        existing_mask_flag = isfile([dir_out 'masks_m' mouse '.mat']); 
         
         % If it does exist already, load the mask file
-        if existing_mask_flag==1 
+        if existing_mask_flag == 1 
            load([dir_out 'masks_m' mouse '.mat']); 
             
         % If it doesn't exist, 
-        elseif existing_mask_flag==0 
+        elseif existing_mask_flag == 0 
             % Make a starting masks variable that's empty
             masks=[];
         end 
@@ -71,7 +71,7 @@ function []=manual_masking_loop(parameters)
         existing_masks=masks;
         
         % ***Run the function that runs the masking itself***
-        [masks, indices_of_mask]=ManualMasking(bRep, existing_masks);     
+        [masks, indices_of_mask] = ManualMasking(bRep, existing_masks);     
         
         % Make a version of "masks" that puts all the masks on the same
         % plane.
@@ -84,13 +84,13 @@ function []=manual_masking_loop(parameters)
         close all; 
         
         % Ask if the user wants to keep working
-        user_answer1= inputdlg('Do you want to work on the next mouse? 1=Y, 0=N'); 
-        answer1=str2num(user_answer1{1});
+        user_answer1 = inputdlg('Do you want to work on the next mouse? 1=Y, 0=N'); 
+        answer1 = str2num(user_answer1{1});
         
         % If the user says yes,
-        if answer1==1
+        if answer1 == 1 
             % Increase the valuse of mousei and continue 
-            mousei=mousei+1; 
+            mousei = mousei+1; 
         else
             % If the user says anything else, break the while loop so
             % another mouse isn't started 
