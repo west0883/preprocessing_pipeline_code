@@ -6,46 +6,13 @@
 % Let's you keep adding masks until you say you're done. You can return to
 % it. 
 
-function []=manual_masking_loop(parameters)
+% Is run with RunAnalysis
+function [parameters] = manual_masking_loop(parameters)
     
-    % Assign parameters their original names
-    dir_exper = parameters.dir_exper; 
-    mice_all = parameters.mice_all; 
     
-    % Establish input and output folders 
-    dir_in_base = [dir_exper 'representative images\'];
-    dir_out = [dir_exper 'masks\']; 
-    mkdir(dir_out); 
-
-    % Display where data is being saved for user
-    disp(['data saved in ' dir_out]); 
-    
-    % Load reference days
-    load([dir_in_base '\reference_days.mat']); 
-        
     % Cycle through mice based on the willingness of the user
     mousei = 1; 
     while mousei <= size(mice_all,2) 
-        
-        % Find the mouse name
-        mouse = mice_all(mousei).name;
-        
-        % Display which mouse you're working on
-        disp(['working on mouse ' mouse]); 
-        
-        % Find the day you're supposed to register to with this mouse 
-        ind = NaN(1,size(reference_days.mouse,1)); 
-        for i = 1:size(reference_days.mouse,1)
-           ind(i) = strcmp(mouse, reference_days.mouse{i}); 
-        end
-        refdayi = find(ind); 
-        reference_day = reference_days.day{refdayi};
-        
-        % Define input folder based on reference day
-        dir_in = [dir_in_base mouse '\' reference_day '\'];
-        
-        % Load that mouse's Reference bRep
-        load([dir_in '\bRep.mat']);
         
         % Check the size of the bRep, cut to size if needed. 
         bRep = FixImageSize(bRep, parameters.pixels); 
@@ -63,12 +30,12 @@ function []=manual_masking_loop(parameters)
         % If it doesn't exist, 
         elseif existing_mask_flag == 0 
             % Make a starting masks variable that's empty
-            masks=[];
+            masks = [];
         end 
         
         % Rename existing masks so they're not confused with the new ones
         % that will be drawn.
-        existing_masks=masks;
+        existing_masks = masks;
         
         % ***Run the function that runs the masking itself***
         [masks, indices_of_mask] = ManualMasking(bRep, existing_masks);     
