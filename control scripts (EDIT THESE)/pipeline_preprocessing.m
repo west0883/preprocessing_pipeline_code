@@ -39,10 +39,9 @@ parameters.mice_all = mice_all;
 % Ex cont: stackList=ListStacks(numberVector,digitNumber); 
 % Ex cont: mice_all(1).stacks(1)=stackList;
 
-parameters.mice_all = parameters.mice_all([7:8]); 
-parameters.mice_all(1).days = parameters.mice_all(1).days(4:end);
-parameters.mice_all(1).days(1).stacks = [7:15];
-
+parameters.mice_all = parameters.mice_all([7:8]); %8 
+parameters.mice_all(1).days = parameters.mice_all(1).days(9); % 
+parameters.mice_all(2).days = parameters.mice_all(2).days(9);
 
 % Include stacks from a "spontaneous" field of mice_all?
 parameters.use_spontaneous_also = true;
@@ -221,6 +220,24 @@ registration_Manual_Redo(redo, parameters);
 %% Draw masks (Has interactive steps)
 % Only need to do once per mouse. 
 % [Add instructions here.]
+%    dir_in_base = [dir_exper 'representative images\'];
+%     dir_out = [dir_exper 'masks\']; 
+% 
+%     % Load reference days
+%     load([dir_in_base '\reference_days.mat']);
+ % Define input folder based on reference day
+%         dir_in = [dir_in_base mouse '\' reference_day '\'];
+%         
+%         % Load that mouse's Reference bRep
+%         load([dir_in '\bRep.mat']);
+%Inputs
+% mask file (creates on first run, if doesn't exist already)
+
+% representative image for mouse
+
+% Outputs
+% new mask file (should be the same as input, otherwise you are starting
+% over fresh each time)
 
 % (DON'T EDIT). Run code.
 manual_masking_loop(parameters);
