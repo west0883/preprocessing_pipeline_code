@@ -57,6 +57,7 @@ parameters.use_spontaneous_also = true;
 % it should create a file name, with the correct mouse/day/stack name 
 % inserted accordingly. 
 parameters.dir_dataset_name={'Y:\Sarah\Data\' parameters.experiment_name, '\', 'day', '\m', 'mouse number', '\stacks\0', 'stack number', '\'};
+parameters.dir_dataset_base = ['Y:\Sarah\Data\' parameters.experiment_name, '\'];
 %parameters.input_data_name={'.tif'};
 parameters.input_data_name={'0', 'stack number', '_MMStack_Pos0.ome.tif' }; 
 
@@ -94,16 +95,16 @@ parameters.blue_brighter = true;
 % calculates everything as DF/F.
 % 'vessel regression'-- regresses (blue) pixels against masks drawn from
 % blood vessels in the same (blue) channel. 
-parameters.correction_method='regression';
+parameters.correction_method ='regression';
 
 % Number of initial frames to skip, allows for brightness/image
 % stabilization of camera
-parameters.skip=1200; 
+parameters.skip = 1200; 
 
 % Pixel ranges for checking brightness to determine which channel is which.
 % Is a portion of the brain. 
-parameters.pixel_rows=110:160;
-parameters.pixel_cols=[50:100 150:200]; 
+parameters.pixel_rows = 110:160;
+parameters.pixel_cols = [50:100 150:200]; 
 
 % Representative images parameters.
 
@@ -173,6 +174,32 @@ parameters.usfac=10;
 % You'll use this to align data within days, and later you'll pick one of
 % these per mouse as the image to use to draw the mask and align data
 % across imaging days.
+
+% **** needs to take from only the first stack***
+
+% Always clear loop list first. 
+if isfield(parameters, 'loop_list')
+parameters = rmfield(parameters,'loop_list');
+end
+
+% Iterators
+parameters.loop_list.iterators = {'mouse', {'loop_variables.mice_all(:).name'}, 'mouse_iterator'; 
+               'day', {'loop_variables.mice_all(', 'mouse_iterator', ').days(:).name'}, 'day_iterator';
+               'stack', {'[loop_variables.mice_all(',  'mouse_iterator', ').days(', 'day_iterator', ').stacks; loop_variables.mice_all(',  'mouse_iterator', ').days(', 'day_iterator', ').spontaneous]'}, 'stack_iterator'};
+
+% Input
+parameters.loop_list.things_to_load.stack_data.dir = {[parameters.dir_dataset_base] '\', 'day', '\m', 'mouse', '\stacks\0', 'stack', '\'};
+parameters.loop_list.things_to_load.stack_data.filename = {'0', 'stack', 'MM_StackPos0.ome.tif'};
+parameters.loop_list.things_to_load.stack_data.variable = {'stack_data'};
+parameters.loop_list.things_to_load.stack_data.level = 'stack';
+% **** needs the special tiffread process***
+
+% Output
+% dir_out_base=[dir_exper 'representative images\'];
+parameters.loop_list.things_to_save.bRep.dir = {[parameters.dir_exper 'preprocessing\representative images\'], 'mouse', '\', 'day', '\'};
+parameters.loop_list.things_to_save.bRep.filename= {'timeseries', 'stack', '.mat'};
+parameters.loop_list.things_to_save.bRep.variable= {'bRep'}; 
+parameters.loop_list.things_to_save.bRep.level = 'stack';
 
 % (DON'T EDIT). Run code.
 registration_SaveRepresentativeImages(parameters); 
