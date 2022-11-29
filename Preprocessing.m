@@ -365,18 +365,32 @@ function []=Preprocessing(parameters)
                         load(filename_vessel_mask, 'vessel_masks'); 
                         
                         % Convert vessel masks into 2D matrix
-                        vessel_masks =reshape(vessel_masks, yDim*xDim, size(vessel_masks, 3));
+                        vessel_masks = reshape(vessel_masks, yDim*xDim, size(vessel_masks, 3));
                         
                         % If user said to use a brain mask,
                         if mask_flag
                             % Mask each blood vessel mask with the brain mask.
-                            vessel_masks=vessel_masks(indices_of_mask, :);
+                            vessel_masks = vessel_masks(indices_of_mask, :);
                         end 
                         
                         % Run regression against extractions from blood
                         % vessel masks. 
-                        data=VesselRegression(bData, vessel_masks); 
+                        data = VesselRegression(bData, vessel_masks); 
                 end
+
+                % Calculate stack mean.
+                if isfield(parameters, 'save_stack_mean') && parameters.save_stack_mean
+
+                    data_mean = mean(bData, parameters.timeDimension, 'omitnan');
+
+                    % If 2 channels, subtract out violet channel
+                    if parameters.channelNumber == 2
+
+                        data_mean = data_mean - mean(vData, 2, 'omitnan');
+
+                    end 
+                end
+
                 clear bData vData;
 
                 % Set aside images for spotcheck 
@@ -395,6 +409,11 @@ function []=Preprocessing(parameters)
                 % Save spotchecking data
                 save([dir_out 'spotcheck_data' stack_number '.mat'], 'spotcheck_data', '-v7.3');
                 clear spotcheck data.
+
+                % Save mean of stack 
+                if isfield(parameters, 'save_stack_mean') && parameters.save_stack_mean
+                    save([dir_out 'data_mean_' stack_number '.mat'], 'data_mean', '-v7.3');
+                end
 
                 toc;
             end
