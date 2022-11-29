@@ -292,6 +292,9 @@ manual_bloodvesselmasking_loop(parameters);
 % 7. Corrects hemodynamics. 
 % 8. Saves preprocessed stacks. 
 
+% Tell Preprocessing to save the blue channel data.
+parameters.save_stack_mean = true; 
+
 % Set up output folder.
 parameters.dir_out_base = [parameters.dir_exper 'fully preprocessed stacks\'];
 
