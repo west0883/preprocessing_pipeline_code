@@ -341,7 +341,6 @@ function []=Preprocessing(parameters)
                     end 
                 end 
                 
-                
                 % *** 7. Correct hemodynamics. ***
                 % Run HemoRegression function; 
                 disp('Correcting hemodynamics');
@@ -351,12 +350,12 @@ function []=Preprocessing(parameters)
                 
                     case 'regression' 
                         % Run regressions. 
-                        data=HemoRegression(bData, vData);
+                        data = HemoRegression(bData, vData);
                         
                     case 'scaling'
                         % Run detrend-rescale version of hemo correction
                         % (Laurentiu's version)
-                        data=HemoCorrection(bData, vData);
+                        data = HemoCorrection(bData, vData);
                         
                     case 'vessel regression'
                         % Establish filename of blood vessel mask.
@@ -406,4 +405,5 @@ function []=Preprocessing(parameters)
     % you can always find the list again.
     date_string = strrep(datestr(datetime),':','');
     save([parameters.dir_exper 'bad_trials_' date_string '.mat'], 'bad_trials');
+
 end
