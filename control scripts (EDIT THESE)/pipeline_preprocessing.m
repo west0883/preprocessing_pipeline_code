@@ -302,9 +302,10 @@ load([dir_in_base_tforms mouse '\' day '\tform.mat']);
 
 % masks
 dir_in_masks=[dir_exper 'masks\'];
-
+load([dir_in_masks 'masks_m' mouse '.mat'], 'indices_of_mask'); 
 % representative images 
 dir_in_ref=[dir_exper 'representative images\']; 
+load([dir_in_ref mouse '\' day '\bRep.mat']); 
 
 % Output
 % data

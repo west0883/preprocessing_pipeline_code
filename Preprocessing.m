@@ -53,14 +53,7 @@ function []=Preprocessing(parameters)
     for mousei=1:size(parameters.mice_all,2)
         mouse=parameters.mice_all(mousei).name;
         
-        % Load the mask indices for that mouse
-        try 
-        load([dir_in_masks 'masks_m' mouse '.mat'], 'indices_of_mask'); 
-        catch 
-            disp('Could not load mouse mask.');
-            bad_trials = [bad_trials; {[dir_in filename], 'couldn''t load mouse mask'}];
-            continue
-        end
+      
 
         % For each day
         for dayi=1:size(parameters.mice_all(mousei).days, 2)
@@ -74,7 +67,7 @@ function []=Preprocessing(parameters)
             
             % Load the reference image for that day
             try 
-                load([dir_in_ref mouse '\' day '\bRep.mat']); 
+                
             catch 
                 disp('Could not load representative image.');
                 bad_trials = [bad_trials; {[dir_in filename], 'couldn''t load representative image'}];
