@@ -16,11 +16,7 @@
 
 function [parameters] = Preprocessing(parameters)
     
-    % Assign parameters their original names
-    dir_dataset_name = parameters.dir_dataset_name; 
-    input_data_name = parameters.input_data_name;
-    dir_exper = parameters.dir_exper; 
-    digitNumber = parameters.digitNumber; 
+    % Assign parameters their original names 
     channelNumber = parameters.channelNumber;
     skip = parameters.skip;
     pixel_rows = parameters.pixel_rows;
