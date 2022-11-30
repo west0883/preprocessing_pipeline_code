@@ -298,6 +298,7 @@ parameters.save_stack_mean = true;
 % Input 
 % tforms across days
 dir_in_base_tforms=[dir_exper 'tforms across days\']; 
+load([dir_in_base_tforms mouse '\' day '\tform.mat']); 
 
 % masks
 dir_in_masks=[dir_exper 'masks\'];

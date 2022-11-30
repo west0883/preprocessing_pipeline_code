@@ -80,15 +80,6 @@ function []=Preprocessing(parameters)
                 bad_trials = [bad_trials; {[dir_in filename], 'couldn''t load representative image'}];
                 continue
             end
-
-            % Load the across-day tform for that day. 
-            try
-                load([dir_in_base_tforms mouse '\' day '\tform.mat']); 
-            catch 
-                disp('Could not load registration tform.');
-                bad_trials = [bad_trials; {[dir_in filename], 'couldn''t load registration tform'}];
-                continue
-            end
             
             parameters.dir_in = dir_dataset_name;
             
