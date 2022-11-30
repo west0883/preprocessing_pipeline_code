@@ -313,7 +313,7 @@ parameters.loop_list.things_to_load.im_list.filename = {'0', 'stack', 'MM_StackP
 parameters.loop_list.things_to_load.im_list.variable = {'stack_data'};
 parameters.loop_list.things_to_load.im_list.level = 'stack';
 parameters.things_to_load.im_list.load_function = @tiffreadAltered_SCA;
-parameters.things_to_load.im_list.load_function_additional_inputs = '[], "ReadUnknownTags",1';      
+parameters.loop_list.things_to_load.im_list.load_function_additional_inputs = {[], 'ReadUnknownTags', true};    
 
 % tforms across days
 parameters.loop_list.things_to_load.tform.dir = {[parameters.dir_exper '\preprocessing\tforms across days\'], 'mouse', '\', 'day', '\'};
