@@ -312,6 +312,15 @@ load([dir_in_masks 'masks_m' mouse '.mat'], 'indices_of_mask');
 dir_in_ref=[dir_exper 'representative images\']; 
 load([dir_in_ref mouse '\' day '\bRep.mat']); 
 
+% blood vessel masks
+if strcmp(parameters.correction_method, 'vessel regression')
+  % Establish filename of blood vessel mask.
+            filename_vessel_mask = [dir_exper 'blood vessel masks\bloodvessel_masks_m' mouse '.mat']; 
+        
+            % Load blood vessel masks. 
+            load(filename_vessel_mask, 'vessel_masks'); 
+end
+
 % Output
 % data
 dir_out=[dir_out_base mouse '\' day '\']; 

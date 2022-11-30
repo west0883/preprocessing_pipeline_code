@@ -326,11 +326,6 @@ function [parameters] = Preprocessing(parameters)
             data = HemoCorrection(bData, vData);
             
         case 'vessel regression'
-            % Establish filename of blood vessel mask.
-            filename_vessel_mask = [dir_exper 'blood vessel masks\bloodvessel_masks_m' mouse '.mat']; 
-        
-            % Load blood vessel masks. 
-            load(filename_vessel_mask, 'vessel_masks'); 
             
             % Convert vessel masks into 2D matrix
             vessel_masks = reshape(vessel_masks, yDim*xDim, size(vessel_masks, 3));
