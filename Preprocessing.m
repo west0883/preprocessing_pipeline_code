@@ -29,6 +29,8 @@ function [parameters] = Preprocessing(parameters)
     minimum_frames = parameters.minimum_frames;
     mask_flag = parameters.mask_flag;
     correction_method = parameters.correction_method;
+    im_list = parameters.im_list;
+    tform = parameters.tform;
 
     % Make a cell array of false (default) "don't save" values, one for
     % each output
@@ -44,7 +46,7 @@ function [parameters] = Preprocessing(parameters)
 
     % Tell user what iteration function is on
     MessageToUser('Preprocessing ', parameters);
-    
+
     % *** 1. Read in tiffs.***
     disp('Reading tiffs');  
     
@@ -143,7 +145,7 @@ function [parameters] = Preprocessing(parameters)
         spotcheck_data.initial.blue = bData(:,:, frames_for_spotchecking);
     end
 
-    clear im_list;
+    clear im_list; parameters.im_list = [];
     
     % ***3. Register within-stack/across stacks within a day.***
     disp('Registering within days'); 
