@@ -43,45 +43,8 @@ function [parameters] = Preprocessing(parameters)
     end
 
     % *** 1. Read in tiffs.***
-    disp('Reading tiffs'); 
-
-    % Check if file exists. If it doesn't, report and keep track. 
-    if ~isfile([dir_in filename])
-
-        disp('File does not exist.');
-        bad_trials = [bad_trials; {[dir_in filename], 'couldn"t find'}];
-        parameters.bad_trials = bad_trials;
-
-        % Make all "don't save" flags true...
-        dont_save = repmat({true}, numel(fieldnames(parameters.loop_list.things_to_save)), 1); 
-
-        % .. but still save the bad_trials
-        dont_save{find(strcmp(fieldnames(parameters.loop_list.things_to_save), 'bad_trials'))} = false; 
-
-        parameters.dont_save = dont_save;
-
-        return 
-    end   
+    disp('Reading tiffs');  
     
-    % Attempt to load
-    try
-        im_list = tiffreadAltered_SCA([dir_in filename],[], 'ReadUnknownTags',1);       
-    catch 
-        
-        disp('Could not load file.');
-        bad_trials = [bad_trials; {[dir_in filename], 'couldn"t load'}];
-        parameters.bad_trials = bad_trials;
-
-        % Make all "don't save" flags true...
-        dont_save = repmat({true}, numel(fieldnames(parameters.loop_list.things_to_save)), 1); 
-
-        % .. but still save the bad_trials
-        dont_save{find(strcmp(fieldnames(parameters.loop_list.things_to_save), 'bad_trials'))} = false; 
-
-        parameters.dont_save = dont_save;
-
-        return 
-    end
     
     % Find the sizes of the data
     yDim = size(im_list(1).data,1);
