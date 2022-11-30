@@ -69,7 +69,7 @@ function [parameters] = Preprocessing(parameters)
     
     % Attempt to load
     try
-        im_list=tiffreadAltered_SCA([dir_in filename],[], 'ReadUnknownTags',1);       
+        im_list = tiffreadAltered_SCA([dir_in filename],[], 'ReadUnknownTags',1);       
     catch 
         
         disp('Could not load file.');
@@ -88,11 +88,11 @@ function [parameters] = Preprocessing(parameters)
     end
     
     % Find the sizes of the data
-    yDim=size(im_list(1).data,1);
-    xDim=size(im_list(1).data,2);
+    yDim = size(im_list(1).data,1);
+    xDim = size(im_list(1).data,2);
     
     % Get total number of images
-    nim=size(im_list,2); 
+    nim = size(im_list,2); 
 
     % Figure out if this frames number is long enough for
     % further processing. If not, quit this stack. 
@@ -101,7 +101,7 @@ function [parameters] = Preprocessing(parameters)
         
         bad_trials = [bad_trials; {[dir_in filename], 'too short'}];
         parameters.bad_trials = bad_trials;
-        
+
         % Make all "don't save" flags true...
         dont_save = repmat({true}, numel(fieldnames(parameters.loop_list.things_to_save)), 1); 
 
@@ -122,8 +122,8 @@ function [parameters] = Preprocessing(parameters)
         disp('Separating channels'); 
 
         % Pick 2 images after the skip to compare 
-        im1=im_list(skip+1).data; 
-        im2=im_list(skip+2).data;
+        im1 = im_list(skip+1).data; 
+        im2 = im_list(skip+2).data;
 
         % Figure out which is what channel
         [first_image_channel] = DetermineChannel(parameters.blue_brighter, im1, im2, pixel_rows, pixel_cols);
@@ -135,25 +135,25 @@ function [parameters] = Preprocessing(parameters)
             case 'b'
                 % Then assign every other frame starting with "skip"
                 % to the blue list, the others to the violet list.
-                sel470=skip+1:2:nim;
-                sel405=skip+2:2:nim;
+                sel470 = skip+1:2:nim;
+                sel405 = skip+2:2:nim;
 
             % If the first image is violet. 
             case'v' 
                 % Then assign every other frame starting with
                 % "skip"+1 to the blue list, the others to the violet list.
-                sel470=skip+2:2:nim; 
-                sel405=skip+1:2:nim;
+                sel470 = skip+2:2:nim; 
+                sel405 = skip+1:2:nim;
         end
 
         % Find the minimum stack length of the two channels; make this the "frames" number 
-        frames=min(length(sel470),length(sel405));
+        frames = min(length(sel470),length(sel405));
 
         % Limit the frame indices for each color stack to the 
         % minimum number of indices (takes care of uneven image 
         % numbers by making them same length).
-        sel470=sel470(1:frames); 
-        sel405=sel405(1:frames);
+        sel470 = sel470(1:frames); 
+        sel405 = sel405(1:frames);
         
         % Put respective channels into own data matrics
         bData = cell2mat({im_list(sel470).data});
@@ -163,23 +163,23 @@ function [parameters] = Preprocessing(parameters)
         vData = reshape(vData, yDim, xDim, []);
        
         % Set aside images for spotcheck 
-        spotcheck_data.initial.blue=bData(:,:, frames_for_spotchecking);
-        spotcheck_data.initial.violet=vData(:,:, frames_for_spotchecking);
+        spotcheck_data.initial.blue = bData(:,:, frames_for_spotchecking);
+        spotcheck_data.initial.violet = vData(:,:, frames_for_spotchecking);
         
     case 1 
        % If only one channel
        
        % Get list of frames after the skip
-       frames_list=skip+1:nim; 
+       frames_list = skip+1:nim; 
        
        % Get the number of frames after the skip
-       frames=length(frames_list); 
+       frames = length(frames_list); 
        
         bData = cell2mat({im_list(frames_list).data});
         bData = reshape(bData, yDim, xDim, []);
         
         % Set aside images for spotcheck 
-        spotcheck_data.initial.blue=bData(:,:, frames_for_spotchecking);
+        spotcheck_data.initial.blue = bData(:,:, frames_for_spotchecking);
     end
 
     clear im_list;
@@ -189,23 +189,23 @@ function [parameters] = Preprocessing(parameters)
 
     % Run the within-day registration function; overwrite bData
     % so you don't take up as much memory. 
-    [tforms_forblueandviolet]=RegisterStackWithDFT(bRep, bData, usfac);
+    [tforms_forblueandviolet] = RegisterStackWithDFT(bRep, bData, usfac);
 
     % Apply the calculated tforms to the blue stack. Overwrite bData
     % so you don't take up as much memory.  
-    [bData]=RegisterStack_WithPreviousDFTShifts(tforms_forblueandviolet, bData, usfac); 
+    [bData] = RegisterStack_WithPreviousDFTShifts(tforms_forblueandviolet, bData, usfac); 
 
     % Set aside images for spotcheck 
-    spotcheck_data.withindayregistered.blue=bData(:,:, frames_for_spotchecking);
+    spotcheck_data.withindayregistered.blue = bData(:,:, frames_for_spotchecking);
 
     % If more than one channel
     if channelNumber==2
         % Apply the calculated tforms to the violet stack. Overwrite vData
         % so you don't take up as much memory.  
-        [vData]=RegisterStack_WithPreviousDFTShifts(tforms_forblueandviolet, vData, usfac); 
+        [vData] = RegisterStack_WithPreviousDFTShifts(tforms_forblueandviolet, vData, usfac); 
 
         % Also set aside image for spotcheck
-        spotcheck_data.withindayregistered.violet=vData(:,:, frames_for_spotchecking);
+        spotcheck_data.withindayregistered.violet = vData(:,:, frames_for_spotchecking);
     end 
   
 
@@ -220,15 +220,15 @@ function [parameters] = Preprocessing(parameters)
         % reference image using the tranform stored in the tform variable. 
         % Should be able to apply to all images in the 3rd dimension at the same time 
         disp('Applying registration across days');  
-        bData=imwarp(bData,tform,'nearest', 'OutputView',imref2d([yDim xDim]));
+        bData = imwarp(bData,tform,'nearest', 'OutputView',imref2d([yDim xDim]));
         
         % Set aside images for spotcheck 
-        spotcheck_data.registrationacrossdays.blue=bData(:,:, frames_for_spotchecking);
+        spotcheck_data.registrationacrossdays.blue = bData(:,:, frames_for_spotchecking);
         
         % If more than 1 channel, do for violet channel as well
-        if channelNumber==2
-            vData=imwarp(vData,tform,'nearest', 'OutputView',imref2d([yDim xDim]));
-            spotcheck_data.registrationacrossdays.violet=vData(:,:, frames_for_spotchecking);
+        if channelNumber == 2
+            vData = imwarp(vData,tform,'nearest', 'OutputView',imref2d([yDim xDim]));
+            spotcheck_data.registrationacrossdays.violet = vData(:,:, frames_for_spotchecking);
         end 
     end
     
@@ -248,33 +248,33 @@ function [parameters] = Preprocessing(parameters)
     % *** Reshape data into a 2D matrix (total pixels x frames) for
     % applying the mask, regressions, and the lowpass filter. Overwrite the variable
     % so you don't take up excess memory. ***
-    bData=reshape(bData, yDim*xDim, frames);
+    bData = reshape(bData, yDim*xDim, frames);
     
     % If more than 1 channel, do for violet channel as well
     if channelNumber==2
-        vData=reshape(vData, yDim*xDim, frames);
+        vData = reshape(vData, yDim*xDim, frames);
     end 
      
     % *** 5. Apply mask *** 
     % Keep only the indices that belong to the mask; Don't rename
     % the variable, because that will take up extra memory/time.
     
-    % Only if user said to use mask (if mask_flag= true)
+    % Only if user said to use mask (if mask_flag =  true)
     if mask_flag
         
         % Tell user what's happening.
         disp('Applying mask')
         
         % Apply mask (keep only pixels included in the mask).
-        bData=bData(indices_of_mask,:);  
+        bData = bData(indices_of_mask,:);  
 
         % Set aside images for spotcheck 
-        spotcheck_data.masked.blue=bData(:, frames_for_spotchecking);
+        spotcheck_data.masked.blue = bData(:, frames_for_spotchecking);
 
         % If more than 1 channel, do for violet channel as well
-        if channelNumber==2
-            vData=vData(indices_of_mask,:);
-            spotcheck_data.masked.violet=vData(:, frames_for_spotchecking);
+        if channelNumber == 2
+            vData = vData(indices_of_mask,:);
+            spotcheck_data.masked.violet = vData(:, frames_for_spotchecking);
         end 
     end
     
@@ -282,29 +282,29 @@ function [parameters] = Preprocessing(parameters)
     % Filter data.
     
     % Only if the user said they wanted to (if
-    % filter_flag=true).
+    % filter_flag = true).
     if filter_flag
         disp('Filtering');
 
         % filtfilt treats each column as its own channel. Flip 
         % data as you put it into the filter so it's filtered
         % in temporal dimension. (frames x pixesl). 
-        bData=filtfilt(b,a, bData'); 
+        bData = filtfilt(b,a, bData'); 
 
-        bData=bData'; 
+        bData = bData'; 
         
         % Set aside images for spotcheck 
-        spotcheck_data.filtered.blue=bData(:, frames_for_spotchecking);
+        spotcheck_data.filtered.blue = bData(:, frames_for_spotchecking);
         
         % If 2 channels, repeat for violet channel.
         if parameters.channelNumber == 2
             
-            vData=filtfilt(b,a, vData'); 
+            vData = filtfilt(b,a, vData'); 
 
-            vData=vData'; 
+            vData = vData'; 
         
             % Set aside images for spotcheck 
-            spotcheck_data.filtered.violet=vData(:, frames_for_spotchecking);
+            spotcheck_data.filtered.violet = vData(:, frames_for_spotchecking);
             
         end 
     end 
@@ -327,7 +327,7 @@ function [parameters] = Preprocessing(parameters)
             
         case 'vessel regression'
             % Establish filename of blood vessel mask.
-            filename_vessel_mask=[dir_exper 'blood vessel masks\bloodvessel_masks_m' mouse '.mat']; 
+            filename_vessel_mask = [dir_exper 'blood vessel masks\bloodvessel_masks_m' mouse '.mat']; 
         
             % Load blood vessel masks. 
             load(filename_vessel_mask, 'vessel_masks'); 
