@@ -295,8 +295,28 @@ manual_bloodvesselmasking_loop(parameters);
 % Tell Preprocessing to save the blue channel data.
 parameters.save_stack_mean = true; 
 
-% Set up output folder.
+% Input 
+% tforms across days
+dir_in_base_tforms=[dir_exper 'tforms across days\']; 
+
+% masks
+dir_in_masks=[dir_exper 'masks\'];
+
+% representative images 
+dir_in_ref=[dir_exper 'representative images\']; 
+
+% Output
+% data
 parameters.dir_out_base = [parameters.dir_exper 'fully preprocessed stacks\'];
+
+% stack means
+if isfield(parameters, 'save_stack_mean') && parameters.save_stack_mean
+
+end 
+
+% spotchecking data
+
+% bad trial data
 
 %(DON'T EDIT). Run code.
 Preprocessing(parameters);

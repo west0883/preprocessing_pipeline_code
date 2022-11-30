@@ -34,10 +34,7 @@ function []=Preprocessing(parameters)
     mask_flag = parameters.mask_flag;
     correction_method = parameters.correction_method;
     
-    % Establish base input directories
-    dir_in_base_tforms=[dir_exper 'tforms across days\']; 
-    dir_in_masks=[dir_exper 'masks\'];
-    dir_in_ref=[dir_exper 'representative images\']; 
+    
     
     % Establish base output directory
     dir_out_base= parameters.dir_out_base;
