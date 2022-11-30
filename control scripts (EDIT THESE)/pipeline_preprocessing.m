@@ -326,7 +326,7 @@ end
 % spotchecking data
 save([dir_out 'spotcheck_data' stack_number '.mat'], 'spotcheck_data', '-v7.3');
 
-% bad trial data
+% bad trials 
 
 %(DON'T EDIT). Run code.
 Preprocessing(parameters);
