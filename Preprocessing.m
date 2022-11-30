@@ -40,13 +40,18 @@ function [parameters] = Preprocessing(parameters)
     
     % Establish a holding cell array to keep track of what days need to be
     % checked on.
-    bad_trials = {};
-   
+    if ~isfield(parameters.bad_trials)
+        bad_trials = {};
+    else 
+        bad_trials = parameters.bad_trials;
+    end
+
     % *** 1. Read in tiffs.***
     disp('Reading tiffs'); 
 
     % Check if file exists. If it doesn't, report and keep track. 
     if ~isfile([dir_in filename])
+
         disp('File does not exist.');
         bad_trials = [bad_trials; {[dir_in filename], 'couldn"t find'}];
 
@@ -56,6 +61,8 @@ function [parameters] = Preprocessing(parameters)
         % .. but still save the bad_trials
         dont_save{find(strcmp(fieldnames(parameters.loop_list.things_to_save), 'bad_trials'))} = false; 
 
+        parameters.dont_save = dont_save;
+
         return 
     end   
     
@@ -63,6 +70,7 @@ function [parameters] = Preprocessing(parameters)
     try
         im_list=tiffreadAltered_SCA([dir_in filename],[], 'ReadUnknownTags',1);       
     catch 
+        
         disp('Could not load file.');
         bad_trials = [bad_trials; {[dir_in filename], 'couldn"t load'}];
 
@@ -71,6 +79,8 @@ function [parameters] = Preprocessing(parameters)
 
         % .. but still save the bad_trials
         dont_save{find(strcmp(fieldnames(parameters.loop_list.things_to_save), 'bad_trials'))} = false; 
+
+        parameters.dont_save = dont_save;
 
         return 
     end
@@ -93,6 +103,8 @@ function [parameters] = Preprocessing(parameters)
         % .. but still save the bad_trials
         dont_save{find(strcmp(fieldnames(parameters.loop_list.things_to_save), 'bad_trials'))} = false; 
       
+        parameters.dont_save = dont_save;
+
         % Go to next stack
         return 
     end 
@@ -349,5 +361,8 @@ function [parameters] = Preprocessing(parameters)
 
     % Put spotcheck data into parameters structure
     parameters.spotcheck_data = spotcheck_data;
+
+    % Bad trials info
+    parameters.bad_trials = bad_trials;
 
 end
