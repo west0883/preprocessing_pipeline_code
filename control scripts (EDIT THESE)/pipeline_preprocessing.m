@@ -192,6 +192,7 @@ parameters.loop_list.things_to_load.stack_data.dir = {[parameters.dir_dataset_ba
 parameters.loop_list.things_to_load.stack_data.filename = {'0', 'stack', 'MM_StackPos0.ome.tif'};
 parameters.loop_list.things_to_load.stack_data.variable = {'stack_data'};
 parameters.loop_list.things_to_load.stack_data.level = 'stack';
+
 % **** needs the special tiffread process***
 
 % Output
@@ -292,15 +293,29 @@ manual_bloodvesselmasking_loop(parameters);
 % 7. Corrects hemodynamics. 
 % 8. Saves preprocessed stacks. 
 
+% Always clear loop list first. 
+if isfield(parameters, 'loop_list')
+parameters = rmfield(parameters,'loop_list');
+end
+
+% Iterators
+parameters.loop_list.iterators = {'mouse', {'loop_variables.mice_all(:).name'}, 'mouse_iterator'; 
+               'day', {'loop_variables.mice_all(', 'mouse_iterator', ').days(:).name'}, 'day_iterator';
+               'stack', {'[loop_variables.mice_all(',  'mouse_iterator', ').days(', 'day_iterator', ').stacks; loop_variables.mice_all(',  'mouse_iterator', ').days(', 'day_iterator', ').spontaneous]'}, 'stack_iterator'};
+
 % Tell Preprocessing to save the blue channel data.
 parameters.save_stack_mean = true; 
 
 % Input 
-% image list
+% image list; requires special load function
 
-% requires special load function
+% Input
+parameters.loop_list.things_to_load.im_list.dir = {[parameters.dir_dataset_base] '\', 'day', '\m', 'mouse', '\stacks\0', 'stack', '\'};
+parameters.loop_list.things_to_load.im_list.filename = {'0', 'stack', 'MM_StackPos0.ome.tif'};
+parameters.loop_list.things_to_load.im_list.variable = {'stack_data'};
+parameters.loop_list.things_to_load.im_list.level = 'stack';
 parameters.things_to_load.im_list.load_function = @tiffreadAltered_SCA;
-
+parameters.things_to_load.im_list.load_function_additional_inputs = '[], "ReadUnknownTags",1';      
 
 % tforms across days
 dir_in_base_tforms=[dir_exper 'tforms across days\']; 
