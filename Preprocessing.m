@@ -307,14 +307,13 @@ function []=Preprocessing(parameters)
                         data = VesselRegression(bData, vessel_masks); 
                 end
 
-                % Calculate blue channel stack mean.
+                % Calculate blue channel stack mean. Convert to single
+                % precision, put in parameters output structure.
                 if isfield(parameters, 'save_stack_mean') && parameters.save_stack_mean
 
-                    data_mean = mean(bData, 2, 'omitnan');
+                    parameters.data_mean = single(mean(bData, 2, 'omitnan'));
 
                 end
-
-                clear bData vData;
 
                 % Set aside images for spotcheck 
                 spotcheck_data.hemodynamicscorrected = data(:, frames_for_spotchecking);
@@ -322,7 +321,11 @@ function []=Preprocessing(parameters)
                 % *** 8. Save preprocessed stacks***
                 disp('Saving');
                 
-                % Convert data to single precision to take up less space
-                data=single(data); 
+                % Convert data to single precision to take up less space';
+                % put in output structure
+                parameters.data = single(data); 
+
+                % Put spotcheck data into parameters structure
+                parameters.spotcheck_data = spotcheck_data;
 
 end
