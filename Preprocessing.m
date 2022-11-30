@@ -54,6 +54,7 @@ function [parameters] = Preprocessing(parameters)
 
         disp('File does not exist.');
         bad_trials = [bad_trials; {[dir_in filename], 'couldn"t find'}];
+        parameters.bad_trials = bad_trials;
 
         % Make all "don't save" flags true...
         dont_save = repmat({true}, numel(fieldnames(parameters.loop_list.things_to_save)), 1); 
@@ -73,6 +74,7 @@ function [parameters] = Preprocessing(parameters)
         
         disp('Could not load file.');
         bad_trials = [bad_trials; {[dir_in filename], 'couldn"t load'}];
+        parameters.bad_trials = bad_trials;
 
         % Make all "don't save" flags true...
         dont_save = repmat({true}, numel(fieldnames(parameters.loop_list.things_to_save)), 1); 
@@ -96,6 +98,9 @@ function [parameters] = Preprocessing(parameters)
     % further processing. If not, quit this stack. 
     if (nim - skip)/channelNumber < minimum_frames
         warning('This stack is too short-- will not be processed.');
+        
+        bad_trials = [bad_trials; {[dir_in filename], 'too short'}];
+        parameters.bad_trials = bad_trials;
         
         % Make all "don't save" flags true...
         dont_save = repmat({true}, numel(fieldnames(parameters.loop_list.things_to_save)), 1); 
