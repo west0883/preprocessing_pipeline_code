@@ -329,13 +329,17 @@ parameters.loop_list.things_to_load.indices_of_mask.variable = {'indices_of_mask
 parameters.loop_list.things_to_load.indices_of_mask.level = 'mouse';
 end 
 
-% list of reference images per mouse
-% Load reference days
-    load([dir_in_ref 'reference_days.mat']);
+% reference day per mouse 
+parameters.loop_list.things_to_load.reference_image.dir = {[parameters.dir_exper '\preprocessing\representative images\'], 'mouse', '\', 'day', '\'};
+parameters.loop_list.things_to_load.reference_image.filename = {'reference_image.mat'};
+parameters.loop_list.things_to_load.reference_image.variable = {'reference_image'};
+parameters.loop_list.things_to_load.reference_image.level = 'mouse';
 
 % representative image for day 
-dir_in_ref=[dir_exper 'representative images\']; 
-load([dir_in_ref mouse '\' day '\bRep.mat']); 
+parameters.loop_list.things_to_load.bRep.dir = {[parameters.dir_exper '\preprocessing\representative images\'], 'mouse', '\', 'day', '\'};
+parameters.loop_list.things_to_load.bRep.filename = {'bRep.mat'};
+parameters.loop_list.things_to_load.bRep.variable = {'bRep'};
+parameters.loop_list.things_to_load.bRep.level = 'day';
 
 % blood vessel masks
 if strcmp(parameters.correction_method, 'vessel regression')
