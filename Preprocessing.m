@@ -38,40 +38,7 @@ function []=Preprocessing(parameters)
     % Establish a holding cell array to keep track of what days need to be
     % checked on.
     bad_trials = {};
-    
-    % For each mouse 
-    for mousei=1:size(parameters.mice_all,2)
-        mouse=parameters.mice_all(mousei).name;
-        
-      
-
-        % For each day
-        for dayi=1:size(parameters.mice_all(mousei).days, 2)
-            
-            % Get the day name.
-            day=parameters.mice_all(mousei).days(dayi).name; 
-            
-            % Create cleaner output directory. 
-            
-            mkdir(dir_out); 
-            
-            parameters.dir_in = dir_dataset_name;
-            
-            % Get the stack list
-            [stackList]=GetStackList(mousei, dayi, parameters);
-            
-            for stacki=1:size(stackList.filenames,1)
-                
-                % Get the stack number and filename for the stack.
-                stack_number = stackList.numberList(stacki, :);
-                filename = stackList.filenames(stacki, :);
-                
-                % Get a cleaner data input directory.
-                dir_in=CreateFileStrings(dir_dataset_name, mouse, day, stack_number, [], false);
-                
-                % Display what mouse, day, and stack you're on
-                disp(['mouse ' mouse ', day ' day ', stack ' stack_number]);
-                tic 
+   
 
                 % *** 1. Read in tiffs.***
                 disp('Reading tiffs'); 
@@ -372,9 +339,7 @@ function []=Preprocessing(parameters)
                 end
 
                 toc;
-            end
-        end 
-    end 
+
 
     % Save the bad trial data. Give the file a name with the date & time so
     % you can always find the list again.
