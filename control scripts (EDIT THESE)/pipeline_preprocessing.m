@@ -296,6 +296,12 @@ manual_bloodvesselmasking_loop(parameters);
 parameters.save_stack_mean = true; 
 
 % Input 
+% image list
+
+% requires special load function
+parameters.things_to_load.im_list.load_function = @tiffreadAltered_SCA;
+
+
 % tforms across days
 dir_in_base_tforms=[dir_exper 'tforms across days\']; 
 load([dir_in_base_tforms mouse '\' day '\tform.mat']); 
@@ -315,10 +321,10 @@ load([dir_in_ref mouse '\' day '\bRep.mat']);
 % blood vessel masks
 if strcmp(parameters.correction_method, 'vessel regression')
   % Establish filename of blood vessel mask.
-            filename_vessel_mask = [dir_exper 'blood vessel masks\bloodvessel_masks_m' mouse '.mat']; 
-        
-            % Load blood vessel masks. 
-            load(filename_vessel_mask, 'vessel_masks'); 
+  filename_vessel_mask = [dir_exper 'blood vessel masks\bloodvessel_masks_m' mouse '.mat']; 
+
+    % Load blood vessel masks. 
+    load(filename_vessel_mask, 'vessel_masks'); 
 end
 
 % Output
