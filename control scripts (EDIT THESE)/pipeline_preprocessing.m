@@ -303,12 +303,18 @@ load([dir_in_base_tforms mouse '\' day '\tform.mat']);
 % masks
 dir_in_masks=[dir_exper 'masks\'];
 load([dir_in_masks 'masks_m' mouse '.mat'], 'indices_of_mask'); 
-% representative images 
+
+% list of reference images per mouse
+% Load reference days
+    load([dir_in_ref 'reference_days.mat']);
+
+% representative image for day 
 dir_in_ref=[dir_exper 'representative images\']; 
 load([dir_in_ref mouse '\' day '\bRep.mat']); 
 
 % Output
 % data
+dir_out=[dir_out_base mouse '\' day '\']; 
 parameters.dir_out_base = [parameters.dir_exper 'fully preprocessed stacks\'];
 
 % stack means

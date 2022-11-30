@@ -35,16 +35,6 @@ function []=Preprocessing(parameters)
     correction_method = parameters.correction_method;
     
     
-    
-    % Establish base output directory
-    dir_out_base= parameters.dir_out_base;
-    
-    % Tell user where data is being saved
-    disp(['Data saved in ' dir_out_base]); 
-    
-    % Load reference days
-    load([dir_in_ref 'reference_days.mat']);
-
     % Establish a holding cell array to keep track of what days need to be
     % checked on.
     bad_trials = {};
@@ -62,17 +52,8 @@ function []=Preprocessing(parameters)
             day=parameters.mice_all(mousei).days(dayi).name; 
             
             % Create cleaner output directory. 
-            dir_out=[dir_out_base mouse '\' day '\']; 
-            mkdir(dir_out); 
             
-            % Load the reference image for that day
-            try 
-                
-            catch 
-                disp('Could not load representative image.');
-                bad_trials = [bad_trials; {[dir_in filename], 'couldn''t load representative image'}];
-                continue
-            end
+            mkdir(dir_out); 
             
             parameters.dir_in = dir_dataset_name;
             
