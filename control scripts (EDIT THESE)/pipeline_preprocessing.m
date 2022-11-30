@@ -321,9 +321,13 @@ parameters.loop_list.things_to_load.tform.filename = {'tform.mat'};
 parameters.loop_list.things_to_load.tform.variable = {'tform'};
 parameters.loop_list.things_to_load.tform.level = 'day';
 
-% masks
-dir_in_masks=[dir_exper 'masks\'];
-load([dir_in_masks 'masks_m' mouse '.mat'], 'indices_of_mask'); 
+% brain masks
+if parameters.mask_flag
+parameters.loop_list.things_to_load.indices_of_mask.dir = {[parameters.dir_exper '\preprocessing\masks\']};
+parameters.loop_list.things_to_load.indices_of_mask.filename = {'masks_m', 'mouse', '.mat'};
+parameters.loop_list.things_to_load.indices_of_mask.variable = {'indices_of_mask'};
+parameters.loop_list.things_to_load.indices_of_mask.level = 'mouse';
+end 
 
 % list of reference images per mouse
 % Load reference days

@@ -229,14 +229,14 @@ function [parameters] = Preprocessing(parameters)
         disp('Applying mask')
         
         % Apply mask (keep only pixels included in the mask).
-        bData = bData(indices_of_mask,:);  
+        bData = bData(parameters.indices_of_mask,:);  
 
         % Set aside images for spotcheck 
         spotcheck_data.masked.blue = bData(:, frames_for_spotchecking);
 
         % If more than 1 channel, do for violet channel as well
         if channelNumber == 2
-            vData = vData(indices_of_mask,:);
+            vData = vData(parameters.indices_of_mask,:);
             spotcheck_data.masked.violet = vData(:, frames_for_spotchecking);
         end 
     end
