@@ -42,9 +42,11 @@ function [parameters] = Preprocessing(parameters)
         bad_trials = parameters.bad_trials;
     end
 
+    % Tell user what iteration function is on
+    MessageToUser('Preprocessing ', parameters);
+    
     % *** 1. Read in tiffs.***
     disp('Reading tiffs');  
-    
     
     % Find the sizes of the data
     yDim = size(im_list(1).data,1);
