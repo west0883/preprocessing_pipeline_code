@@ -306,10 +306,8 @@ parameters.loop_list.iterators = {'mouse', {'loop_variables.mice_all(:).name'}, 
 % Tell Preprocessing to save the blue channel data.
 parameters.save_stack_mean = true; 
 
-% Input 
-% image list; requires special load function
-
 % Input
+% stack im_list 
 parameters.loop_list.things_to_load.im_list.dir = {[parameters.dir_dataset_base] '\', 'day', '\m', 'mouse', '\stacks\0', 'stack', '\'};
 parameters.loop_list.things_to_load.im_list.filename = {'0', 'stack', 'MM_StackPos0.ome.tif'};
 parameters.loop_list.things_to_load.im_list.variable = {'stack_data'};
@@ -318,8 +316,10 @@ parameters.things_to_load.im_list.load_function = @tiffreadAltered_SCA;
 parameters.things_to_load.im_list.load_function_additional_inputs = '[], "ReadUnknownTags",1';      
 
 % tforms across days
-dir_in_base_tforms=[dir_exper 'tforms across days\']; 
-load([dir_in_base_tforms mouse '\' day '\tform.mat']); 
+parameters.loop_list.things_to_load.tform.dir = {[parameters.dir_exper '\preprocessing\tforms across days\'], 'mouse', '\', 'day', '\'};
+parameters.loop_list.things_to_load.tform.filename = {'tform.mat'};
+parameters.loop_list.things_to_load.tform.variable = {'tform'};
+parameters.loop_list.things_to_load.tform.level = 'day';
 
 % masks
 dir_in_masks=[dir_exper 'masks\'];
