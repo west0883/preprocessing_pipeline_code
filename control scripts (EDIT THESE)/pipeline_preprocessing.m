@@ -352,22 +352,29 @@ end
 
 % Output
 % data
-dir_out=[dir_out_base mouse '\' day '\']; 
-parameters.dir_out_base = [parameters.dir_exper 'fully preprocessed stacks\'];
-save([dir_out 'data' stack_number '.mat'], 'data', '-v7.3');
+parameters.loop_list.things_to_save.data.dir = {[parameters.dir_exper '\preprocessing\fully preprocessed stacks\'], 'mouse', '\', 'day', '\'};
+parameters.loop_list.things_to_save.data.filename = {'data', 'stack', '.mat'};
+parameters.loop_list.things_to_save.data.variable = {'data'};
+parameters.loop_list.things_to_save.data.level = 'stack';
 
 % stack means
 if isfield(parameters, 'save_stack_mean') && parameters.save_stack_mean
-    save([dir_out 'data_mean_' stack_number '.mat'], 'data_mean', '-v7.3');
+parameters.loop_list.things_to_save.data_mean.dir = {[parameters.dir_exper '\preprocessing\fully preprocessed stacks\'], 'mouse', '\', 'day', '\'};
+parameters.loop_list.things_to_save.data_mean.filename = {'data_mean', 'stack', '.mat'};
+parameters.loop_list.things_to_save.data_mean.variable = {'data_mean'};
+parameters.loop_list.things_to_save.data_mean.level = 'stack';  
 end 
 
 % spotchecking data
-save([dir_out 'spotcheck_data' stack_number '.mat'], 'spotcheck_data', '-v7.3');
+parameters.loop_list.things_to_save.spotcheck_data.dir = {[parameters.dir_exper '\preprocessing\fully preprocessed stacks\'], 'mouse', '\', 'day', '\'};
+parameters.loop_list.things_to_save.spotcheck_data.filename = {'spotcheck_data', 'stack', '.mat'};
+parameters.loop_list.things_to_save.spotcheck_data.variable = {'spotcheck_data'};
+parameters.loop_list.things_to_save.spotcheck_data.level = 'stack';  
 
 % bad trials 
 
-%(DON'T EDIT). Run code.
-Preprocessing(parameters);
+% Run code.
+RunAnalysis({@Preprocessing}, parameters);
 
 %% Check if any of the files are corrupt. 
 % Determines if a stack is corrupt and re-preprocesses it if so.
