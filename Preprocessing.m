@@ -341,8 +341,15 @@ function [parameters] = Preprocessing(parameters)
     % precision, put in parameters output structure.
     if isfield(parameters, 'save_stack_mean') && parameters.save_stack_mean
 
-        parameters.data_mean = single(mean(bData, 2, 'omitnan'));
+        if channelNumber == 1
+            
+            parameters.data_mean = single(mean(bData, 2, 'omitnan'));
 
+        elseif channelNumber == 2
+            
+            parameters.data_mean = single(mean(bData, 2, 'omitnan') - mean(vData, 2, 'omitnan'));
+        
+        end 
     end
 
     % Set aside images for spotcheck 
