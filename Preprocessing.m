@@ -38,7 +38,7 @@ function [parameters] = Preprocessing(parameters)
     
     % Establish a holding cell array to keep track of what days need to be
     % checked on.
-    if ~isfield(parameters.bad_trials)
+    if ~isfield(parameters, bad_trials)
         bad_trials = {};
     else 
         bad_trials = parameters.bad_trials;
