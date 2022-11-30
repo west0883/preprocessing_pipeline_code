@@ -324,26 +324,5 @@ function []=Preprocessing(parameters)
                 
                 % Convert data to single precision to take up less space
                 data=single(data); 
-                
-                % Save resulting stacks. 
-                save([dir_out 'data' stack_number '.mat'], 'data', '-v7.3');
-                clear data;
-                
-                % Save spotchecking data
-                save([dir_out 'spotcheck_data' stack_number '.mat'], 'spotcheck_data', '-v7.3');
-                clear spotcheck data.
-
-                % Save mean of stack 
-                if isfield(parameters, 'save_stack_mean') && parameters.save_stack_mean
-                    save([dir_out 'data_mean_' stack_number '.mat'], 'data_mean', '-v7.3');
-                end
-
-                toc;
-
-
-    % Save the bad trial data. Give the file a name with the date & time so
-    % you can always find the list again.
-    date_string = strrep(datestr(datetime),':','');
-    save([parameters.dir_exper 'bad_trials_' date_string '.mat'], 'bad_trials');
 
 end

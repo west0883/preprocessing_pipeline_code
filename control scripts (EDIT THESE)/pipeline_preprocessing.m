@@ -316,13 +316,15 @@ load([dir_in_ref mouse '\' day '\bRep.mat']);
 % data
 dir_out=[dir_out_base mouse '\' day '\']; 
 parameters.dir_out_base = [parameters.dir_exper 'fully preprocessed stacks\'];
+save([dir_out 'data' stack_number '.mat'], 'data', '-v7.3');
 
 % stack means
 if isfield(parameters, 'save_stack_mean') && parameters.save_stack_mean
-
+    save([dir_out 'data_mean_' stack_number '.mat'], 'data_mean', '-v7.3');
 end 
 
 % spotchecking data
+save([dir_out 'spotcheck_data' stack_number '.mat'], 'spotcheck_data', '-v7.3');
 
 % bad trial data
 
