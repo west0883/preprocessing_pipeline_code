@@ -145,14 +145,14 @@ function [parameters] = Preprocessing(parameters)
         spotcheck_data.initial.blue = bData(:,:, frames_for_spotchecking);
     end
 
-    clear im_list; parameters.im_list = [];
+    clear im_list;
     
     % ***3. Register within-stack/across stacks within a day.***
     disp('Registering within days'); 
 
     % Run the within-day registration function; overwrite bData
     % so you don't take up as much memory. 
-    [tforms_forblueandviolet] = RegisterStackWithDFT(bRep, bData, usfac);
+    [tforms_forblueandviolet] = RegisterStackWithDFT(parameters.bRep, bData, usfac);
 
     % Apply the calculated tforms to the blue stack. Overwrite bData
     % so you don't take up as much memory.  
