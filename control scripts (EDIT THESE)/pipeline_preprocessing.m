@@ -330,7 +330,7 @@ parameters.loop_list.things_to_load.indices_of_mask.level = 'mouse';
 end 
 
 % reference day per mouse 
-parameters.loop_list.things_to_load.reference_image.dir = {[parameters.dir_exper '\preprocessing\representative images\'], 'mouse', '\', 'day', '\'};
+parameters.loop_list.things_to_load.reference_image.dir = {[parameters.dir_exper '\preprocessing\representative images\'], 'mouse', '\'};
 parameters.loop_list.things_to_load.reference_image.filename = {'reference_image.mat'};
 parameters.loop_list.things_to_load.reference_image.variable = {'reference_image'};
 parameters.loop_list.things_to_load.reference_image.level = 'mouse';
