@@ -317,6 +317,9 @@ function [parameters] = Preprocessing(parameters)
             parameters.data_mean = single(mean(bData, 2, 'omitnan') - mean(vData, 2, 'omitnan'));
         
         end 
+
+        % Also calculate std
+        parameters.data_std = single(std(data,[], 2, 'omitnan'));
     end
 
     % Set aside images for spotcheck 
