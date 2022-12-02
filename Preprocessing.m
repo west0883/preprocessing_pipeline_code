@@ -156,7 +156,7 @@ function [parameters] = Preprocessing(parameters)
 
     % Apply the calculated tforms to the blue stack. Overwrite bData
     % so you don't take up as much memory.  
-    [bData] = RegisterStack_WithPreviousDFTShifts(tforms_forblueandviolet, bData, usfac); 
+    [bData] = RegisterStack_WithPreviousDFTShifts(tforms_forblueandviolet, bData, usfac, yDim, xDim); 
 
     % Set aside images for spotcheck 
     spotcheck_data.withindayregistered.blue = bData(:,:, frames_for_spotchecking);
@@ -165,7 +165,7 @@ function [parameters] = Preprocessing(parameters)
     if channelNumber==2
         % Apply the calculated tforms to the violet stack. Overwrite vData
         % so you don't take up as much memory.  
-        [vData] = RegisterStack_WithPreviousDFTShifts(tforms_forblueandviolet, vData, usfac); 
+        [vData] = RegisterStack_WithPreviousDFTShifts(tforms_forblueandviolet, vData, usfac, yDim, xDim); 
 
         % Also set aside image for spotcheck
         spotcheck_data.withindayregistered.violet = vData(:,:, frames_for_spotchecking);
