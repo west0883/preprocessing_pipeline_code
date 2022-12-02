@@ -21,7 +21,7 @@
 % registered_stack -- the registered stack. 3D matrix (pixels, pixels,
     % frames)   
     
-function [registered_stack] =RegisterStack_WithPreviousDFTShifts(tforms, stack_to_register, usfac) 
+function [registered_stack] =RegisterStack_WithPreviousDFTShifts(tforms, stack_to_register, usfac, yDim, xDim) 
     
     % Find number of frames of stack
     frames=size(stack_to_register,3);
@@ -45,8 +45,8 @@ function [registered_stack] =RegisterStack_WithPreviousDFTShifts(tforms, stack_t
         Nc = repmat(Nc, [1 1 frames]);
         Nr = repmat(Nr, [1 1 frames]);
 
-        row_shift = permute(repmat(tforms(2,:), [256 1 256]), [1 3 2]);
-        col_shift = permute(repmat(tforms(3,:), [256 1 256]), [1 3 2]);
+        row_shift = permute(repmat(tforms(2,:), [yDim 1 yDim]), [1 3 2]);
+        col_shift = permute(repmat(tforms(3,:), [xDim 1 yDim]), [1 3 2]);
 
         % First step
         registered_stack = buf2ft .* exp(1i*2*pi*(-row_shift.*Nr/nr-col_shift.*Nc/nc));
@@ -54,11 +54,11 @@ function [registered_stack] =RegisterStack_WithPreviousDFTShifts(tforms, stack_t
         clear row_shift col_shift Nr Nc;
         
         % Second step
-        diffphase = permute(repmat(tforms(1,:), [256 1 256]), [1 3 2]);
+        diffphase = permute(repmat(tforms(1,:), [yDim 1 yDim]), [1 3 2]);
         registered_stack = registered_stack.*exp(1i.*diffphase);
 
     elseif (usfac == 0)
-        diffphase = permute(repmat(tforms(1,:), [256 1 256]), [1 3 2]);
+        diffphase = permute(repmat(tforms(1,:), [yDim 1 yDim]), [1 3 2]);
         registered_stack = buf2ft .* exp(1i*diffphase);
     end
     clear diffphase;
